@@ -1,0 +1,21 @@
+{
+    "name": "stellarwp/wp-tables",
+    "description": "A library for simplifying the creation and updates of custom tables within WordPress.",
+    "type": "library",
+    "license": "GPL-2.0",
+    "autoload": {
+        "psr-4": {
+            "StellarWP\\WPTables\\": "src/WPTables/"
+        }
+    },
+    "authors": [
+        {
+            "name": "StellarWP",
+            "email": "dev@stellarwp.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "lucatume/di52": "^3.0"
+    }
+}
