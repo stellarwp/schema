@@ -113,6 +113,17 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	abstract protected function get_update_sql();
 
 	/**
+	 * Returns the name of the group the table belongs to.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The name of the group the table belongs to.
+	 */
+	public static function group_name() {
+		return '';
+	}
+
+	/**
 	 * Checks if an index already exists on the table.
 	 *
 	 * @since TBD

@@ -54,7 +54,7 @@ class Schema_Builder {
 	 * @return array<Table_Schema_Interface>
 	 */
 	public function get_registered_table_schemas() {
-		return apply_filters( 'pue_table_schemas', [] );
+		return apply_filters( 'stellarwp_table_schemas', [] );
 	}
 
 	/**
@@ -65,7 +65,7 @@ class Schema_Builder {
 	 * @return array<Field_Schema_Interface>
 	 */
 	public function get_registered_field_schemas() {
-		return apply_filters( 'pue_field_schemas', [] );
+		return apply_filters( 'stellarwp_field_schemas', [] );
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Schema_Builder {
 		 *
 		 * @since TBD
 		 */
-		do_action( 'pue_pre_drop_tables' );
+		do_action( 'stellarwp_pre_drop_tables' );
 
 		$table_classes = $this->get_registered_table_schemas();
 
@@ -90,7 +90,7 @@ class Schema_Builder {
 		 *
 		 * @param array<Custom_Table_Interface> $table_classes A list of Custom_Table_Interface objects that will have their tables dropped.
 		 */
-		$table_classes = apply_filters( 'pue_tables_to_drop', $table_classes );
+		$table_classes = apply_filters( 'stellarwp_tables_to_drop', $table_classes );
 
 		foreach ( $table_classes as $table_class ) {
 			$table_class->drop();
@@ -101,14 +101,14 @@ class Schema_Builder {
 		 *
 		 * @since TBD
 		 */
-		do_action( 'pue_post_drop_tables' );
+		do_action( 'stellarwp_post_drop_tables' );
 
 		/**
 		 * Runs before the custom fields are dropped by The Events Calendar.
 		 *
 		 * @since TBD
 		 */
-		do_action( 'pue_pre_drop_fields' );
+		do_action( 'stellarwp_pre_drop_fields' );
 
 		$field_classes = $this->get_registered_field_schemas();
 
@@ -119,7 +119,7 @@ class Schema_Builder {
 		 *
 		 * @param array<Custom_Field_Interface> $field_classes A list of Custom_Field_Interface objects that will have their fields dropped.
 		 */
-		$field_classes = apply_filters( 'pue_fields_to_drop', $field_classes );
+		$field_classes = apply_filters( 'stellarwp_fields_to_drop', $field_classes );
 
 		foreach ( $field_classes as $field_class ) {
 			$field_class->drop();
@@ -130,7 +130,7 @@ class Schema_Builder {
 		 *
 		 * @since TBD
 		 */
-		do_action( 'pue_post_drop_fields' );
+		do_action( 'stellarwp_post_drop_fields' );
 	}
 
 	/**
@@ -237,7 +237,7 @@ class Schema_Builder {
 		$schemas = $this->get_registered_table_schemas();
 		foreach ( $schemas as $custom_table ) {
 			/** @var Table_Schema_Interface $custom_table */
-			WP_CLI::debug( 'Emptying table ' . $custom_table::table_name(), 'PUE' );
+			WP_CLI::debug( 'Emptying table ' . $custom_table::table_name(), 'StellarWP' );
 			$custom_table->empty_table();
 		}
 	}
