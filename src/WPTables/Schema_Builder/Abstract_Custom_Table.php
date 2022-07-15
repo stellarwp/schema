@@ -14,6 +14,30 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	const SCHEMA_VERSION = null;
 
 	/**
+	 * @var string The base table name.
+	 */
+	protected static $base_table_name = '';
+
+	/**
+	 * @var string The organizational group this table belongs to.
+	 */
+	protected static $group = '';
+
+	/**
+	 * @var string The field that uniquely identifies a row in the table.
+	 */
+	protected static $uid_column = '';
+
+	/**
+	 * Ordered collection of table update methods.
+	 *
+	 * Keys should be the SCHEMA_VERSION and the values should be the method to call.
+	 *
+	 * @var array<string>
+	 */
+	protected $updates = [];
+
+	/**
 	 * Allows extending classes that require it to run some methods
 	 * immediately after the table creation or update.
 	 *
@@ -28,6 +52,13 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	protected function after_update( array $results ) {
 		// No-op by default.
 		return $results;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public static function base_table_name() {
+		return static::$base_table_name;
 	}
 
 	/**
@@ -113,14 +144,10 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	abstract protected function get_update_sql();
 
 	/**
-	 * Returns the name of the group the table belongs to.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The name of the group the table belongs to.
+	 * {@inheritdoc}
 	 */
 	public static function group_name() {
-		return '';
+		return static::$group;
 	}
 
 	/**
@@ -185,6 +212,13 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 		}
 
 		return $table_name;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public static function uid_column() {
+		return static::$uid_column;
 	}
 
 	/**

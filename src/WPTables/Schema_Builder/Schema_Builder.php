@@ -2,24 +2,26 @@
 
 namespace StellarWP\WPTables\Schema_Builder;
 
+use StellarWP\WPTables\Container;
+use StellarWP\WPTables\Fields\Collection as Field_Collection;
+use StellarWP\WPTables\Tables\Collection as Table_Collection;
 use WP_CLI;
 
 class Schema_Builder {
+	/**
+	 * Container.
+	 *
+	 * @var Container
+	 */
+	public $container;
 
 	/**
-	 * Helper to filter out the schema updates that are already current.
+	 * Constructor.
 	 *
-	 * @since TBD
-	 *
-	 * @param array<Field_Schema_Interface|Table_Schema_Interface> $handlers
-	 *
-	 * @return array<Field_Schema_Interface|Table_Schema_Interface>
+	 * @param Container $container Container instance.
 	 */
-	protected function filter_for_version( $handlers ) {
-		return array_filter( $handlers, function ( $handler ) {
-			// Checks this handler version.
-			return ! $handler->is_schema_current();
-		} );
+	public function __construct( Container $container = null ) {
+		$this->container = $container ?: Container::init();
 	}
 
 	/**
@@ -30,20 +32,7 @@ class Schema_Builder {
 	 * @return array<Table_Schema_Interface>
 	 */
 	public function get_table_schemas_that_need_updates() {
-
-		return $this->filter_for_version( $this->get_registered_table_schemas() );
-	}
-
-	/**
-	 * Get the registered field handlers that need updates.
-	 *
-	 * @since TBD
-	 *
-	 * @return array<Field_Schema_Interface>
-	 */
-	public function get_field_schemas_that_need_updates() {
-
-		return $this->filter_for_version( $this->get_registered_field_schemas() );
+		return $this->container->make( Table_Collection::class )->get_tables_needing_updates();
 	}
 
 	/**
@@ -54,18 +43,7 @@ class Schema_Builder {
 	 * @return array<Table_Schema_Interface>
 	 */
 	public function get_registered_table_schemas() {
-		return apply_filters( 'stellarwp_table_schemas', [] );
-	}
-
-	/**
-	 * Get the registered field handlers.
-	 *
-	 * @since TBD
-	 *
-	 * @return array<Field_Schema_Interface>
-	 */
-	public function get_registered_field_schemas() {
-		return apply_filters( 'stellarwp_field_schemas', [] );
+		return $this->container->make( Table_Collection::class );
 	}
 
 	/**

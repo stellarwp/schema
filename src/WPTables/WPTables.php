@@ -19,6 +19,7 @@ class WPTables extends \tad_DI52_ServiceProvider {
 	 */
 	public function register() {
 		$this->container->singleton( static::class, $this );
+		$this->container->singleton( Tables\Collection::class, Tables\Collection::class );
 		$this->register_hooks();
 	}
 
