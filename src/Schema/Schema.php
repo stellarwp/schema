@@ -2,7 +2,7 @@
 
 namespace StellarWP\Schema;
 
-class WPTables extends \tad_DI52_ServiceProvider {
+class Schema extends \tad_DI52_ServiceProvider {
 	/**
 	 * Initializes the service provider.
 	 *

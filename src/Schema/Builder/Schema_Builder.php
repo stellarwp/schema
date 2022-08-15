@@ -208,7 +208,7 @@ class Schema_Builder {
 			return false;
 		}
 
-		$result        = $wpdb->get_col( 'SHOW TABLES' );
+		$result = $wpdb->get_col( 'SHOW TABLES' );
 		foreach ( $table_classes as $class ) {
 			if ( ! in_array( $class::table_name(), $result, true ) ) {
 

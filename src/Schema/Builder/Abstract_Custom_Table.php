@@ -65,7 +65,7 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	 * Clear our stored version.
 	 */
 	protected function clear_stored_version() {
-		delete_option( static::SCHEMA_VERSION_OPTION );
+		delete_option( $this->get_schema_version_option() );
 	}
 
 	/**
@@ -175,13 +175,24 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	}
 
 	/**
+	 * Gets the properly namespaced schema version option key.
+	 *
+	 * @since TBD
+	 *
+	 * @return string The properly namespaced schema version option key.
+	 */
+	public function get_schema_version_option(): string {
+		return 'stellar_schema_version_' . static::SCHEMA_VERSION_OPTION;
+	}
+
+	/**
 	 * {@inheritdoc}
 	 */
 	public function is_schema_current() {
-		if ( ! static::SCHEMA_VERSION || ! static::SCHEMA_VERSION_OPTION ) {
+		if ( ! static::SCHEMA_VERSION || ! $this->get_schema_version_option() ) {
 			// @todo Error?
 		}
-		$version_applied = get_option( static::SCHEMA_VERSION_OPTION );
+		$version_applied = get_option( $this->get_schema_version_option() );
 		$current_version = static::SCHEMA_VERSION;
 
 		return version_compare( $version_applied, $current_version, '==' );
@@ -191,8 +202,8 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	 * Update our stored version with what we have defined.
 	 */
 	protected function sync_stored_version() {
-		if ( ! add_option( static::SCHEMA_VERSION_OPTION, static::SCHEMA_VERSION ) ) {
-			update_option( static::SCHEMA_VERSION_OPTION, static::SCHEMA_VERSION );
+		if ( ! add_option( $this->get_schema_version_option(), static::SCHEMA_VERSION ) ) {
+			update_option( $this->get_schema_version_option(), static::SCHEMA_VERSION );
 		}
 	}
 
