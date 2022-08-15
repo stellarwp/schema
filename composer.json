@@ -1,5 +1,5 @@
 {
-    "name": "stellarwp/schema-builder",
+    "name": "stellarwp/schema",
     "description": "A library for simplifying the creation and updates of custom tables within WordPress.",
     "type": "library",
     "license": "GPL-2.0",
