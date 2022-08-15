@@ -4,12 +4,12 @@ namespace StellarWP\Schema\Builder;
 
 abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	/**
-	 * @var string The option key used to store the SCHEMA_VERSION.
+	 * @var string|null The option key used to store the SCHEMA_VERSION.
 	 */
 	const SCHEMA_VERSION_OPTION = null;
 
 	/**
-	 * @var string The version number for this schema definition.
+	 * @var string|null The version number for this schema definition.
 	 */
 	const SCHEMA_VERSION = null;
 
@@ -208,11 +208,7 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	}
 
 	/**
-	 * Returns the table name, with prefix if required.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The table name.
+	 * {@inheritdoc}
 	 */
 	public static function table_name( $with_prefix = true ) {
 		$table_name = static::base_table_name();

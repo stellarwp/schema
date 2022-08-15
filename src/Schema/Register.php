@@ -20,6 +20,6 @@ class Register {
 			$table_obj = new $table();
 		}
 
-		return Tables\Collection::add( $table_obj );
+		return Container::init()->make( Tables\Collection::class )->add( $table_obj );
 	}
 }

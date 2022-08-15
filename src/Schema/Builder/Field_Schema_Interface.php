@@ -30,7 +30,8 @@ interface Field_Schema_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @return bool `true` if successful operation, `false` to indicate a failure.
+	 * @return array<string,string> A map of results in the format returned by
+	 *                              the `dbDelta` function.
 	 */
 	public function update();
 

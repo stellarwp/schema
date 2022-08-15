@@ -24,7 +24,7 @@ class Collection implements \ArrayAccess, \Iterator {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Table $resource Table instance.
+	 * @param Table $table Table instance.
 	 *
 	 * @return mixed
 	 */
@@ -51,7 +51,7 @@ class Collection implements \ArrayAccess, \Iterator {
 	 * @param array<string>|string $groups Groups to filter tables by.
 	 * @param \Iterator $iterator Optional. Iterator to filter.
 	 *
-	 * @return Filters\Needs_Update_FilterIterator
+	 * @return Filters\Group_FilterIterator
 	 */
 	public function get_by_group( $groups, $iterator = null ) {
 		return new Filters\Group_FilterIterator( $groups, $iterator ?: $this );
