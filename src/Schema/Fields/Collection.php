@@ -24,101 +24,74 @@ class Collection implements \ArrayAccess, \Iterator {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Field $resource Field instance.
+	 * @param Field $field Field instance.
 	 *
 	 * @return mixed
 	 */
-	public function add( Field $table ) {
-		$this->offsetSet( $table->base_table_name(), $table );
+	public function add( Field $field ) {
+		$this->offsetSet( $field->get_custom_field_slug_id(), $field );
 
-		$this->register_group( $table );
+		$this->register_group( $field );
 
-		return $this->offsetGet( $table->base_table_name() );
+		return $this->offsetGet( $field->get_custom_field_slug_id() );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function current() {
-		return current( $this->tables );
-	}
-
-	/**
-	 * Gets tables by group.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array<string>|string $groups Groups to filter tables by.
-	 * @param \Iterator $iterator Optional. Iterator to filter.
-	 *
-	 * @return Filters\Needs_Update_FilterIterator
-	 */
-	public function get_by_group( $groups, $iterator = null ) {
-		return new Filters\Group_FilterIterator( $groups, $iterator ?: $this );
-	}
-
-	/**
-	 * Gets tables that need updates.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param \Iterator $iterator Optional. Iterator to filter.
-	 *
-	 * @return Filters\Needs_Update_FilterIterator
-	 */
-	public function get_tables_needing_updates( $iterator = null ) {
-		return new Filters\Needs_Update_FilterIterator( $iterator ?: $this );
+		return current( $this->fields );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function key(): mixed {
-		return key( $this->tables );
+		return key( $this->fields );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function next(): void {
-		next( $this->tables );
+		next( $this->fields );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function offsetExists( $offset ): bool {
-		return isset( $this->tables[ $offset ] );
+		return isset( $this->fields[ $offset ] );
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function offsetGet( $offset ) {
-		return $this->tables[ $offset ];
+		return $this->fields[ $offset ];
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function offsetSet( $offset, $value ): void {
-		$this->tables[ $offset ] = $value;
+		$this->fields[ $offset ] = $value;
 	}
 
 	/**
 	 * @inheritDoc
 	 */
 	public function offsetUnset( $offset ): void {
-		unset( $this->tables[ $offset ] );
+		unset( $this->fields[ $offset ] );
 	}
 
 	/**
 	 * Registers a group in the group array for the given table.
 	 *
-	 * @param Table $table Table instance.
+	 * @param Field $field Field instance.
 	 */
-	private function register_group( $table ) {
-		$group = $table->group_name();
+	private function register_group( $field ) {
+		$group = $field->group_name();
 
 		if ( ! isset( $this->groups[ $group ] ) ) {
 			$this->groups[ $group ] = $group;
@@ -140,7 +113,7 @@ class Collection implements \ArrayAccess, \Iterator {
 	 * @inheritDoc
 	 */
 	public function rewind(): void {
-		reset( $this->tables );
+		reset( $this->fields );
 	}
 
 	/**
@@ -148,15 +121,15 @@ class Collection implements \ArrayAccess, \Iterator {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $name Table name.
-	 * @param Table $table Table instance.
+	 * @param string $name Field name.
+	 * @param Field $field Field instance.
 	 *
 	 * @return mixed
 	 */
-	public function set( $name, Table $table ) {
-		$this->offsetSet( $name, $table );
+	public function set( $name, Field $field ) {
+		$this->offsetSet( $name, $field );
 
-		$this->register_group( $table );
+		$this->register_group( $field );
 
 		return $this->offsetGet( $name );
 	}
@@ -165,6 +138,6 @@ class Collection implements \ArrayAccess, \Iterator {
 	 * @inheritDoc
 	 */
 	public function valid(): bool {
-		return key( $this->tables ) !== null;
+		return key( $this->fields ) !== null;
 	}
 }

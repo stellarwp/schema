@@ -17,8 +17,25 @@ namespace StellarWP\Schema\Builder;
  * @package StellarWP\Schema\Builder
  */
 abstract class Abstract_Custom_Field implements Field_Schema_Interface {
+	/**
+	 * @var string|null The option key used to store the SCHEMA_VERSION.
+	 */
 	const SCHEMA_VERSION_OPTION = null;
+
+	/**
+	 * @var string|null The version number for this schema definition.
+	 */
 	const SCHEMA_VERSION = null;
+
+	/**
+	 * @var string The slug used to identify the custom field alterations.
+	 */
+	protected static $custom_field_slug_id = '';
+
+	/**
+	 * @var string The organizational group this field set belongs to.
+	 */
+	protected static $group = '';
 
 	/**
 	 * Allows extending classes that require it to run some methods
@@ -98,6 +115,13 @@ abstract class Abstract_Custom_Field implements Field_Schema_Interface {
 	abstract public function fields();
 
 	/**
+	 * The base table name of the schema.
+	 */
+	public static function get_custom_field_slug_id() {
+		return static::$custom_field_slug_id;
+	}
+
+	/**
 	 * Gets the properly namespaced schema version option key.
 	 *
 	 * @since TBD
@@ -118,6 +142,13 @@ abstract class Abstract_Custom_Field implements Field_Schema_Interface {
 	 *                by the `dbDelta` function.
 	 */
 	abstract protected function get_update_sql();
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public static function group_name() {
+		return static::$group;
+	}
 
 	/**
 	 * @inheritDoc

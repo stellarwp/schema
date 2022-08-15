@@ -65,7 +65,7 @@ class Schema_Builder {
 		 *
 		 * @since TBD
 		 *
-		 * @param array<Custom_Table_Interface> $table_classes A list of Custom_Table_Interface objects that will have their tables dropped.
+		 * @param array<Table_Schema_Interface> $table_classes A list of Custom_Table_Interface objects that will have their tables dropped.
 		 */
 		$table_classes = apply_filters( 'stellarwp_tables_to_drop', $table_classes );
 

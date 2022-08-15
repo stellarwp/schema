@@ -9,7 +9,7 @@
 
 namespace StellarWP\Schema;
 
-use StellarWP\Schema\Builder;
+use StellarWP\Schema\Builder\Schema_Builder;
 
 /**
  * Class Activation

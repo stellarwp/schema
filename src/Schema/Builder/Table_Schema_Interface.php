@@ -51,7 +51,8 @@ interface Table_Schema_Interface {
 	 *
 	 * @since TBD
 	 *
-	 * @return boolean `true` if successful operation, `false` to indicate a failure.
+	 * @return array<string,string> A map of results in the format returned by
+	 *                              the `dbDelta` function.
 	 */
 	public function update();
 
@@ -60,10 +61,12 @@ interface Table_Schema_Interface {
 	 *
 	 * @since TBD
 	 *
+	 * @param bool $with_prefix Whether to include the table prefix or not.
+	 *
 	 * @return string The custom table name, prefixed by the current `wpdb` prefix,
 	 *                if required.
 	 */
-	public static function table_name();
+	public static function table_name( $with_prefix = true );
 
 	/**
 	 * Returns the custom table name.
@@ -73,6 +76,15 @@ interface Table_Schema_Interface {
 	 * @return string The base custom table name.
 	 */
 	public static function base_table_name();
+
+	/**
+	 * The organizational group this table belongs to.
+	 *
+	 * @since TBD
+	 *
+	 * @return string
+	 */
+	public static function group_name();
 
 	/**
 	 * References our stored version versus the version defined in the class.
