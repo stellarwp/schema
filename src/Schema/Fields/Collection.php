@@ -4,7 +4,7 @@ namespace StellarWP\Schema\Fields;
 
 use StellarWP\Schema\Builder\Abstract_Custom_Field as Field;
 
-class Collection implements \ArrayAccess, \Iterator {
+class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * Table groups.
 	 *
@@ -34,6 +34,13 @@ class Collection implements \ArrayAccess, \Iterator {
 		$this->register_group( $field );
 
 		return $this->offsetGet( $field->get_custom_field_slug_id() );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function count(): int {
+		return count( $this->fields );
 	}
 
 	/**

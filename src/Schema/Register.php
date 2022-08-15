@@ -17,9 +17,9 @@ class Register {
 	 */
 	public static function table( $table ) {
 		if ( is_string( $table ) ) {
-			$table_obj = new $table();
+			$table = new $table();
 		}
 
-		return Container::init()->make( Tables\Collection::class )->add( $table_obj );
+		return Container::init()->make( Tables\Collection::class )->add( $table );
 	}
 }

@@ -4,7 +4,7 @@ namespace StellarWP\Schema\Tests;
 
 use StellarWP\Schema\Builder\Abstract_Custom_Table;
 
-class SimpleCustomTable extends Abstract_Custom_Table {
+class ChangedCustomTable extends Abstract_Custom_Table {
 	/**
 	 * {@inheritdoc}
 	 */
@@ -13,7 +13,7 @@ class SimpleCustomTable extends Abstract_Custom_Table {
 	/**
 	 * {@inheritdoc}
 	 */
-	const SCHEMA_VERSION = '1.0.0';
+	const SCHEMA_VERSION = '2.0.0';
 
 	/**
 	 * {@inheritdoc}
@@ -43,8 +43,10 @@ class SimpleCustomTable extends Abstract_Custom_Table {
 				`id` int(11) NOT NULL AUTO_INCREMENT,
 				`name` varchar(64) NOT NULL,
 				`slug` varchar(64) NOT NULL,
+				`something` varchar(64) NOT NULL,
 				PRIMARY KEY (`id`),
 				KEY `slug` (`slug`)
+				KEY `something` (`something`)
 			) {$charset_collate};
 		";
 	}

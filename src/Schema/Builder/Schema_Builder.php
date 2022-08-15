@@ -4,6 +4,7 @@ namespace StellarWP\Schema\Builder;
 
 use StellarWP\Schema\Container;
 use StellarWP\Schema\Tables\Collection as Table_Collection;
+use StellarWP\Schema\Tables\Filters\Group_FilterIterator;
 use WP_CLI;
 
 class Schema_Builder {
@@ -39,7 +40,7 @@ class Schema_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @return array<Table_Schema_Interface>
+	 * @return Table_Collection
 	 */
 	public function get_registered_table_schemas() {
 		return $this->container->make( Table_Collection::class );
@@ -198,9 +199,7 @@ class Schema_Builder {
 		$table_classes = $this->get_registered_table_schemas();
 
 		if ( null !== $group ) {
-			$table_classes = array_filter( $table_classes, static function ( $class ) use ( $group ) {
-				return $class::group_name() === $group;
-			} );
+			$table_classes = new Group_FilterIterator( (array) $group, $table_classes );
 		}
 
 		if ( empty( $table_classes ) ) {
