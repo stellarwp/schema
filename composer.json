@@ -1,11 +1,11 @@
 {
-    "name": "stellarwp/wp-tables",
+    "name": "stellarwp/schema-builder",
     "description": "A library for simplifying the creation and updates of custom tables within WordPress.",
     "type": "library",
     "license": "GPL-2.0",
     "autoload": {
         "psr-4": {
-            "StellarWP\\WPTables\\": "src/WPTables/"
+            "StellarWP\\Schema\\": "src/Schema/"
         }
     },
     "authors": [

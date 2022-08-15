@@ -1,8 +1,8 @@
 <?php
 
-namespace StellarWP\WPTables\Tables;
+namespace StellarWP\Schema\Tables;
 
-use StellarWP\WPTables\Schema_Builder\Abstract_Custom_Table as Table;
+use StellarWP\Schema\Builder\Abstract_Custom_Table as Table;
 
 class Collection implements \ArrayAccess, \Iterator {
 	/**

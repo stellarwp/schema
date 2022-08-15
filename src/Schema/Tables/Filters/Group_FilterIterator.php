@@ -1,6 +1,6 @@
 <?php
 
-namespace StellarWP\WPTables\Tables\Filters;
+namespace StellarWP\Schema\Tables\Filters;
 
 class Group_FilterIterator extends \FilterIterator {
 	/**

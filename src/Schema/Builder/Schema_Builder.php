@@ -1,10 +1,9 @@
 <?php
 
-namespace StellarWP\WPTables\Schema_Builder;
+namespace StellarWP\Schema\Builder;
 
-use StellarWP\WPTables\Container;
-use StellarWP\WPTables\Fields\Collection as Field_Collection;
-use StellarWP\WPTables\Tables\Collection as Table_Collection;
+use StellarWP\Schema\Container;
+use StellarWP\Schema\Tables\Collection as Table_Collection;
 use WP_CLI;
 
 class Schema_Builder {
@@ -80,35 +79,6 @@ class Schema_Builder {
 		 * @since TBD
 		 */
 		do_action( 'stellarwp_post_drop_tables' );
-
-		/**
-		 * Runs before the custom fields are dropped by The Events Calendar.
-		 *
-		 * @since TBD
-		 */
-		do_action( 'stellarwp_pre_drop_fields' );
-
-		$field_classes = $this->get_registered_field_schemas();
-
-		/**
-		 * Filters the fields to be dropped.
-		 *
-		 * @since TBD
-		 *
-		 * @param array<Custom_Field_Interface> $field_classes A list of Custom_Field_Interface objects that will have their fields dropped.
-		 */
-		$field_classes = apply_filters( 'stellarwp_fields_to_drop', $field_classes );
-
-		foreach ( $field_classes as $field_class ) {
-			$field_class->drop();
-		}
-
-		/**
-		 * Runs after the custom tables have been dropped by The Events Calendar.
-		 *
-		 * @since TBD
-		 */
-		do_action( 'stellarwp_post_drop_fields' );
 	}
 
 	/**
@@ -174,14 +144,6 @@ class Schema_Builder {
 		foreach ( $table_schemas as $table_schema ) {
 			/** @var Table_Schema_Interface $table_schema */
 			$results[ $table_schema::table_name() ] = $table_schema->update();
-		}
-
-		$field_schemas = $force ? $this->get_registered_field_schemas() : $this->get_field_schemas_that_need_updates();
-		// Get all registered table classes.
-		foreach ( $field_schemas as $field_schema ) {
-			/** @var Field_Schema_Interface $field_schema */
-			$custom_table                           = $field_schema->table_schema();
-			$results[ $custom_table::table_name() ] = $field_schema->update();
 		}
 
 		return count( $results ) ? array_merge( ...array_values( $results ) ) : [];

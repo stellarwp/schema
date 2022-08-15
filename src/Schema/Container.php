@@ -1,5 +1,5 @@
 <?php
-namespace StellarWP\WPTables;
+namespace StellarWP\Schema;
 
 class Container extends \tad_DI52_Container {
 	/**

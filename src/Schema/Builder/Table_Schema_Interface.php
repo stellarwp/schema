@@ -4,17 +4,17 @@
  *
  * @since   TBD
  *
- * @package StellarWP\WPTables\Schema_Builder
+ * @package StellarWP\Schema\Builder
  */
 
-namespace StellarWP\WPTables\Schema_Builder;
+namespace StellarWP\Schema\Builder;
 
 /**
  * Interface Table_Schema_Interface
  *
  * @since   TBD
  *
- * @package StellarWP\WPTables\Schema_Builder
+ * @package StellarWP\Schema\Builder
  */
 interface Table_Schema_Interface {
 	/**

@@ -1,6 +1,6 @@
 <?php
 
-namespace StellarWP\WPTables;
+namespace StellarWP\Schema;
 
 class WPTables extends \tad_DI52_ServiceProvider {
 	/**

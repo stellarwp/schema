@@ -1,6 +1,6 @@
 <?php
 
-namespace StellarWP\WPTables\Schema_Builder;
+namespace StellarWP\Schema\Builder;
 
 abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	/**

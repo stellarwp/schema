@@ -7,9 +7,9 @@
  * @package StellarWP\WPTables
  */
 
-namespace StellarWP\WPTables;
+namespace StellarWP\Schema;
 
-use StellarWP\WPTables\Schema_Builder;
+use StellarWP\Schema\Builder;
 
 /**
  * Class Activation
