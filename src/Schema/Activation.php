@@ -20,12 +20,12 @@ use StellarWP\Schema\Builder;
  */
 class Activation {
 	/**
-	 * The name of the transient that will be used to flag whether the plugin did activate
+	 * The name of the transient that will be used to flag whether the library activated
 	 * or not.
 	 *
 	 * @since TBD
 	 */
-	const ACTIVATION_TRANSIENT = 'stellar_wptables_initialized';
+	const ACTIVATION_TRANSIENT = 'stellar_schema_builder_initialized';
 
 	/**
 	 * Handles the activation of the feature functions.
@@ -46,21 +46,34 @@ class Activation {
 	 */
 	public static function init() {
 		// Check if we ran recently.
-		$initialized = get_transient( self::ACTIVATION_TRANSIENT );
+		$db_hash = get_transient( static::ACTIVATION_TRANSIENT );
 
-		if ( $initialized ) {
+		$container = Container::init();
+
+		$schema_builder = $container->make( Schema_Builder::class );
+		$hash = $schema_builder->get_registered_schemas_version_hash();
+
+		if ( $db_hash == $hash ) {
 			return;
 		}
 
-		set_transient( self::ACTIVATION_TRANSIENT, 1, DAY_IN_SECONDS );
-
-		/** @var Container $services */
-		$services       = Container::init();
-		$schema_builder = $services->make( Schema_Builder::class );
+		set_transient( static::ACTIVATION_TRANSIENT, $hash, DAY_IN_SECONDS );
 
 		// Sync any schema changes we may have.
 		if ( $schema_builder->all_tables_exist() ) {
 			$schema_builder->up();
 		}
+	}
+
+	/**
+	 * Handles the feature deactivation.
+	 *
+	 * @since TBD
+	 */
+	public static function deactivate() {
+		$services = Container::init();
+
+		// @todo Should we drop the tables here, gracefully, if no data was generated?
+		$services->make( Schema_Builder::class )->clean();
 	}
 }
