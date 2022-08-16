@@ -40,7 +40,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 * @inheritDoc
 	 */
 	public function count(): int {
-		return 1;
+		return iterator_count( $this );
 	}
 
 	/**
@@ -80,7 +80,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * @inheritDoc
 	 */
-	public function key(): mixed {
+	public function key(): string {
 		return key( $this->tables );
 	}
 

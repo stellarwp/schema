@@ -53,7 +53,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * @inheritDoc
 	 */
-	public function key(): mixed {
+	public function key(): string {
 		return key( $this->fields );
 	}
 

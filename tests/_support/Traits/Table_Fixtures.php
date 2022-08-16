@@ -3,6 +3,7 @@
 namespace StellarWP\Schema\Tests\Traits;
 
 use StellarWP\Schema\Activation;
+use StellarWP\Schema\Builder\Abstract_Custom_Table;
 use StellarWP\Schema\Builder\Schema_Builder;
 use StellarWP\Schema\Container;
 
@@ -49,10 +50,10 @@ trait Table_Fixtures {
 	public function get_simple_table() {
 		$table  = new class extends Abstract_Custom_Table {
 			const SCHEMA_VERSION = '1.0.0';
-			const SCHEMA_VERSION_OPTION = 'test_simple';
+			const SCHEMA_VERSION_OPTION = 'bork_simple';
 
 			protected static $base_table_name = 'simple';
-			protected static $group = 'test';
+			protected static $group = 'bork';
 			protected static $uid_column = 'id';
 
 			public function get_update_sql() {

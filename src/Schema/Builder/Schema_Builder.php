@@ -3,7 +3,7 @@
 namespace StellarWP\Schema\Builder;
 
 use StellarWP\Schema\Container;
-use StellarWP\Schema\Tables\Collection as Table_Collection;
+use StellarWP\Schema\Tables;
 use StellarWP\Schema\Tables\Filters\Group_FilterIterator;
 use WP_CLI;
 
@@ -13,14 +13,14 @@ class Schema_Builder {
 	 *
 	 * @var Container
 	 */
-	public $container;
+	protected $container;
 
 	/**
 	 * Constructor.
 	 *
 	 * @param Container $container Container instance.
 	 */
-	public function __construct( Container $container = null ) {
+	public function __construct( $container = null ) {
 		$this->container = $container ?: Container::init();
 	}
 
@@ -29,10 +29,10 @@ class Schema_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @return array<Table_Schema_Interface>
+	 * @return Tables\Collection
 	 */
 	public function get_table_schemas_that_need_updates() {
-		return $this->container->make( Table_Collection::class )->get_tables_needing_updates();
+		return $this->container->make( Tables\Collection::class )->get_tables_needing_updates();
 	}
 
 	/**
@@ -40,10 +40,10 @@ class Schema_Builder {
 	 *
 	 * @since TBD
 	 *
-	 * @return Table_Collection
+	 * @return Tables\Collection
 	 */
-	public function get_registered_table_schemas() {
-		return $this->container->make( Table_Collection::class );
+	public function get_registered_table_schemas(): Tables\Collection {
+		return $this->container->make( Tables\Collection::class );
 	}
 
 	/**
@@ -66,7 +66,7 @@ class Schema_Builder {
 		 *
 		 * @since TBD
 		 *
-		 * @param array<Table_Schema_Interface> $table_classes A list of Custom_Table_Interface objects that will have their tables dropped.
+		 * @param Tables\Collection $table_classes A list of Custom_Table_Interface objects that will have their tables dropped.
 		 */
 		$table_classes = apply_filters( 'stellarwp_tables_to_drop', $table_classes );
 
@@ -202,7 +202,7 @@ class Schema_Builder {
 			$table_classes = new Group_FilterIterator( (array) $group, $table_classes );
 		}
 
-		if ( empty( $table_classes ) ) {
+		if ( count( $table_classes ) === 0 ) {
 			// No table class was even found.
 			return false;
 		}

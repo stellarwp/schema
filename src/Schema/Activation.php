@@ -63,6 +63,14 @@ class Activation {
 		if ( $schema_builder->all_tables_exist() ) {
 			$schema_builder->up();
 		}
+
+		if ( ! Container::init()->getVar( 'stellarwp_schema_fully_activated' ) ) {
+			/**
+			 * On new installations the full activation code will find an empty state and
+			 * will have not activated at this point, do it now if required.
+			 */
+			Container::init()->register( Full_Activation_Provider::class );
+		}
 	}
 
 	/**
