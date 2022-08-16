@@ -2,6 +2,9 @@
 
 namespace StellarWP\Schema\Builder;
 
+use StellarWP\Schema\Container;
+use StellarWP\Schema\Fields;
+
 abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	/**
 	 * @var string|null The option key used to store the SCHEMA_VERSION.
@@ -17,6 +20,16 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	 * @var string The base table name.
 	 */
 	protected static $base_table_name = '';
+
+	/**
+	 * @var Container The dependency injection container.
+	 */
+	protected $container;
+
+	/**
+	 * @var \Iterator The filtered field collection that applies to this table.
+	 */
+	protected $field_schemas = null;
 
 	/**
 	 * @var string The organizational group this table belongs to.
@@ -38,10 +51,21 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	protected $updates = [];
 
 	/**
+	 * Constructor.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param Container $container The container to use.
+	 */
+	public function __construct( $container = null ) {
+		$this->container = $container ?: Container::init();
+	}
+
+	/**
 	 * Allows extending classes that require it to run some methods
 	 * immediately after the table creation or update.
 	 *
-	 * @since TBD
+	 * @since 1.0.0
 	 *
 	 * @param array<string,string> $results A map of results in the format
 	 *                                      returned by the `dbDelta` function.
@@ -72,6 +96,30 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	 * {@inheritdoc}
 	 */
 	public function drop() {
+		/**
+		 * Permit the prevention of dropping a specific table.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param bool $do_drop Whether to drop the table.
+		 * @param string $base_table_name The base table name of the table schema.
+		 */
+		$do_drop = apply_filters( 'stellarwp_schema_table_drop_' . static::base_table_name(), true, static::base_table_name() );
+
+		/**
+		 * Permit the prevention of dropping the table.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param bool $do_drop Whether to drop the table.
+		 * @param string $base_table_name The base table name of the table schema.
+		 */
+		$do_drop = apply_filters( 'stellarwp_schema_table_drop', $do_drop, static::base_table_name() );
+
+		if ( ! $do_drop ) {
+			return false;
+		}
+
 		$this->clear_stored_version();
 		if ( ! $this->exists() ) {
 
@@ -96,7 +144,7 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	/**
 	 * Empties the custom table.
 	 *
-	 * @since TBD
+	 * @since 1.0.0
 	 *
 	 * @return int|false The number of removed rows, or `false` to indicate a failure.
 	 */
@@ -120,7 +168,7 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	/**
 	 * Returns whether a table exists in the database or not.
 	 *
-	 * @since TBD
+	 * @since 1.0.0
 	 *
 	 * @return bool Whether a table exists in the database or not.
 	 */
@@ -133,15 +181,64 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	}
 
 	/**
+	 * Gets the defined fields schemas for the table.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param bool $force Force a refresh of the field collection.
+	 *
+	 * @return \Iterator
+	 */
+	public function get_field_schemas( bool $force = false ) {
+		if ( $this->field_schemas === null || $force ) {
+			$this->field_schemas = $this->container->make( Fields\Collection::class )->get_by_table( static::base_table_name() );
+		}
+
+		return $this->field_schemas;
+	}
+
+	/**
+	 * Gets the properly namespaced schema version option key.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string The properly namespaced schema version option key.
+	 */
+	public function get_schema_version_option(): string {
+		return 'stellar_schema_version_' . static::SCHEMA_VERSION_OPTION;
+	}
+
+	/**
 	 * Returns the table creation SQL in the format supported
 	 * by the `dbDelta` function.
 	 *
-	 * @since TBD
+	 * @since 1.0.0
 	 *
 	 * @return string The table creation SQL, in the format supported
 	 *                by the `dbDelta` function.
 	 */
 	abstract protected function get_update_sql();
+
+	/**
+	 * Gets the table schema's version.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	public function get_version(): string {
+		$schema_fields = $this->get_field_schemas( true );
+
+		$version = [
+			static::SCHEMA_VERSION,
+		];
+
+		foreach ( $schema_fields as $field ) {
+			$version[] = $field->get_version();
+		}
+
+		return implode( '-', $version );
+	}
 
 	/**
 	 * {@inheritdoc}
@@ -153,7 +250,7 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	/**
 	 * Checks if an index already exists on the table.
 	 *
-	 * @since TBD
+	 * @since 1.0.0
 	 *
 	 * @param string      $index      The name of the index to check for.
 	 * @param string|null $table_name The table name to search the index for, or `null`
@@ -175,14 +272,55 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	}
 
 	/**
-	 * Gets the properly namespaced schema version option key.
+	 * Inject field schema definitions into the CREATE TABLE SQL.
 	 *
-	 * @since TBD
+	 * @since 1.0.0
 	 *
-	 * @return string The properly namespaced schema version option key.
+	 * @param Field_Schema_Interface $field_schema The field schema to inject.
+	 * @param string $sql The CREATE TABLE SQL to inject into.
+	 *
+	 * @return string
 	 */
-	public function get_schema_version_option(): string {
-		return 'stellar_schema_version_' . static::SCHEMA_VERSION_OPTION;
+	protected function inject_field_schema( Field_Schema_Interface $field_schema, $sql ): string {
+		$fields = trim( $field_schema->get_sql() );
+
+		// Inject any extra fields into the table's definition.
+		// phpcs:disable Squiz.Strings.ConcatenationSpacing.PaddingFound -- don't remove regex indentation
+		$find_first_index_regex =
+			'/'
+			.   '(,'            // 1) Final comma before indexes.
+			.       '(\s*)'     // 2) Capture whitespace before indexes.
+			.       '(?='       // Followed by the indexes.
+			.           '(?:'
+			.               'PRIMARY\s+KEY|(?:UNIQUE|FULLTEXT|SPACIAL)\s+(?:KEY|INDEX)|KEY|INDEX'
+			.           ')'
+			.       ')'
+			.       '[^\n]+'   // Followed by indice columns and names.
+			.       '(?!'      // Not followed by another index.
+			.           '(?:'
+			.               'PRIMARY\s+KEY|(?:UNIQUE|FULLTEXT|SPACIAL)\s+(?:KEY|INDEX)|KEY|INDEX'
+			.           ')'
+			.       ')'
+			.   ')'
+			.'/im';            // Case insensitive and multi-line.
+
+		if ( preg_match( $find_first_index_regex, $sql ) ) {
+			// Inject additional fields before the indexes.
+			$sql = preg_replace(
+				$find_first_index_regex,
+				",$2{$fields}$1", // $2 is the captured whitespace. $1 is the whitespace PLUS the first index after the last field.
+				$sql
+			);
+		} else {
+			// Inject additional fields before the closing parenthesis of the CREATE TABLE statement.
+			$sql = preg_replace(
+				'/(?<!,)((\s+)\).+(?!\)))/im', // Match the last closing parenthesis and everything after it.
+				",$2{$fields}$1",              // $2 is the captured whitespace. $1 is the whitespace PLUS the rest of the statement.
+				$sql
+			);
+		}
+
+		return $sql;
 	}
 
 	/**
@@ -192,8 +330,9 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 		if ( ! static::SCHEMA_VERSION || ! $this->get_schema_version_option() ) {
 			// @todo Error?
 		}
+
 		$version_applied = get_option( $this->get_schema_version_option() );
-		$current_version = static::SCHEMA_VERSION;
+		$current_version = $this->get_version();
 
 		return version_compare( $version_applied, $current_version, '==' );
 	}
@@ -202,8 +341,10 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	 * Update our stored version with what we have defined.
 	 */
 	protected function sync_stored_version() {
-		if ( ! add_option( $this->get_schema_version_option(), static::SCHEMA_VERSION ) ) {
-			update_option( $this->get_schema_version_option(), static::SCHEMA_VERSION );
+		$current_version = $this->get_version();
+
+		if ( ! add_option( $this->get_schema_version_option(), $current_version ) ) {
+			update_option( $this->get_schema_version_option(), $current_version );
 		}
 	}
 
@@ -232,12 +373,25 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	 * {@inheritdoc}
 	 */
 	public function update() {
-		global $wpdb;
-
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-		$results = (array) dbDelta( $this->get_update_sql() );
+
+		$sql = $this->get_update_sql();
+
+		$field_schemas = $this->get_field_schemas();
+
+		foreach ( $field_schemas as $field_schema ) {
+			$sql = $this->inject_field_schema( $field_schema, $sql );
+		}
+
+		codecept_debug( $sql );
+
+		$results = (array) dbDelta( $sql );
 		$this->sync_stored_version();
 		$results = $this->after_update( $results );
+
+		foreach ( $field_schemas as $field_schema ) {
+			$sql = $field_schema->after_update( $results );
+		}
 
 		return $results;
 	}

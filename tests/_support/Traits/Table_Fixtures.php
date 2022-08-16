@@ -3,9 +3,11 @@
 namespace StellarWP\Schema\Tests\Traits;
 
 use StellarWP\Schema\Activation;
+use StellarWP\Schema\Builder\Abstract_Custom_Field;
 use StellarWP\Schema\Builder\Abstract_Custom_Table;
 use StellarWP\Schema\Builder\Schema_Builder;
 use StellarWP\Schema\Container;
+use StellarWP\Schema\Register;
 
 trait Table_Fixtures {
 	private function assert_custom_tables_exist() {
@@ -47,6 +49,40 @@ trait Table_Fixtures {
 	/**
 	 * Get a fake table to verify its creation.
 	 */
+	public function get_modified_simple_table() {
+		$table  = new class extends Abstract_Custom_Table {
+			const SCHEMA_VERSION = '2.0.0';
+			const SCHEMA_VERSION_OPTION = 'bork_simple';
+
+			protected static $base_table_name = 'simple';
+			protected static $group = 'bork';
+			protected static $uid_column = 'id';
+
+			public function get_update_sql() {
+				global $wpdb;
+				$table_name      = self::table_name( true );
+				$charset_collate = $wpdb->get_charset_collate();
+
+				return "
+					CREATE TABLE `{$table_name}` (
+						`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+						`name` varchar(25) NOT NULL,
+						`slug` varchar(25) NOT NULL,
+						`something` varchar(25) NOT NULL,
+						PRIMARY KEY (`id`),
+						KEY `slug` (`slug`),
+						KEY `something` (`something`)
+					) {$charset_collate};
+				";
+			}
+		};
+
+		return $table;
+	}
+
+	/**
+	 * Get a fake table to verify its creation.
+	 */
 	public function get_simple_table() {
 		$table  = new class extends Abstract_Custom_Table {
 			const SCHEMA_VERSION = '1.0.0';
@@ -74,5 +110,60 @@ trait Table_Fixtures {
 		};
 
 		return $table;
+	}
+
+	/**
+	 * Get a fake table to verify its creation.
+	 */
+	public function get_indexless_table() {
+		$table  = new class extends Abstract_Custom_Table {
+			const SCHEMA_VERSION = '1.0.0';
+			const SCHEMA_VERSION_OPTION = 'bork_noindex';
+
+			protected static $base_table_name = 'noindex';
+			protected static $group = 'bork';
+			protected static $uid_column = 'id';
+
+			public function get_update_sql() {
+				global $wpdb;
+				$table_name      = self::table_name( true );
+				$charset_collate = $wpdb->get_charset_collate();
+
+				return "
+					CREATE TABLE `{$table_name}` (
+						`id` int(11) UNSIGNED NOT NULL,
+						`name` varchar(25) NOT NULL,
+						`slug` varchar(25) NOT NULL
+					) {$charset_collate};
+				";
+			}
+		};
+
+		return $table;
+	}
+
+	/**
+	 * Get a simple table field class.
+	 */
+	public function get_simple_table_field() {
+		$field  = new class extends Abstract_Custom_Field {
+			const SCHEMA_VERSION = '1.0.0';
+
+			protected static $schema_slug = 'simple-bork';
+			protected static $base_table_name = 'simple';
+
+			protected $fields = [
+				'bork',
+			];
+
+			public function get_sql() {
+				return "
+					`bork` int(11) UNSIGNED NOT NULL,
+					KEY `bork` (`bork`)
+				";
+			}
+		};
+
+		return $field;
 	}
 }

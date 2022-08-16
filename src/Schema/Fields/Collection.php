@@ -29,11 +29,11 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 * @return mixed
 	 */
 	public function add( Field $field ) {
-		$this->offsetSet( $field->get_custom_field_slug_id(), $field );
+		$this->offsetSet( $field::get_schema_slug(), $field );
 
 		$this->register_group( $field );
 
-		return $this->offsetGet( $field->get_custom_field_slug_id() );
+		return $this->offsetGet( $field::get_schema_slug() );
 	}
 
 	/**
@@ -48,6 +48,20 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 */
 	public function current() {
 		return current( $this->fields );
+	}
+
+	/**
+	 * Gets fields by table.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array<string>|string $tables Tables to filter fields by.
+	 * @param \Iterator $iterator Optional. Iterator to filter.
+	 *
+	 * @return Filters\Table_FilterIterator
+	 */
+	public function get_by_table( $tables, $iterator = null ): Filters\Table_FilterIterator {
+		return new Filters\Table_FilterIterator( $tables, $iterator ?: $this );
 	}
 
 	/**
