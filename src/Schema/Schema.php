@@ -2,7 +2,9 @@
 
 namespace StellarWP\Schema;
 
-class Schema extends \tad_DI52_ServiceProvider {
+use tad_DI52_ServiceProvider as Service_Provider;
+
+class Schema extends Service_Provider {
 	/**
 	 * Initializes the service provider.
 	 *
@@ -19,7 +21,18 @@ class Schema extends \tad_DI52_ServiceProvider {
 	 */
 	public function register() {
 		$this->container->singleton( static::class, $this );
+		$this->container->singleton( Builder\Schema_Builder::class, Builder\Schema_Builder::class );
+		$this->container->singleton( Fields\Collection::class, Fields\Collection::class );
 		$this->container->singleton( Tables\Collection::class, Tables\Collection::class );
+
+		/**
+		 * These providers should be the ones that extend the bulk of features for CT1,
+		 * with only the bare minimum of providers registered above, to determine important state information.
+		 */
+		$this->container->register( Full_Activation_Provider::class );
+		// Set a flag in the container to indicate there was a full activation of the CT1 component.
+		$this->container->setVar( 'stellarwp_schema_fully_activated', true );
+
 		$this->register_hooks();
 	}
 

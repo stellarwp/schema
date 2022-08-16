@@ -4,7 +4,7 @@ namespace StellarWP\Schema\Tables;
 
 use StellarWP\Schema\Builder\Abstract_Custom_Table as Table;
 
-class Collection implements \ArrayAccess, \Iterator {
+class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * Table groups.
 	 *
@@ -34,6 +34,13 @@ class Collection implements \ArrayAccess, \Iterator {
 		$this->register_group( $table );
 
 		return $this->offsetGet( $table->base_table_name() );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function count(): int {
+		return iterator_count( $this );
 	}
 
 	/**
@@ -73,7 +80,7 @@ class Collection implements \ArrayAccess, \Iterator {
 	/**
 	 * @inheritDoc
 	 */
-	public function key(): mixed {
+	public function key(): string {
 		return key( $this->tables );
 	}
 

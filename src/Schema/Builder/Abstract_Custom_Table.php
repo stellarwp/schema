@@ -232,6 +232,8 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	 * {@inheritdoc}
 	 */
 	public function update() {
+		global $wpdb;
+
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 		$results = (array) dbDelta( $this->get_update_sql() );
 		$this->sync_stored_version();

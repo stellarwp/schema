@@ -2,7 +2,7 @@
 
 namespace StellarWP\Schema\Tables\Filters;
 
-class Group_FilterIterator extends \FilterIterator {
+class Group_FilterIterator extends \FilterIterator implements \Countable {
 	/**
 	 * Groups to filter.
 	 *
@@ -33,5 +33,12 @@ class Group_FilterIterator extends \FilterIterator {
 		$table = $this->getInnerIterator()->current();
 
 		return in_array( $table->get_group(), $this->groups, true );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
+	public function count(): int {
+		return iterator_count( $this->getInnerIterator() );
 	}
 }

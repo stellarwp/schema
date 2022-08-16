@@ -4,7 +4,7 @@ namespace StellarWP\Schema\Fields;
 
 use StellarWP\Schema\Builder\Abstract_Custom_Field as Field;
 
-class Collection implements \ArrayAccess, \Iterator {
+class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * Table groups.
 	 *
@@ -39,6 +39,13 @@ class Collection implements \ArrayAccess, \Iterator {
 	/**
 	 * @inheritDoc
 	 */
+	public function count(): int {
+		return count( $this->fields );
+	}
+
+	/**
+	 * @inheritDoc
+	 */
 	public function current() {
 		return current( $this->fields );
 	}
@@ -46,7 +53,7 @@ class Collection implements \ArrayAccess, \Iterator {
 	/**
 	 * @inheritDoc
 	 */
-	public function key(): mixed {
+	public function key(): string {
 		return key( $this->fields );
 	}
 
