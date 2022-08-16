@@ -200,7 +200,7 @@ class Schema_BuilderTest extends SchemaTestCase {
 				return false;
 			}
 
-			public function get_version() {
+			public function get_version(): string {
 				return '1.0.0';
 			}
 
@@ -231,7 +231,7 @@ class Schema_BuilderTest extends SchemaTestCase {
 				return true;
 			}
 
-			public function get_version() {
+			public function get_version(): string {
 				return '1.0.0';
 			}
 
@@ -262,7 +262,7 @@ class Schema_BuilderTest extends SchemaTestCase {
 				return true;
 			}
 
-			public function get_version() {
+			public function get_version(): string {
 				return '1.0.0';
 			}
 
