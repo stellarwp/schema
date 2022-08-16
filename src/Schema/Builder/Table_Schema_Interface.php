@@ -54,6 +54,15 @@ interface Table_Schema_Interface {
 	public function exists();
 
 	/**
+	 * Gets the table schema's version.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	public function get_version(): string;
+
+	/**
 	 * The organizational group this table belongs to.
 	 *
 	 * @since 1.0.0

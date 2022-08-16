@@ -146,9 +146,9 @@ class Schema_Builder {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return Field\Collection
+	 * @return \Iterator
 	 */
-	public function get_registered_field_schemas(): Fields\Collection {
+	public function get_registered_field_schemas(): \Iterator {
 		return $this->container->make( Fields\Collection::class );
 	}
 
@@ -160,24 +160,16 @@ class Schema_Builder {
 	 * @return string
 	 */
 	public function get_registered_schemas_version_hash() :string {
-		$schemas = array_merge( $this->get_registered_table_schemas(),  $this->get_registered_field_schemas() );
+		$schemas = $this->get_registered_table_schemas();
 
 		$versions = [];
 		foreach( $schemas as $schema ) {
-			// Skip if not an Interface of Table or Field.
-			if ( ! $schema instanceof Table_Schema_Interface && ! $schema instanceof Field_Schema_Interface ) {
+			// Skip if not an Interface of Table.
+			if ( ! $schema instanceof Table_Schema_Interface ) {
 				continue;
 			}
 
-			$class_name = get_class( $schema );
-			$constant_name = $class_name . '::SCHEMA_VERSION';
-
-			// Skip if the version constant is not defined.
-			if ( ! defined( $constant_name ) ) {
-				continue;
-			}
-
-			$versions[ $class_name ] = constant( $constant_name );
+			$versions[ $schema::base_table_name() ] = $schema->get_version();
 		}
 
 		// Sort to avoid hash changing due to order changes.

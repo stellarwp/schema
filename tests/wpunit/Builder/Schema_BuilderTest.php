@@ -200,6 +200,10 @@ class Schema_BuilderTest extends SchemaTestCase {
 				return false;
 			}
 
+			public function get_version() {
+				return '1.0.0';
+			}
+
 			public static function group_name() {
 				return 'one';
 			}
@@ -227,6 +231,10 @@ class Schema_BuilderTest extends SchemaTestCase {
 				return true;
 			}
 
+			public function get_version() {
+				return '1.0.0';
+			}
+
 			public static function group_name() {
 				return 'one';
 			}
@@ -252,6 +260,10 @@ class Schema_BuilderTest extends SchemaTestCase {
 
 			public function exists() {
 				return true;
+			}
+
+			public function get_version() {
+				return '1.0.0';
 			}
 
 			public static function group_name() {

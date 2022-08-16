@@ -60,6 +60,15 @@ interface Field_Schema_Interface {
 	public function get_sql();
 
 	/**
+	 * The organizational group this field schema belongs to.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
+	 */
+	public static function group_name();
+
+	/**
 	 * A reference to the table definition we are modifying with new fields.
 	 *
 	 * @since 1.0.0

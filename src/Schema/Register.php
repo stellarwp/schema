@@ -39,9 +39,9 @@ class Register {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string|Builder\Field_Schema_Interface $field Field class.
+	 * @param string|Builder\Field_Schema_Interface $field Field Schema class.
 	 *
-	 * @return Builder\Field_Schema_Interace
+	 * @return Builder\Field_Schema_Interface
 	 */
 	public static function remove_field( $field ) {
 		if ( is_string( $field ) ) {
@@ -55,7 +55,7 @@ class Register {
 			$field->drop();
 		}
 
-		$container->make( Fields\Collection::class )->remove( $field->get_schema_slug() );
+		$container->make( Fields\Collection::class )->remove( $field::get_schema_slug() );
 
 		return $field;
 	}
@@ -65,9 +65,9 @@ class Register {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string|Builder\Table_Schema_Interface $field Field class.
+	 * @param string|Builder\Table_Schema_Interface $table Table Schema class.
 	 *
-	 * @return Builder\Table_Schema_Interace
+	 * @return Builder\Table_Schema_Interface
 	 */
 	public static function remove_table( $table ) {
 		if ( is_string( $table ) ) {

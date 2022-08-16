@@ -260,11 +260,7 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	abstract protected function get_update_sql();
 
 	/**
-	 * Gets the table schema's version.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string
+	 * {@inheritdoc}
 	 */
 	public function get_version(): string {
 		$schema_fields = $this->get_field_schemas( true );
