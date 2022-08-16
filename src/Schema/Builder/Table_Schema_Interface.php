@@ -18,24 +18,13 @@ namespace StellarWP\Schema\Builder;
  */
 interface Table_Schema_Interface {
 	/**
-	 * Returns the name of the column that is guaranteed to uniquely identify an
-	 * entry across updates.
+	 * Returns the custom table name.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return string The name of the column that is guaranteed to uniquely identify an
-	 *                entry across updates.
+	 * @return string The base custom table name.
 	 */
-	public static function uid_column();
-
-	/**
-	 * Empties the custom table.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return int|false The number of removed rows, or `false` to indicate a failure.
-	 */
-	public function empty_table();
+	public static function base_table_name();
 
 	/**
 	 * Drop the custom table.
@@ -47,35 +36,22 @@ interface Table_Schema_Interface {
 	public function drop();
 
 	/**
-	 * Creates, or updates, the custom table.
+	 * Empties the custom table.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return array<string,string> A map of results in the format returned by
-	 *                              the `dbDelta` function.
+	 * @return int|false The number of removed rows, or `false` to indicate a failure.
 	 */
-	public function update();
+	public function empty_table();
 
 	/**
-	 * Returns the custom table name.
+	 * Returns whether a table exists or not in the database.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param bool $with_prefix Whether to include the table prefix or not.
-	 *
-	 * @return string The custom table name, prefixed by the current `wpdb` prefix,
-	 *                if required.
+	 * @return bool
 	 */
-	public static function table_name( $with_prefix = true );
-
-	/**
-	 * Returns the custom table name.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string The base custom table name.
-	 */
-	public static function base_table_name();
+	public function exists();
 
 	/**
 	 * The organizational group this table belongs to.
@@ -96,11 +72,35 @@ interface Table_Schema_Interface {
 	public function is_schema_current();
 
 	/**
-	 * Returns whether a table exists or not in the database.
+	 * Returns the custom table name.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return bool
+	 * @param bool $with_prefix Whether to include the table prefix or not.
+	 *
+	 * @return string The custom table name, prefixed by the current `wpdb` prefix,
+	 *                if required.
 	 */
-	public function exists();
+	public static function table_name( $with_prefix = true );
+
+	/**
+	 * Returns the name of the column that is guaranteed to uniquely identify an
+	 * entry across updates.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string The name of the column that is guaranteed to uniquely identify an
+	 *                entry across updates.
+	 */
+	public static function uid_column();
+
+	/**
+	 * Creates, or updates, the custom table.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return array<string,string> A map of results in the format returned by
+	 *                              the `dbDelta` function.
+	 */
+	public function update();
 }

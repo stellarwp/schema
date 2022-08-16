@@ -126,7 +126,19 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 			return false;
 		}
 
-		$this_table = static::table_name( true );
+		$base_table_name = static::base_table_name();
+		$this_table      = static::table_name( true );
+
+		/**
+		 * Runs before the custom field is dropped.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $base_table_name The base table name.
+		 * @param string $table_name The full table name.
+		 * @param Table_Schema_Interface $table_schema The table schema to be dropped.
+		 */
+		do_action( 'stellarwp_pre_drop_table', $base_table_name, $this_table, $this );
 
 		global $wpdb;
 		// Disable foreign key checks so we can drop without issues.
@@ -137,6 +149,34 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 		$result = $wpdb->query( "DROP TABLE `{$this_table}`" );
 		// Put setting back to original value.
 		$wpdb->query( $wpdb->prepare( "SET foreign_key_checks = %s", $key_check->Value ) );
+
+		/**
+		 * Runs after the custom table has been dropped.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $base_table_name The base table name.
+		 * @param string $table_name The full table name.
+		 * @param Table_Schema_Interface $table_schema The table schema to be dropped.
+		 */
+		do_action( 'stellarwp_post_drop_table', $base_table_name, $this_table, $this );
+
+		$base_table_name = static::base_table_name();
+
+		if ( isset( $wpdb->$base_table_name ) ) {
+			unset( $wpdb->$base_table_name );
+		}
+
+		/**
+		 * Runs after the custom table has been removed from $wpdb.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $base_table_name The base table name.
+		 * @param string $table_name The full table name.
+		 * @param Table_Schema_Interface $table_schema The table schema to be dropped.
+		 */
+		do_action( 'stellarwp_post_drop_table_wpdb_update', $base_table_name, $this_table, $this );
 
 		return $result;
 	}
@@ -237,7 +277,7 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 			$version[] = $field->get_version();
 		}
 
-		return implode( '-', $version );
+		return implode( ':', $version );
 	}
 
 	/**
@@ -340,7 +380,7 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	/**
 	 * Update our stored version with what we have defined.
 	 */
-	protected function sync_stored_version() {
+	public function sync_stored_version() {
 		$current_version = $this->get_version();
 
 		if ( ! add_option( $this->get_schema_version_option(), $current_version ) ) {

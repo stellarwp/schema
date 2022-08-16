@@ -32,7 +32,7 @@ class Group_FilterIterator extends \FilterIterator implements \Countable {
 	public function accept(): bool {
 		$table = $this->getInnerIterator()->current();
 
-		return in_array( $table->get_group(), $this->groups, true );
+		return in_array( $table::group_name(), $this->groups, true );
 	}
 
 	/**

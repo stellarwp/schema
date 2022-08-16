@@ -93,15 +93,50 @@ abstract class Abstract_Custom_Field implements Field_Schema_Interface {
 	 */
 	public function drop() {
 		if ( ! $this->exists() ) {
-
 			return false;
 		}
+
+		$schema_slug = static::get_schema_slug();
+
+		/**
+		 * Runs before the custom field is dropped.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $schema_slug The schema slug.
+		 * @param Field_Schema_Interface $field_schema The field schema to be dropped.
+		 */
+		do_action( 'stellarwp_pre_drop_field', $schema_slug, $this );
 
 		global $wpdb;
 		$this_table   = $this->table_schema()::table_name( true );
 		$drop_columns = 'DROP COLUMN `' . implode( '`, DROP COLUMN `', $this->fields() ) . '`';
 
-		return $wpdb->query( sprintf( "ALTER TABLE %s %s", $this_table, $drop_columns ) );
+		$results = $wpdb->query( sprintf( "ALTER TABLE %s %s", $this_table, $drop_columns ) );
+
+		/**
+		 * Runs after the custom field has been dropped.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $schema_slug The schema slug.
+		 * @param Field_Schema_Interface $field_schema The field schema to be dropped.
+		 */
+		do_action( 'stellarwp_post_drop_field', $schema_slug, $this );
+
+		$this->table_schema()->sync_stored_version();
+
+		/**
+		 * Runs after the custom field's table schema's version has been synchronized.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $schema_slug The schema slug.
+		 * @param Field_Schema_Interface $field_schema The field schema to be dropped.
+		 */
+		do_action( 'stellarwp_post_drop_field_table_version_sync', $schema_slug, $this );
+
+		return $results;
 	}
 
 	/**
@@ -164,7 +199,7 @@ abstract class Abstract_Custom_Field implements Field_Schema_Interface {
 	 * @return string
 	 */
 	public function get_version(): string {
-		return static::get_schema_slug() . ':' . static::SCHEMA_VERSION;
+		return static::get_schema_slug() . '-' . static::SCHEMA_VERSION;
 	}
 
 	/**

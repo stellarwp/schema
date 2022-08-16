@@ -3,6 +3,7 @@
 namespace StellarWP\Schema\Tests\Builder;
 
 use StellarWP\Schema\Builder\Abstract_Custom_Field;
+use StellarWP\Schema\Builder\Abstract_Custom_Table;
 use StellarWP\Schema\Builder\Field_Schema_Interface;
 use StellarWP\Schema\Builder\Schema_Builder;
 use StellarWP\Schema\Builder\Table_Schema_Interface;
@@ -90,16 +91,14 @@ class Schema_BuilderTest extends SchemaTestCase {
 		Register::table( $table_schema );
 		Register::field( $field_schema );
 
+		$this->assertTrue( $field_schema->exists() );
+
 		// Keep our table - validate the field changes.
 		add_filter( 'stellarwp_schema_table_drop_simple', '__return_false' );
 
-		$builder->up( true );
+		$builder->down();
 
 		remove_filter( 'stellarwp_schema_table_drop_simple', '__return_false' );
-
-		$this->assertTrue( $field_schema->exists() );
-
-		$builder->down();
 
 		$this->assertFalse( $field_schema->exists() );
 
@@ -113,30 +112,41 @@ class Schema_BuilderTest extends SchemaTestCase {
 	 * @test
 	 */
 	public function should_sync_version() {
-		$field_schema = $this->custom_field_schema();
-		$this->given_a_field_schema_exists( $field_schema );
-		$schema_builder = Container::init()->make( Schema_Builder::class );
-		$schema_builder->up();
+		$builder      = Container::init()->make( Schema_Builder::class );
+		$table_schema = $this->get_simple_table();
+		$field_schema = $this->get_simple_table_field();
+
+		Register::table( $table_schema );
 
 		// Is version there?
-		$field_version      = get_option( $field_schema::SCHEMA_VERSION_OPTION );
-		$this->assertEquals( $field_schema::SCHEMA_VERSION, $field_version );
+		$table_version      = get_option( $table_schema->get_schema_version_option() );
+		$this->assertEquals( $table_schema->get_version(), $table_version );
 
 		// Is version gone?
-		$schema_builder->down();
-		$field_version      = get_option( $field_schema::SCHEMA_VERSION_OPTION );
-		$this->assertNotEquals( $field_schema::SCHEMA_VERSION, $field_version );
-	}
+		$builder->down();
+		$table_version      = get_option( $table_schema->get_schema_version_option() );
+		$this->assertNotEquals( $table_schema->get_version(), $table_version );
 
-	/**
-	 * Add this schema to the registered list.
-	 *
-	 * @param Field_Schema_Interface $field_schema
-	 */
-	public function given_a_field_schema_exists( $field_schema ) {
-		add_filter( 'tec_events_custom_tables_v1_field_schemas', function ( $fields ) use ( $field_schema ) {
-			return array_merge( $fields, [ $field_schema ] );
-		} );
+		Register::table( $table_schema );
+		Register::field( $field_schema );
+
+		// Is version there?
+		$table_version      = get_option( $table_schema->get_schema_version_option() );
+		$this->assertEquals( $table_schema->get_version(), $table_version );
+
+		// Keep our table - validate the field changes.
+		add_filter( 'stellarwp_schema_table_drop_simple', '__return_false' );
+
+		// Is version reset?
+		$builder->down();
+
+		remove_filter( 'stellarwp_schema_table_drop_simple', '__return_false' );
+
+		$table_version      = get_option( $table_schema->get_schema_version_option() );
+		$this->assertEquals( $table_schema->get_version(), $table_version );
+
+		// Cleanup.
+		$builder->down();
 	}
 
 	/**
@@ -166,35 +176,6 @@ class Schema_BuilderTest extends SchemaTestCase {
 	}
 
 	/**
-	 * @return Abstract_Custom_Field
-	 */
-	public function custom_field_schema() {
-		return new class extends Abstract_Custom_Field {
-			const SCHEMA_VERSION = '1.0.0';
-			const SCHEMA_VERSION_OPTION = 'custom_field_version_key';
-
-			public function fields() {
-				return [ 'bob', 'frank' ];
-			}
-
-			public function table_schema() {
-				return $this->get_simple_table();
-			}
-
-			public function get_update_sql() {
-				global $wpdb;
-				$table_name      = $this->table_schema()::table_name( true );
-				$charset_collate = $wpdb->get_charset_collate();
-
-				return "CREATE TABLE `{$table_name}` (
-			`bob` LONGTEXT COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-			`frank` TINYINT COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-			) {$charset_collate};";
-			}
-		};
-	}
-
-	/**
 	 * It should support group when checking for all tables existence
 	 *
 	 * @test
@@ -207,109 +188,100 @@ class Schema_BuilderTest extends SchemaTestCase {
 
 			return 'SELECT "fodz" UNION ALL SELECT "klutz" UNION ALL SELECT "zorps"';
 		} );
+
 		$fodz_table  = new class implements Table_Schema_Interface {
-			public static function uid_column() {
+			public static function base_table_name() {}
+
+			public function drop() {}
+
+			public function empty_table() {}
+
+			public function exists() {
+				return false;
 			}
 
-			public function empty_table() {
+			public static function group_name() {
+				return 'one';
 			}
 
-			public function drop() {
-			}
-
-			public function update() {
-			}
+			public function is_schema_current() {}
 
 			public static function table_name( $with_prefix = true ) {
 				return 'fodz';
 			}
 
-			public static function base_table_name() {
-			}
+			public static function uid_column() {}
 
-			public function is_schema_current() {
+			public function update() {
+				return [];
+			}
+		};
+		$klutz_table = new class implements Table_Schema_Interface {
+			public static function base_table_name() {}
+
+			public function drop() {}
+
+			public function empty_table() {}
+
+			public function exists() {
+				return true;
 			}
 
 			public static function group_name() {
 				return 'one';
 			}
 
-			public function exists() {
-				return false;
-			}
-		};
-		$klutz_table = new class implements Table_Schema_Interface {
-			public static function uid_column() {
-			}
-
-			public function empty_table() {
-			}
-
-			public function drop() {
-			}
-
-			public function update() {
-			}
+			public function is_schema_current() {}
 
 			public static function table_name( $with_prefix = true ) {
 				return 'klutz';
 			}
 
-			public static function base_table_name() {
-			}
+			public static function uid_column() {}
 
-			public function is_schema_current() {
-			}
-
-			public static function group_name() {
-				return 'one';
-			}
-
-			public function exists() {
-				return true;
+			public function update() {
+				return [];
 			}
 		};
 		$zorps_table = new class implements Table_Schema_Interface {
-			public static function uid_column() {
-			}
+			public static function base_table_name() {}
 
-			public function empty_table() {
-			}
+			public function drop() {}
 
-			public function drop() {
-			}
+			public function empty_table() {}
 
-			public function update() {
-			}
-
-			public static function table_name( $with_prefix = true ) {
-				return 'zorps';
-			}
-
-			public static function base_table_name() {
-			}
-
-			public function is_schema_current() {
+			public function exists() {
+				return true;
 			}
 
 			public static function group_name() {
 				return 'two';
 			}
 
-			public function exists() {
-				return true;
+			public function is_schema_current() {}
+
+			public static function table_name( $with_prefix = true ) {
+				return 'zorps';
+			}
+
+			public static function uid_column() {}
+
+			public function update() {
+				return [];
 			}
 		};
-		$tables      = [ $fodz_table, $klutz_table, $zorps_table ];
-		add_filter( 'tec_events_custom_tables_v1_table_schemas', static function () use ( $tables ) {
-			return $tables;
-		} );
 
-		$schema_builder = new Schema_Builder;
+		$builder = Container::init()->make( Schema_Builder::class );
 
-		$this->assertTrue( $schema_builder->all_tables_exist() );
-		$this->assertTrue( $schema_builder->all_tables_exist( 'one' ) );
-		$this->assertTrue( $schema_builder->all_tables_exist( 'two' ) );
-		$this->assertFalse( $schema_builder->all_tables_exist( 'three' ) );
+		Register::table( $fodz_table );
+		Register::table( $klutz_table );
+		Register::table( $zorps_table );
+
+		$this->assertTrue( $builder->all_tables_exist() );
+		$this->assertTrue( $builder->all_tables_exist( 'one' ) );
+		$this->assertTrue( $builder->all_tables_exist( 'two' ) );
+		$this->assertTrue( $builder->all_tables_exist( 'three' ) );
+
+		$builder->down();
 	}
 }

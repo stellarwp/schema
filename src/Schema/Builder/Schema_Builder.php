@@ -38,20 +38,20 @@ class Schema_Builder {
 	 */
 	public function all_tables_exist( $group = null ) {
 		global $wpdb;
-		$table_classes = $this->get_registered_table_schemas();
+		$table_schemas = $this->get_registered_table_schemas();
 
 		if ( null !== $group ) {
-			$table_classes = new Group_FilterIterator( (array) $group, $table_classes );
+			$table_schemas = new Group_FilterIterator( (array) $group, $table_schemas );
 		}
 
-		if ( count( $table_classes ) === 0 ) {
-			// No table class was even found.
-			return false;
+		if ( count( $table_schemas ) === 0 ) {
+			// No table class was even found, so yeah, all tables exist.
+			return true;
 		}
 
 		$result = $wpdb->get_col( 'SHOW TABLES' );
-		foreach ( $table_classes as $class ) {
-			if ( ! in_array( $class::table_name(), $result, true ) ) {
+		foreach ( $table_schemas as $table_schema ) {
+			if ( ! in_array( $table_schema::table_name(), $result, true ) ) {
 
 				return false;
 			}
@@ -87,17 +87,7 @@ class Schema_Builder {
 		$table_schemas = apply_filters( 'stellarwp_tables_to_drop', $table_schemas );
 
 		foreach ( $table_schemas as $table_schema ) {
-			$base_table_name = $table_schema::base_table_name();
-
-			if ( ! $table_schema->drop() ) {
-				continue;
-			}
-
-			$this->container->make( Tables\Collection::class )->remove( $base_table_name );
-
-			if ( isset( $wpdb->$base_table_name ) ) {
-				unset( $wpdb->$base_table_name );
-			}
+			$table_schema->drop();
 		}
 
 		/**
@@ -126,11 +116,7 @@ class Schema_Builder {
 		$field_schemas = apply_filters( 'stellarwp_fields_to_drop', $field_schemas );
 
 		foreach ( $field_schemas as $field_schema ) {
-			if ( ! $field_schema->drop() ) {
-				continue;
-			}
-
-			$this->container->make( Fields\Collection::class )->remove( $field_schema::get_schema_slug() );
+			$field_schema->drop();
 		}
 
 		/**
