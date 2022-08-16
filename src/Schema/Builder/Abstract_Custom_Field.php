@@ -175,11 +175,7 @@ abstract class Abstract_Custom_Field implements Field_Schema_Interface {
 	}
 
 	/**
-	 * A reference to the table definition we are modifying with new fields.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return Abstract_Custom_Table
+	 * {@inheritdoc}
 	 */
 	public function table_schema() {
 		return $this->container->make( Tables\Collection::class )->offsetGet( $this->base_table_name() );

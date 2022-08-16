@@ -383,8 +383,6 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 			$sql = $this->inject_field_schema( $field_schema, $sql );
 		}
 
-		codecept_debug( $sql );
-
 		$results = (array) dbDelta( $sql );
 		$this->sync_stored_version();
 		$results = $this->after_update( $results );

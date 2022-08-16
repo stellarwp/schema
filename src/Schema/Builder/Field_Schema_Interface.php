@@ -58,4 +58,13 @@ interface Field_Schema_Interface {
 	 *                by the `dbDelta` function.
 	 */
 	public function get_sql();
+
+	/**
+	 * A reference to the table definition we are modifying with new fields.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return Abstract_Custom_Table
+	 */
+	public function table_schema();
 }
