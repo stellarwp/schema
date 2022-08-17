@@ -26,8 +26,14 @@ src/
 vendor/
 ```
 
+## `dbDelta()` under the hood
+
+Under the hood of this library, schema management is done via the [`dbDelta()`](https://developer.wordpress.org/reference/functions/dbdelta/) function within WordPress. That function is battle tested and reliable, so we are standing on the shoulders of champions here. Any schema - whether a table schema of a field schema - has its SQL run through that function to ensure the table definitions are up to date.
+
+It is important to note that `dbDelta()` does not _remove_ fields or indices in a database table. This approach is meant to prevent the accidentaly removal of data. We take a similar stance with this library. There _are_ ways to remove fields and drop tables, but those actions do not happen automatically and are up to you to decide when it is appropriate to do so.
+
 ## Table schemas
 
-Table schema classes hold all of the building blocks for getting a custom table to be defined and managed by this library. Table
+Table schema classes hold all of the building blocks for getting a custom table to be defined and managed by this library. This library uses `dbDelta()` to manage the updates of table schemas and
 
 ## Field schemas

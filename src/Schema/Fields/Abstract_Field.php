@@ -99,6 +99,34 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 		$schema_slug = static::get_schema_slug();
 
 		/**
+		 * Allows for the enabling of field removal.
+		 *
+		 * Defaults to false.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param bool $can_drop_field Whether or not the field schema can be dropped.
+		 * @param string $schema_slug The slug of the field schema.
+		 */
+		$can_drop_field = apply_filters( "stellarwp_drop_field_enabled_{$schema_slug}", false, $schema_slug );
+
+		/**
+		 * Allows for the enabling of field removal.
+		 *
+		 * Defaults to false.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param bool $can_drop_field Whether or not the field schema can be dropped.
+		 * @param string $schema_slug The slug of the field schema.
+		 */
+		$can_drop_field = apply_filters( "stellarwp_drop_field_enabled", $can_drop_field, $schema_slug );
+
+		if ( ! $can_drop_field ) {
+			return false;
+		}
+
+		/**
 		 * Runs before the custom field is dropped.
 		 *
 		 * @since 1.0.0

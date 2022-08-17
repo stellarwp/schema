@@ -112,10 +112,23 @@ class BuilderTest extends SchemaTestCase {
 
 		add_filter( 'stellarwp_schema_table_drop_simple', '__return_false' );
 
-		// Activate.
+		// Bring down with dropping disabled (default).
+		$builder->down();
+
+		// Validate expected state.
+		$rows = $this->get_table_fields( $field_schema->table_schema()::table_name( true ) );
+
+		foreach ( $field_schema->fields() as $field ) {
+			$this->assertContains( $field, $rows );
+		}
+
+		add_filter( 'stellarwp_drop_field_enabled', '__return_true' );
+
+		// Bring down with dropping enabled.
 		$builder->down();
 
 		remove_filter( 'stellarwp_schema_table_drop_simple', '__return_false' );
+		remove_filter( 'stellarwp_drop_field_enabled', '__return_true' );
 
 		// Validate expected state.
 		$rows = $this->get_table_fields( $field_schema->table_schema()::table_name( true ) );
@@ -146,9 +159,17 @@ class BuilderTest extends SchemaTestCase {
 		// Keep our table - validate the field changes.
 		add_filter( 'stellarwp_schema_table_drop_simple', '__return_false' );
 
+		// Bring down with dropping disabled (default).
+		$builder->down();
+		$this->assertTrue( $field_schema->exists() );
+
+		add_filter( 'stellarwp_drop_field_enabled', '__return_true' );
+
+		// Bring down with dropping enabled.
 		$builder->down();
 
 		remove_filter( 'stellarwp_schema_table_drop_simple', '__return_false' );
+		remove_filter( 'stellarwp_drop_field_enabled', '__return_true' );
 
 		$this->assertFalse( $field_schema->exists() );
 
