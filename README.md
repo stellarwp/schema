@@ -131,10 +131,10 @@ The table will be automatically registered, created, and updated during the `plu
 
 ## Documentation
 
-Here's some more advanced documentation to get you rolling on using this library:
+Here's some more advanced documentation to get you rolling on using this library at a deeper level:
 
-1. [Defining a table schema](docs/table-schema.md)
-2. [Defining a field schema](docs/field-schema.md)
-3. [Registering and de-registering schemas](docs/registering-and-deregistering.md)
+1. [Table schemas](docs/table-schema.md)
+2. [Field schemas](docs/field-schema.md)
 3. [Schema versioning](docs/schema-versioning.md)
-4. [Hooks](docs/hooks.md)
+4. [Registering and de-registering schemas](docs/registering-and-deregistering.md)
+5. [Hooks](docs/hooks.md)
