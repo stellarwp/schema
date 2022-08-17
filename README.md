@@ -131,24 +131,7 @@ Here's some more advanced documentation to get you rolling on using this library
 	1. [Deregistering fields](docs/schemas-field.md#deregistering-fields)
 	1. [Field collection](docs/schemas-field.md#field-collection)
 	1. [Publicly accessible methods](docs/schemas-field.md#publicly-accessible-methods)
-1. [Hooks](docs/hooks.md)
 
-## Scratch notes
-```
-wp {namespace}:schema help (list the tables)
-wp {namespace}:schema {table} {up|down|drop|version}
+## Acknowledgements
 
-wp ecp:schema help
-
-__NAMESPACE__
-
-wp tec:schema tec_events up
-
-namespace Tribe\PUE;
-
-$prefix = str_replace( '\\', '-', __NAMESPACE__ );
-
-apply_filters( 'stellarwp_schema_wpcli_namespace', $prefix, __NAMESPACE__ );
-
-wp tribe-pue:schema
-```
+Special props go to @lucatume and @stratease for their initial work on this structure before it was extracted into a standalone library.
