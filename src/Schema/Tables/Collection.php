@@ -49,6 +49,19 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	}
 
 	/**
+	 * Alias method for offsetGet.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $key Table base name.
+	 *
+	 * @return Table_Schema_Interface
+	 */
+	public function get( string $key ): Table_Schema_Interface {
+		return $this->offsetGet( $key );
+	}
+
+	/**
 	 * Gets tables by group.
 	 *
 	 * @since 1.0.0
@@ -58,7 +71,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 *
 	 * @return Filters\Group_FilterIterator
 	 */
-	public function get_by_group( $groups, $iterator = null ) {
+	public function get_by_group( $groups, $iterator = null ): Filters\Group_FilterIterator {
 		return new Filters\Group_FilterIterator( $groups, $iterator ?: $this );
 	}
 
@@ -71,7 +84,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 *
 	 * @return Filters\Needs_Update_FilterIterator
 	 */
-	public function get_tables_needing_updates( $iterator = null ) {
+	public function get_tables_needing_updates( $iterator = null ): Filters\Needs_Update_FilterIterator {
 		return new Filters\Needs_Update_FilterIterator( $iterator ?: $this );
 	}
 

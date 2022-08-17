@@ -148,7 +148,13 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 	 */
 	public function exists() {
 		global $wpdb;
-		$table_name = $this->table_schema()::table_name( true );
+		$table_schema = $this->table_schema();
+
+		if ( $table_schema === null ) {
+			return false;
+		}
+
+		$table_name = $table_schema::table_name( true );
 		$q          = 'select `column_name` from information_schema.columns
 					where table_schema = database()
 					and `table_name` = %s';
@@ -222,6 +228,13 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 	 * {@inheritdoc}
 	 */
 	public function table_schema() {
-		return $this->container->make( Tables\Collection::class )->offsetGet( static::base_table_name() );
+		$tables          = $this->container->make( Tables\Collection::class );
+		$base_table_name = static::base_table_name();
+
+		if ( ! isset( $tables[ $base_table_name ] ) ) {
+			return;
+		}
+
+		return $tables->offsetGet( $base_table_name );
 	}
 }

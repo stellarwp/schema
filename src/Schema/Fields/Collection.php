@@ -49,6 +49,19 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	}
 
 	/**
+	 * Alias method for offsetGet.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param string $key Field slug.
+	 *
+	 * @return Field_Schema_Interface
+	 */
+	public function get( string $key ): Field_Schema_Interface {
+		return $this->offsetGet( $key );
+	}
+
+	/**
 	 * Gets fields by table.
 	 *
 	 * @since 1.0.0

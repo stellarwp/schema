@@ -75,7 +75,7 @@ interface Field_Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return Abstract_Table
+	 * @return Abstract_Table|null
 	 */
 	public function table_schema();
 }
