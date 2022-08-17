@@ -21,7 +21,7 @@ class Schema extends Service_Provider {
 	 */
 	public function register() {
 		$this->container->singleton( static::class, $this );
-		$this->container->singleton( Builder\Schema_Builder::class, Builder\Schema_Builder::class );
+		$this->container->singleton( Builder::class, Builder::class );
 		$this->container->singleton( Fields\Collection::class, Fields\Collection::class );
 		$this->container->singleton( Tables\Collection::class, Tables\Collection::class );
 
@@ -43,12 +43,12 @@ class Schema extends Service_Provider {
 	 */
 	private function register_hooks() : void {
 		/**
-		 * Filters the priority of the plugins_loaded action for running Builder\Schema_Builder::up.
+		 * Filters the priority of the plugins_loaded action for running Builder::up.
 		 *
 		 * @param int $priority The priority of the action.
 		 */
 		$priority = apply_filters( 'stellarwp_schema_up_plugins_loaded_priority', 1000 );
 
-		add_action( 'plugins_loaded', $this->container->callback( Builder\Schema_Builder::class, 'up' ), $priority, 0 );
+		add_action( 'plugins_loaded', $this->container->callback( Builder::class, 'up' ), $priority, 0 );
 	}
 }

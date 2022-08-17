@@ -2,18 +2,14 @@
 
 namespace StellarWP\Schema\Tests\Builder;
 
-use StellarWP\Schema\Builder\Abstract_Custom_Field;
-use StellarWP\Schema\Builder\Abstract_Custom_Table;
-use StellarWP\Schema\Builder\Field_Schema_Interface;
-use StellarWP\Schema\Builder\Schema_Builder;
-use StellarWP\Schema\Builder\Table_Schema_Interface;
+use StellarWP\Schema\Builder;
+use StellarWP\Schema\Tables\Table_Schema_Interface;
 use StellarWP\Schema\Container;
 use StellarWP\Schema\Register;
 use StellarWP\Schema\Tests\SchemaTestCase;
-use StellarWP\Schema\Tests\SimpleCustomTable;
 use StellarWP\Schema\Tests\Traits\Table_Fixtures;
 
-class Schema_BuilderTest extends SchemaTestCase {
+class BuilderTest extends SchemaTestCase {
 	use Table_Fixtures;
 
 	/**
@@ -48,7 +44,7 @@ class Schema_BuilderTest extends SchemaTestCase {
 	 * @test
 	 */
 	public function should_up_down_table_schema() {
-		$builder = Container::init()->make( Schema_Builder::class );
+		$builder = Container::init()->make( Builder::class );
 		$table   = $this->get_simple_table();
 
 		Register::table( $table );
@@ -72,7 +68,7 @@ class Schema_BuilderTest extends SchemaTestCase {
 	 * @test
 	 */
 	public function should_update_table_when_version_changes() {
-		$builder      = Container::init()->make( Schema_Builder::class );
+		$builder      = Container::init()->make( Builder::class );
 		$table        = $this->get_simple_table();
 		$modded_table = $this->get_modified_simple_table();
 
@@ -100,7 +96,7 @@ class Schema_BuilderTest extends SchemaTestCase {
 	 * @test
 	 */
 	public function should_up_down_field_schema() {
-		$builder      = Container::init()->make( Schema_Builder::class );
+		$builder      = Container::init()->make( Builder::class );
 		$table_schema = $this->get_simple_table();
 		$field_schema = $this->get_simple_table_field();
 
@@ -138,7 +134,7 @@ class Schema_BuilderTest extends SchemaTestCase {
 	 * @test
 	 */
 	public function should_field_exists() {
-		$builder      = Container::init()->make( Schema_Builder::class );
+		$builder      = Container::init()->make( Builder::class );
 		$table_schema = $this->get_simple_table();
 		$field_schema = $this->get_simple_table_field();
 
@@ -166,7 +162,7 @@ class Schema_BuilderTest extends SchemaTestCase {
 	 * @test
 	 */
 	public function should_sync_version() {
-		$builder      = Container::init()->make( Schema_Builder::class );
+		$builder      = Container::init()->make( Builder::class );
 		$table_schema = $this->get_simple_table();
 		$field_schema = $this->get_simple_table_field();
 
@@ -329,7 +325,7 @@ class Schema_BuilderTest extends SchemaTestCase {
 			}
 		};
 
-		$builder = Container::init()->make( Schema_Builder::class );
+		$builder = Container::init()->make( Builder::class );
 
 		Register::table( $fodz_table );
 		Register::table( $klutz_table );

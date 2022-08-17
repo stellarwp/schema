@@ -39,9 +39,9 @@ Let's say you want a new custom table called `sandwiches` (with the default WP p
 <?php
 namespace Boom\Shakalaka\Tables;
 
-use Boom\Shakalaka\StellarWP\Schema\Builder;
+use Boom\Shakalaka\StellarWP\Schema\Tables;
 
-class Sandwiches extends Builder\Abstract_Custom_Table {
+class Sandwiches extends Tables\Abstract_Table {
 	/**
 	 * {@inheritdoc}
 	 */

@@ -1,14 +1,15 @@
 <?php
 
-namespace StellarWP\Schema\Builder;
+namespace StellarWP\Schema;
 
 use StellarWP\Schema\Container;
 use StellarWP\Schema\Fields;
 use StellarWP\Schema\Tables;
+use StellarWP\Schema\Tables\Table_Schema_Interface;
 use StellarWP\Schema\Tables\Filters\Group_FilterIterator;
 use WP_CLI;
 
-class Schema_Builder {
+class Builder {
 	/**
 	 * Container.
 	 *

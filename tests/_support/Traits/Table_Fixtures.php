@@ -3,29 +3,29 @@
 namespace StellarWP\Schema\Tests\Traits;
 
 use StellarWP\Schema\Activation;
-use StellarWP\Schema\Builder\Abstract_Custom_Field;
-use StellarWP\Schema\Builder\Abstract_Custom_Table;
-use StellarWP\Schema\Builder\Schema_Builder;
+use StellarWP\Schema\Builder;
 use StellarWP\Schema\Container;
+use StellarWP\Schema\Fields\Abstract_Field;
 use StellarWP\Schema\Register;
+use StellarWP\Schema\Tables\Abstract_Table;
 
 trait Table_Fixtures {
 	private function assert_custom_tables_exist() {
-		$schema_builder = Container::init()->make( Schema_Builder::class );
+		$schema_builder = Container::init()->make( Builder::class );
 		foreach ( $schema_builder->get_registered_table_schemas() as $table_schema ) {
 			$this->assertTrue( $table_schema->exists() );
 		}
 	}
 
 	private function assert_custom_tables_not_exist(){
-		$schema_builder = Container::init()->make( Schema_Builder::class );
+		$schema_builder = Container::init()->make( Builder::class );
 		foreach ( $schema_builder->get_registered_table_schemas() as $table_schema ) {
 			$this->assertFalse( $table_schema->exists() );
 		}
 	}
 
 	private function given_the_custom_tables_do_not_exist() {
-		$schema_builder = Container::init()->make( Schema_Builder::class );
+		$schema_builder = Container::init()->make( Builder::class );
 		$schema_builder->down();
 		foreach ( $schema_builder->get_registered_table_schemas() as $table_schema ) {
 			$this->assertFalse( $table_schema->exists() );
@@ -33,7 +33,7 @@ trait Table_Fixtures {
 	}
 
 	private function given_the_custom_tables_do_exist() {
-		$schema_builder = Container::init()->make( Schema_Builder::class );
+		$schema_builder = Container::init()->make( Builder::class );
 		$schema_builder->up();
 		$this->assert_custom_tables_exist();
 	}
@@ -50,7 +50,7 @@ trait Table_Fixtures {
 	 * Get a fake table to verify its creation.
 	 */
 	public function get_modified_simple_table() {
-		$table  = new class extends Abstract_Custom_Table {
+		$table  = new class extends Abstract_Table {
 			const SCHEMA_VERSION = '2.0.0';
 			protected static $base_table_name = 'simple';
 			protected static $group = 'bork';
@@ -83,7 +83,7 @@ trait Table_Fixtures {
 	 * Get a fake table to verify its creation.
 	 */
 	public function get_simple_table() {
-		$table  = new class extends Abstract_Custom_Table {
+		$table  = new class extends Abstract_Table {
 			const SCHEMA_VERSION = '1.0.0';
 
 			protected static $base_table_name = 'simple';
@@ -115,7 +115,7 @@ trait Table_Fixtures {
 	 * Get a fake table to verify its creation.
 	 */
 	public function get_indexless_table() {
-		$table  = new class extends Abstract_Custom_Table {
+		$table  = new class extends Abstract_Table {
 			const SCHEMA_VERSION = '1.0.0';
 
 			protected static $base_table_name = 'noindex';
@@ -145,7 +145,7 @@ trait Table_Fixtures {
 	 * Get a simple table field class.
 	 */
 	public function get_simple_table_field() {
-		$field  = new class extends Abstract_Custom_Field {
+		$field  = new class extends Abstract_Field {
 			const SCHEMA_VERSION = '1.0.0';
 
 			protected static $base_table_name = 'simple';

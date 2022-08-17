@@ -9,7 +9,7 @@
 
 namespace StellarWP\Schema;
 
-use StellarWP\Schema\Builder\Schema_Builder;
+use StellarWP\Schema\Builder;
 
 /**
  * Class Activation
@@ -33,7 +33,7 @@ class Activation {
 	 * @since 1.0.0
 	 */
 	public static function activate() {
-		$schema_builder = Container::init()->make( Schema_Builder::class);
+		$schema_builder = Container::init()->make( Builder::class);
 		$schema_builder->up();
 	}
 
@@ -50,7 +50,7 @@ class Activation {
 
 		$container = Container::init();
 
-		$schema_builder = $container->make( Schema_Builder::class );
+		$schema_builder = $container->make( Builder::class );
 		$hash = $schema_builder->get_registered_schemas_version_hash();
 
 		if ( $db_hash == $hash ) {
@@ -82,6 +82,6 @@ class Activation {
 		$services = Container::init();
 
 		// @todo Should we drop the tables here, gracefully, if no data was generated?
-		$services->make( Schema_Builder::class )->clean();
+		$services->make( Builder::class )->clean();
 	}
 }

@@ -4,16 +4,18 @@
  *
  * @since   1.0.0
  *
- * @package StellarWP\Schema\Builder
+ * @package StellarWP\Schema\Fields
  */
-namespace StellarWP\Schema\Builder;
+namespace StellarWP\Schema\Fields;
+
+use StellarWP\Schema\Tables\Abstract_Table;
 
 /**
  * Interface Custom_Field_Interface
  *
  * @since   1.0.0
  *
- * @package StellarWP\Schema\Builder
+ * @package StellarWP\Schema\Fields
  */
 interface Field_Schema_Interface {
 	/**
@@ -73,7 +75,7 @@ interface Field_Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return Abstract_Custom_Table
+	 * @return Abstract_Table
 	 */
 	public function table_schema();
 }

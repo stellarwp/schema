@@ -1,11 +1,9 @@
 <?php
 namespace StellarWP\Schema\Tests;
 
-use StellarWP\Schema\Builder\Abstract_Custom_Table;
-use StellarWP\Schema\Builder\Schema_Builder;
+use StellarWP\Schema\Builder;
 use StellarWP\Schema\Container;
 use StellarWP\Schema\Register;
-use StellarWP\Schema\Schema;
 use StellarWP\Schema\Tables;
 use StellarWP\Schema\Tests\SchemaTestCase;
 use StellarWP\Schema\Tests\Traits;
@@ -22,7 +20,7 @@ class Full_ActivationTest extends SchemaTestCase {
 		Register::table( $this->get_simple_table() );
 
 		$collection = Container::init()->make( Tables\Collection::class );
-		$schema     = Container::init()->make( Schema_Builder::class );
+		$schema     = Container::init()->make( Builder::class );
 
 		$schema->up();
 

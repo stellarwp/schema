@@ -1,11 +1,12 @@
 <?php
 
-namespace StellarWP\Schema\Builder;
+namespace StellarWP\Schema\Tables;
 
 use StellarWP\Schema\Container;
 use StellarWP\Schema\Fields;
+use StellarWP\Schema\Fields\Field_Schema_Interface;
 
-abstract class Abstract_Custom_Table implements Table_Schema_Interface {
+abstract class Abstract_Table implements Table_Schema_Interface {
 	/**
 	 * @var string|null The version number for this schema definition.
 	 */

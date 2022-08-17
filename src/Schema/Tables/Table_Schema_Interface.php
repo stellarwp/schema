@@ -4,17 +4,17 @@
  *
  * @since   1.0.0
  *
- * @package StellarWP\Schema\Builder
+ * @package StellarWP\Schema\Tables
  */
 
-namespace StellarWP\Schema\Builder;
+namespace StellarWP\Schema\Tables;
 
 /**
  * Interface Table_Schema_Interface
  *
  * @since   1.0.0
  *
- * @package StellarWP\Schema\Builder
+ * @package StellarWP\Schema\Tables
  */
 interface Table_Schema_Interface {
 	/**

@@ -13,7 +13,7 @@
 namespace StellarWP\Schema;
 
 use lucatume\DI52\ServiceProvider as Service_Provider;
-use StellarWP\Schema\Builder\Schema_Builder;
+use StellarWP\Schema\Builder;
 use WP_CLI;
 
 /**
@@ -83,7 +83,7 @@ class Full_Activation_Provider extends Service_Provider {
 	 * @since 1.0.0
 	 */
 	private function register_schema_hooks() {
-		$schema_builder = $this->container->make( Schema_Builder::class );
+		$schema_builder = $this->container->make( Builder::class );
 		$schema_builder->register_custom_tables_names();
 
 		if ( is_multisite() ) {

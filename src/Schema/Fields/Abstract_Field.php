@@ -4,22 +4,22 @@
  *
  * @since   1.0.0
  *
- * @package StellarWP\Schema\Builder
+ * @package StellarWP\Schema\Fields
  */
 
-namespace StellarWP\Schema\Builder;
+namespace StellarWP\Schema\Fields;
 
 use StellarWP\Schema\Container;
 use StellarWP\Schema\Tables;
 
 /**
- * Class Abstract_Custom_Field
+ * Class Abstract_Field
  *
  * @since   1.0.0
  *
- * @package StellarWP\Schema\Builder
+ * @package StellarWP\Schema\Fields
  */
-abstract class Abstract_Custom_Field implements Field_Schema_Interface {
+abstract class Abstract_Field implements Field_Schema_Interface {
 	/**
 	 * @since 1.0.0
 	 *
