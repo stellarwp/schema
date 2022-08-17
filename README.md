@@ -115,13 +115,13 @@ In that same `plugins_loaded` action, register the table using the handy `Regist
 ```php
 namespace Boom\Shakalaka;
 
-use Boom\Shakalaka\StellarWP\Schema\Register as Schema_Register;
+use Boom\Shakalaka\StellarWP\Schema\Register;
 use Boom\Shakalaka\StellarWP\Schema\Schema;
 use Boom\Shakalaka\Tables\Sandwiches;
 
 add_action( 'plugins_loaded', static function() {
 	Schema::init();
-	Schema_Register::table( Sandwiches::class );
+	Register::table( Sandwiches::class );
 } );
 ```
 
