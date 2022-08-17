@@ -119,8 +119,8 @@ Here's some more advanced documentation to get you rolling on using this library
 
 1. [Setting up Strauss](docs/strauss-setup.md)
 1. [Schema management](docs/schemas.md)
-	1. [Table schemas](docs/schemas.md#table-schemas)
-	1. [Field schemas](docs/schemas.md#field-schemas)
+	1. [Table schemas](docs/schemas-table.md)
+	1. [Field schemas](docs/schemas-field.md)
 	1. [Versioning](docs/schemas.md#versioning)
 	1. [Using `::after_update()`](docs/schemas.md#using-after-update)
 1. [Registering and de-registering schemas](docs/registering-and-deregistering.md)
