@@ -134,4 +134,4 @@ Here's some more advanced documentation to get you rolling on using this library
 
 ## Acknowledgements
 
-Special props go to @lucatume and @stratease for their initial work on this structure before it was extracted into a standalone library.
+Special props go to [@lucatume](https://github.com/lucatume) and [@stratease](https://github.com/stratease) for their initial work on this structure before it was extracted into a standalone library.
