@@ -2,35 +2,56 @@
 /**
  * Groups the base methods and functions used by all custom field implementations.
  *
- * @since   TBD
+ * @since   1.0.0
  *
  * @package StellarWP\Schema\Builder
  */
 
 namespace StellarWP\Schema\Builder;
 
+use StellarWP\Schema\Container;
+use StellarWP\Schema\Tables;
+
 /**
  * Class Abstract_Custom_Field
  *
- * @since   TBD
+ * @since   1.0.0
  *
  * @package StellarWP\Schema\Builder
  */
 abstract class Abstract_Custom_Field implements Field_Schema_Interface {
 	/**
-	 * @var string|null The option key used to store the SCHEMA_VERSION.
-	 */
-	const SCHEMA_VERSION_OPTION = null;
-
-	/**
+	 * @since 1.0.0
+	 *
 	 * @var string|null The version number for this schema definition.
 	 */
 	const SCHEMA_VERSION = null;
 
 	/**
+	 * @since 1.0.0
+	 *
+	 * @var string The base table name.
+	 */
+	protected static $base_table_name = '';
+
+	/**
+	 * @var Container The dependency injection container.
+	 */
+	protected $container;
+
+	/**
+	 * @since 1.0.0
+	 *
 	 * @var string The slug used to identify the custom field alterations.
 	 */
-	protected static $custom_field_slug_id = '';
+	protected static $schema_slug = '';
+
+	/**
+	 * @since 1.0.0
+	 *
+	 * @var array<string> Custom fields defined in this field schema.
+	 */
+	protected $fields = [];
 
 	/**
 	 * @var string The organizational group this field set belongs to.
@@ -38,50 +59,90 @@ abstract class Abstract_Custom_Field implements Field_Schema_Interface {
 	protected static $group = '';
 
 	/**
-	 * Allows extending classes that require it to run some methods
-	 * immediately after the table creation or update.
+	 * Constructor.
 	 *
-	 * @since TBD
+	 * @since 1.0.0
 	 *
-	 * @param array<string,string> $results A map of results in the format
-	 *                                      returned by the `dbDelta` function.
-	 *
-	 * @return array<string,string> A map of results in the format returned by
-	 *                              the `dbDelta` function.
+	 * @param Container $container The container to use.
 	 */
-	protected function after_update( array $results ) {
+	public function __construct( $container = null ) {
+		$this->container = $container ?: Container::init();
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public function after_update( array $results ) {
 		// No-op by default.
 		return $results;
 	}
 
 	/**
-	 * Clear our stored version.
+	 * Gets the base table name.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string
 	 */
-	protected function clear_stored_version() {
-		delete_option( $this->get_schema_version_option() );
+	public static function base_table_name() {
+		return static::$base_table_name;
 	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function drop() {
-		$this->clear_stored_version();
 		if ( ! $this->exists() ) {
-
 			return false;
 		}
+
+		$schema_slug = static::get_schema_slug();
+
+		/**
+		 * Runs before the custom field is dropped.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $schema_slug The schema slug.
+		 * @param Field_Schema_Interface $field_schema The field schema to be dropped.
+		 */
+		do_action( 'stellarwp_pre_drop_field', $schema_slug, $this );
 
 		global $wpdb;
 		$this_table   = $this->table_schema()::table_name( true );
 		$drop_columns = 'DROP COLUMN `' . implode( '`, DROP COLUMN `', $this->fields() ) . '`';
 
-		return $wpdb->query( sprintf( "ALTER TABLE %s %s", $this_table, $drop_columns ) );
+		$results = $wpdb->query( sprintf( "ALTER TABLE %s %s", $this_table, $drop_columns ) );
+
+		/**
+		 * Runs after the custom field has been dropped.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $schema_slug The schema slug.
+		 * @param Field_Schema_Interface $field_schema The field schema to be dropped.
+		 */
+		do_action( 'stellarwp_post_drop_field', $schema_slug, $this );
+
+		$this->table_schema()->sync_stored_version();
+
+		/**
+		 * Runs after the custom field's table schema's version has been synchronized.
+		 *
+		 * @since 1.0.0
+		 *
+		 * @param string $schema_slug The schema slug.
+		 * @param Field_Schema_Interface $field_schema The field schema to be dropped.
+		 */
+		do_action( 'stellarwp_post_drop_field_table_version_sync', $schema_slug, $this );
+
+		return $results;
 	}
 
 	/**
 	 * Returns whether a fields' schema definition exists in the table or not.
 	 *
-	 * @since TBD
+	 * @since 1.0.0
 	 *
 	 * @return bool Whether a set of fields exists in the database or not.
 	 */
@@ -108,40 +169,38 @@ abstract class Abstract_Custom_Field implements Field_Schema_Interface {
 	}
 
 	/**
-	 * @since TBD
+	 * Fields being added to the table.
+	 *
+	 * @since 1.0.0
 	 *
 	 * @return array<string>
 	 */
-	abstract public function fields();
+	public function fields() {
+		return (array) $this->fields;
+	}
 
 	/**
 	 * The base table name of the schema.
 	 */
-	public static function get_custom_field_slug_id() {
-		return static::$custom_field_slug_id;
+	public static function get_schema_slug() {
+		return static::$schema_slug;
 	}
 
 	/**
-	 * Gets the properly namespaced schema version option key.
-	 *
-	 * @since TBD
-	 *
-	 * @return string The properly namespaced schema version option key.
+	 * {@inheritdoc}
 	 */
-	public function get_schema_version_option(): string {
-		return 'stellar_schema_version_' . static::SCHEMA_VERSION_OPTION;
-	}
+	abstract public function get_sql();
 
 	/**
-	 * Returns the table creation SQL for the fields being created in the format supported
-	 * by the `dbDelta` function.
+	 * Gets the field schema's version.
 	 *
-	 * @since TBD
+	 * @since 1.0.0
 	 *
-	 * @return string The table creation SQL for the fields being created, in the format supported
-	 *                by the `dbDelta` function.
+	 * @return string
 	 */
-	abstract protected function get_update_sql();
+	public function get_version(): string {
+		return static::get_schema_slug() . '-' . static::SCHEMA_VERSION;
+	}
 
 	/**
 	 * {@inheritdoc}
@@ -151,37 +210,9 @@ abstract class Abstract_Custom_Field implements Field_Schema_Interface {
 	}
 
 	/**
-	 * @inheritDoc
-	 */
-	public function is_schema_current() {
-		if ( ! static::SCHEMA_VERSION || ! $this->get_schema_version_option() ) {
-			// @todo Error?
-		}
-		$version_applied = get_option( $this->get_schema_version_option() );
-		$current_version = static::SCHEMA_VERSION;
-
-		return version_compare( $version_applied, $current_version, '==' );
-	}
-
-	/**
-	 * Update our stored version with what we have defined.
-	 */
-	protected function sync_stored_version() {
-		if ( ! add_option( $this->get_schema_version_option(), static::SCHEMA_VERSION ) ) {
-			update_option( $this->get_schema_version_option(), static::SCHEMA_VERSION );
-		}
-	}
-
-	/**
 	 * {@inheritdoc}
 	 */
-	public function update() {
-		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-
-		$results = (array) dbDelta( $this->get_update_sql() );
-		$this->sync_stored_version();
-		$results = $this->after_update( $results );
-
-		return $results;
+	public function table_schema() {
+		return $this->container->make( Tables\Collection::class )->offsetGet( $this->base_table_name() );
 	}
 }

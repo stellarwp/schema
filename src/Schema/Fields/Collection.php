@@ -2,7 +2,7 @@
 
 namespace StellarWP\Schema\Fields;
 
-use StellarWP\Schema\Builder\Abstract_Custom_Field as Field;
+use StellarWP\Schema\Builder\Field_Schema_Interface as Field_Interface;
 
 class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
@@ -24,16 +24,16 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Field $field Field instance.
+	 * @param Field_Interface $field Field instance.
 	 *
 	 * @return mixed
 	 */
-	public function add( Field $field ) {
-		$this->offsetSet( $field->get_custom_field_slug_id(), $field );
+	public function add( Field_Interface $field ) {
+		$this->offsetSet( $field::get_schema_slug(), $field );
 
 		$this->register_group( $field );
 
-		return $this->offsetGet( $field->get_custom_field_slug_id() );
+		return $this->offsetGet( $field::get_schema_slug() );
 	}
 
 	/**
@@ -48,6 +48,20 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 */
 	public function current() {
 		return current( $this->fields );
+	}
+
+	/**
+	 * Gets fields by table.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array<string>|string $tables Tables to filter fields by.
+	 * @param \Iterator $iterator Optional. Iterator to filter.
+	 *
+	 * @return Filters\Table_FilterIterator
+	 */
+	public function get_by_table( $tables, $iterator = null ): Filters\Table_FilterIterator {
+		return new Filters\Table_FilterIterator( $tables, $iterator ?: $this );
 	}
 
 	/**
@@ -95,7 +109,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * Registers a group in the group array for the given table.
 	 *
-	 * @param Field $field Field instance.
+	 * @param Field_Interface $field Field instance.
 	 */
 	private function register_group( $field ) {
 		$group = $field->group_name();
@@ -129,11 +143,11 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 * @since 1.0.0
 	 *
 	 * @param string $name Field name.
-	 * @param Field $field Field instance.
+	 * @param Field_Interface $field Field instance.
 	 *
 	 * @return mixed
 	 */
-	public function set( $name, Field $field ) {
+	public function set( $name, Field_Interface $field ) {
 		$this->offsetSet( $name, $field );
 
 		$this->register_group( $field );

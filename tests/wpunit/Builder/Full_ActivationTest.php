@@ -25,7 +25,6 @@ class Full_ActivationTest extends SchemaTestCase {
 		$schema     = Container::init()->make( Schema_Builder::class );
 
 		$schema->up();
-		$schema->register_custom_tables_names();
 
 		$table_schemas = $schema->get_registered_table_schemas();
 		$this->assertNotEmpty( $table_schemas );

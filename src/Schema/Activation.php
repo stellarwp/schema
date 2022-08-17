@@ -2,7 +2,7 @@
 /**
  * Handles the code that should be executed when the plugin is activated or deactivated.
  *
- * @since   TBD
+ * @since   1.0.0
  *
  * @package StellarWP\WPTables
  */
@@ -14,7 +14,7 @@ use StellarWP\Schema\Builder\Schema_Builder;
 /**
  * Class Activation
  *
- * @since   TBD
+ * @since   1.0.0
  *
  * @package StellarWP\WPTables
  */
@@ -23,14 +23,14 @@ class Activation {
 	 * The name of the transient that will be used to flag whether the library activated
 	 * or not.
 	 *
-	 * @since TBD
+	 * @since 1.0.0
 	 */
 	const ACTIVATION_TRANSIENT = 'stellar_schema_builder_initialized';
 
 	/**
 	 * Handles the activation of the feature functions.
 	 *
-	 * @since TBD
+	 * @since 1.0.0
 	 */
 	public static function activate() {
 		$schema_builder = Container::init()->make( Schema_Builder::class);
@@ -42,7 +42,7 @@ class Activation {
 	 *
 	 * This method will run once a day (using transients).
 	 *
-	 * @since TBD
+	 * @since 1.0.0
 	 */
 	public static function init() {
 		// Check if we ran recently.
@@ -76,7 +76,7 @@ class Activation {
 	/**
 	 * Handles the feature deactivation.
 	 *
-	 * @since TBD
+	 * @since 1.0.0
 	 */
 	public static function deactivate() {
 		$services = Container::init();
