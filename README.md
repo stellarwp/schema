@@ -127,7 +127,7 @@ add_action( 'plugins_loaded', static function() {
 
 ### That's it!
 
-The table will be automatically registered, created, and updated during the `theme_setup` action at priority `0`!
+The table will be automatically registered, created, and updated during the `plugins_loaded` action at priority `1000`! _(that priority number is filterable via the `stellarwp_schema_up_plugins_loaded_priority` filter)_
 
 ## Documentation
 
