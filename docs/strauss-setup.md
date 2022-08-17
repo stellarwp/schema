@@ -48,3 +48,11 @@ Adding the following to your `composer.json` file will ensure that Strauss is ru
 ```
 
 Additionally, you can run this manually via `composer run strauss`.
+
+## Add the Strauss autoloader
+
+You'll need to add the Strauss autoloader to your project so that all of the relevant classes are available. If you were to put it in a WordPress plugin's bootstrap file (the main file in the base directory of your plugin), you'd add a line like so:
+
+```php
+require_once __DIR__ . '/vendor/strauss/autoload.php';
+```

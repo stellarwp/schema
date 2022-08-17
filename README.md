@@ -133,8 +133,9 @@ The table will be automatically registered, created, and updated during the `plu
 
 Here's some more advanced documentation to get you rolling on using this library at a deeper level:
 
+1. [Setting up Strauss](docs/strauss-setup.md)
 1. [Table schemas](docs/table-schema.md)
-2. [Field schemas](docs/field-schema.md)
-3. [Schema versioning](docs/schema-versioning.md)
-4. [Registering and de-registering schemas](docs/registering-and-deregistering.md)
-5. [Hooks](docs/hooks.md)
+1. [Field schemas](docs/field-schema.md)
+1. [Schema versioning](docs/schema-versioning.md)
+1. [Registering and de-registering schemas](docs/registering-and-deregistering.md)
+1. [Hooks](docs/hooks.md)
