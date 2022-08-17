@@ -70,7 +70,7 @@ class Sandwiches extends Tables\Abstract_Table {
 	/**
 	 * {@inheritdoc}
 	 */
-	public function get_sql() {
+	protected function get_definition() {
 		global $wpdb;
 		$table_name = self::table_name( true );
 		$charset_collate = $wpdb->get_charset_collate();
@@ -92,7 +92,7 @@ Here's what the properties and method mean:
 * `$group`: The group that the table belongs to - this is for organizational purposes.
 * `$schema_slug`: An identifier for the table. This is used in storing your table's schema version in `wp_options`.
 * `$uid_column`: The name of the column that is used to uniquely identify each row.
-* `get_sql()`: This should return the SQL used to create your `sandwiches` table.
+* `get_definition()`: This should return the base SQL definition used to create your `sandwiches` table. To get the full SQL (with any field schemas included), you can call `::get_sql()`!
 
 ### Registering the table
 
