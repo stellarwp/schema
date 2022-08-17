@@ -118,8 +118,34 @@ The table will be automatically registered, created, and updated during the `plu
 Here's some more advanced documentation to get you rolling on using this library at a deeper level:
 
 1. [Setting up Strauss](docs/strauss-setup.md)
-1. [Table schemas](docs/table-schema.md)
-1. [Field schemas](docs/field-schema.md)
-1. [Schema versioning](docs/schema-versioning.md)
+1. [Schema management](docs/schemas.md)
+	1. [Table schemas](docs/schemas-table.md)
+	1. [Field schemas](docs/schemas-field.md)
+	1. [Versioning](docs/schemas-versioning.md)
+	1. [Using `::after_update()`](docs/schemas-after-update.md)
 1. [Registering and de-registering schemas](docs/registering-and-deregistering.md)
+	1. [`Register::field()`](docs/registering-and-deregistering.md#register-field)
+	1. [`Register::remove_field()`](docs/registering-and-deregistering.md#register-remove-field)
+	1. [`Register::remove_table()`](docs/registering-and-deregistering.md#register-remove-table)
+	1. [`Register::table()`](docs/registering-and-deregistering.md#register-table)
 1. [Hooks](docs/hooks.md)
+
+## Scratch notes
+```
+wp {namespace}:schema help (list the tables)
+wp {namespace}:schema {table} {up|down|drop|version}
+
+wp ecp:schema help
+
+__NAMESPACE__
+
+wp tec:schema tec_events up
+
+namespace Tribe\PUE;
+
+$prefix = str_replace( '\\', '-', __NAMESPACE__ );
+
+apply_filters( 'stellarwp_schema_wpcli_namespace', $prefix, __NAMESPACE__ );
+
+wp tribe-pue:schema
+```
