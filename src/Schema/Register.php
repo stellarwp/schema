@@ -28,7 +28,7 @@ class Register {
 
 		$container = Container::init();
 
-		$container->make( Fields\Collection::class )->add( $field );
+		Schema::fields()->add( $field );
 
 		// If we've already executed plugins_loaded, automatically add the field.
 		if ( did_action( 'plugins_loaded' ) ) {
@@ -52,9 +52,7 @@ class Register {
 			static::field( $field );
 		}
 
-		$container = Container::init();
-
-		return $container->make( Fields\Collection::class );
+		return Schema::fields();
 	}
 
 	/**
@@ -73,14 +71,12 @@ class Register {
 			$field = new $field();
 		}
 
-		$container = Container::init();
-
 		// If we've already executed plugins_loaded, automatically remove the field.
 		if ( did_action( 'plugins_loaded' ) ) {
 			$field->drop();
 		}
 
-		$container->make( Fields\Collection::class )->remove( $field::get_schema_slug() );
+		Schema::fields()->remove( $field::get_schema_slug() );
 
 		return $field;
 	}
@@ -101,14 +97,12 @@ class Register {
 			$table = new $table();
 		}
 
-		$container = Container::init();
-
 		// If we've already executed plugins_loaded, automatically remove the field.
 		if ( did_action( 'plugins_loaded' ) ) {
 			$table->drop();
 		}
 
-		$container->make( Tables\Collection::class )->remove( $table::base_table_name() );
+		Schema::tables()->remove( $table::base_table_name() );
 
 		return $table;
 	}
@@ -131,7 +125,7 @@ class Register {
 
 		$container = Container::init();
 
-		$container->make( Tables\Collection::class )->add( $table );
+		Schema::tables()->add( $table );
 
 		// If we've already executed plugins_loaded, automatically add the table.
 		if ( did_action( 'plugins_loaded' ) ) {
@@ -155,8 +149,6 @@ class Register {
 			static::table( $table );
 		}
 
-		$container = Container::init();
-
-		return $container->make( Tables\Collection::class );
+		return Schema::tables();
 	}
 }

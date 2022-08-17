@@ -10,7 +10,7 @@
 namespace StellarWP\Schema\Fields;
 
 use StellarWP\Schema\Container;
-use StellarWP\Schema\Tables;
+use StellarWP\Schema\Schema;
 
 /**
  * Class Abstract_Field
@@ -256,7 +256,7 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 	 * {@inheritdoc}
 	 */
 	public function table_schema() {
-		$tables          = $this->container->make( Tables\Collection::class );
+		$tables          = Schema::tables();
 		$base_table_name = static::base_table_name();
 
 		if ( ! isset( $tables[ $base_table_name ] ) ) {

@@ -125,8 +125,11 @@ Register::table( Tables\Sandwiches::class );
 // Let's pretend there's a SomethingElse table schema that has `$group` set to `potato`.
 Register::table( Tables\SomethingElse::class );
 
+// This returns all of the table schemas regardless of their group.
+$tables_in_group_boom = Schema::tables();
+
 // This returns all of the table schemas that have `$group` set to `boom`.
-$tables_in_group_boom = Schema::table_collection()->get_by_group( 'boom' );
+$tables_in_group_boom = Schema::tables()->get_by_group( 'boom' );
 
 foreach ( $tables_in_group_boom as $table_schema ) {
 	echo $table_schema->get_sql() . "\n";

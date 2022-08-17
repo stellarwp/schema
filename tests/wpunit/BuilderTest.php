@@ -6,6 +6,7 @@ use StellarWP\Schema\Builder;
 use StellarWP\Schema\Tables\Table_Schema_Interface;
 use StellarWP\Schema\Container;
 use StellarWP\Schema\Register;
+use StellarWP\Schema\Schema;
 use StellarWP\Schema\Tests\SchemaTestCase;
 use StellarWP\Schema\Tests\Traits\Table_Fixtures;
 
@@ -44,7 +45,7 @@ class BuilderTest extends SchemaTestCase {
 	 * @test
 	 */
 	public function should_up_down_table_schema() {
-		$builder = Container::init()->make( Builder::class );
+		$builder = Schema::builder();
 		$table   = $this->get_simple_table();
 
 		Register::table( $table );
@@ -68,7 +69,7 @@ class BuilderTest extends SchemaTestCase {
 	 * @test
 	 */
 	public function should_update_table_when_version_changes() {
-		$builder      = Container::init()->make( Builder::class );
+		$builder      = Schema::builder();
 		$table        = $this->get_simple_table();
 		$modded_table = $this->get_modified_simple_table();
 
@@ -96,7 +97,7 @@ class BuilderTest extends SchemaTestCase {
 	 * @test
 	 */
 	public function should_up_down_field_schema() {
-		$builder      = Container::init()->make( Builder::class );
+		$builder      = Schema::builder();
 		$table_schema = $this->get_simple_table();
 		$field_schema = $this->get_simple_table_field();
 
@@ -147,7 +148,7 @@ class BuilderTest extends SchemaTestCase {
 	 * @test
 	 */
 	public function should_field_exists() {
-		$builder      = Container::init()->make( Builder::class );
+		$builder      = Schema::builder();
 		$table_schema = $this->get_simple_table();
 		$field_schema = $this->get_simple_table_field();
 
@@ -183,7 +184,7 @@ class BuilderTest extends SchemaTestCase {
 	 * @test
 	 */
 	public function should_sync_version() {
-		$builder      = Container::init()->make( Builder::class );
+		$builder      = Schema::builder();
 		$table_schema = $this->get_simple_table();
 		$field_schema = $this->get_simple_table_field();
 
@@ -352,7 +353,7 @@ class BuilderTest extends SchemaTestCase {
 			}
 		};
 
-		$builder = Container::init()->make( Builder::class );
+		$builder = Schema::builder();
 
 		Register::table( $fodz_table );
 		Register::table( $klutz_table );

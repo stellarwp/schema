@@ -6,13 +6,26 @@ use lucatume\DI52\ServiceProvider as Service_Provider;
 
 class Schema extends Service_Provider {
 	/**
+	 * Gets the Builder.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return Builder
+	 */
+	public static function builder() {
+		static::init();
+
+		return Container::init()->make( Builder::class );
+	}
+
+	/**
 	 * Gets the field collection.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return Tables\Collection
+	 * @return Fields\Collection
 	 */
-	public static function field_collection() {
+	public static function fields() {
 		static::init();
 
 		return Container::init()->make( Fields\Collection::class );
@@ -83,7 +96,7 @@ class Schema extends Service_Provider {
 	 *
 	 * @return Tables\Collection
 	 */
-	public static function table_collection() {
+	public static function tables() {
 		static::init();
 
 		return Container::init()->make( Tables\Collection::class );

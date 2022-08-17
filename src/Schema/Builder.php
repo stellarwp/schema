@@ -147,9 +147,9 @@ class Builder {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return \Iterator
+	 * @return Fields\Collection
 	 */
-	public function get_registered_field_schemas(): \Iterator {
+	public function get_registered_field_schemas(): Fields\Collection {
 		return $this->container->make( Fields\Collection::class );
 	}
 
