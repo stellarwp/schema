@@ -61,8 +61,8 @@ use Boom\Shakalaka\Fields;
 use Boom\Shakalaka\StellarWP\Schema\Register;
 
 // Let's pretend that we have two field schema classes.
-Register::remove_field( Fields\Burritos::class );
-Register::remove_field( Fields\Sandwiches::class );
+Register::remove_field( Fields\BurritosPro::class );
+Register::remove_field( Fields\SandwichesPro::class );
 ```
 
 ## Field collection
