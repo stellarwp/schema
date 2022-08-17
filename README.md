@@ -121,15 +121,6 @@ Here's some more advanced documentation to get you rolling on using this library
 1. [Schema management](docs/schemas.md)
 	1. [Table schemas](docs/schemas-table.md)
 	1. [Field schemas](docs/schemas-field.md)
-	1. [Versioning](docs/schemas.md#versioning)
-	1. [Using `::after_update()`](docs/schemas.md#using-after-update)
-1. [Registering and de-registering schemas](docs/registering-and-deregistering.md)
-	1. [`Register::field()`](docs/registering-and-deregistering.md#register-field)
-	1. [`Register::fields()`](docs/registering-and-deregistering.md#register-fields)
-	1. [`Register::remove_field()`](docs/registering-and-deregistering.md#register-remove-field)
-	1. [`Register::remove_table()`](docs/registering-and-deregistering.md#register-remove-table)
-	1. [`Register::table()`](docs/registering-and-deregistering.md#register-table)
-	1. [`Register::tables()`](docs/registering-and-deregistering.md#register-tables)
 1. [Hooks](docs/hooks.md)
 
 ## Scratch notes
