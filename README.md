@@ -8,7 +8,7 @@ A library for simplifying the creation, update, and field modification of custom
 
 It's recommended that you install the Schema as a project dependency via [Composer](https://getcomposer.org/):
 
-```
+```bash
 composer require stellarwp/schema
 ```
 
@@ -35,7 +35,7 @@ For a full understanding of what is available in this library and how to use it,
 
 Let's say you want a new custom table called `sandwiches` (with the default WP prefix, it'd be `wp_sandwiches`). You'll need a class file for the table. For the sake of this example, we'll be assuming this class is going into a `Tables/` directory and is reachable via the `Boom\Shakalaka\Tables` namespace.
 
-```
+```php
 <?php
 namespace Boom\Shakalaka\Tables;
 
@@ -98,7 +98,7 @@ Here's what the properties and method mean:
 
 Within the `plugins_loaded` action, you'll need to initialize the Schema library. You do that using your Strauss-namespaced Schema class!
 
-```
+```php
 namespace Boom\Shakalaka;
 
 use Boom\Shakalaka\StellarWP\Schema\Schema;
@@ -112,7 +112,7 @@ add_action( 'plugins_loaded', static function() {
 
 In that same `plugins_loaded` action, register the table using the handy `Register` class:
 
-```
+```php
 namespace Boom\Shakalaka;
 
 use Boom\Shakalaka\StellarWP\Schema\Register as Schema_Register;
