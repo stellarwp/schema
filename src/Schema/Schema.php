@@ -47,7 +47,7 @@ class Schema extends Service_Provider {
 		 *
 		 * @param int $priority The priority of the action.
 		 */
-		$priority = apply_filters( 'stellarwp_schema_up_setup_theme_priority', 1000 );
+		$priority = apply_filters( 'stellarwp_schema_up_plugins_loaded_priority', 1000 );
 
 		add_action( 'plugins_loaded', $this->container->callback( Builder\Schema_Builder::class, 'up' ), $priority, 0 );
 	}
