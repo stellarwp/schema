@@ -36,8 +36,6 @@ For a full understanding of what is available in this library and how to use it,
 Let's say you want a new custom table called `sandwiches` (with the default WP prefix, it'd be `wp_sandwiches`). You'll need a class file for the table. For the sake of this example, we'll be assuming this class is going into a `Tables/` directory and is reachable via the `Boom\Shakalaka\Tables` namespace.
 
 ```
-
-```
 <?php
 namespace Boom\Shakalaka\Tables;
 
