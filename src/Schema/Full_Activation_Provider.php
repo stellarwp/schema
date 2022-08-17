@@ -12,7 +12,7 @@
 
 namespace StellarWP\Schema;
 
-use tad_DI52_ServiceProvider as Service_Provider;
+use lucatume\DI52\ServiceProvider as Service_Provider;
 use StellarWP\Schema\Builder\Schema_Builder;
 use WP_CLI;
 

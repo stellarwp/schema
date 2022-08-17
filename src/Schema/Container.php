@@ -1,7 +1,9 @@
 <?php
 namespace StellarWP\Schema;
 
-class Container extends \tad_DI52_Container {
+use lucatume\DI52\Container as DI52_Container;
+
+class Container extends DI52_Container {
 	/**
 	 * Container instance.
 	 *
