@@ -240,9 +240,7 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	}
 
 	/**
-	 * The base table name of the schema.
-	 *
-	 * @since 1.0.0
+	 * {@inheritdoc}
 	 */
 	public static function get_schema_slug() {
 		return static::$schema_slug;

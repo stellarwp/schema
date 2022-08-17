@@ -29,11 +29,11 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 * @return mixed
 	 */
 	public function add( Table_Interface $table ) {
-		$this->offsetSet( $table->base_table_name(), $table );
+		$this->offsetSet( $table::base_table_name(), $table );
 
 		$this->register_group( $table );
 
-		return $this->offsetGet( $table->base_table_name() );
+		return $this->offsetGet( $table::base_table_name() );
 	}
 
 	/**

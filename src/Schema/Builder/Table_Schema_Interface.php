@@ -54,6 +54,13 @@ interface Table_Schema_Interface {
 	public function exists();
 
 	/**
+	 * The base table name of the schema.
+	 *
+	 * @since 1.0.0
+	 */
+	public static function get_schema_slug();
+
+	/**
 	 * Returns the table creation SQL in the format supported
 	 * by the `dbDelta` function.
 	 *

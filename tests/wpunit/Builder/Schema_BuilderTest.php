@@ -228,6 +228,10 @@ class Schema_BuilderTest extends SchemaTestCase {
 				return false;
 			}
 
+			public static function get_schema_slug() {
+				return 'fodz';
+			}
+
 			public function get_sql() {}
 
 			public function get_version(): string {
@@ -261,6 +265,10 @@ class Schema_BuilderTest extends SchemaTestCase {
 				return true;
 			}
 
+			public static function get_schema_slug() {
+				return 'kluts';
+			}
+
 			public function get_sql() {}
 
 			public function get_version(): string {
@@ -292,6 +300,10 @@ class Schema_BuilderTest extends SchemaTestCase {
 
 			public function exists() {
 				return true;
+			}
+
+			public static function get_schema_slug() {
+				return 'zorps';
 			}
 
 			public function get_sql() {}
