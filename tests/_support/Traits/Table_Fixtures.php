@@ -57,7 +57,7 @@ trait Table_Fixtures {
 			protected static $schema_slug = 'bork-simple';
 			protected static $uid_column = 'id';
 
-			public function get_sql() {
+			protected function get_definition() {
 				global $wpdb;
 				$table_name      = self::table_name( true );
 				$charset_collate = $wpdb->get_charset_collate();
@@ -91,7 +91,7 @@ trait Table_Fixtures {
 			protected static $schema_slug = 'bork-simple';
 			protected static $uid_column = 'id';
 
-			public function get_sql() {
+			protected function get_definition() {
 				global $wpdb;
 				$table_name      = self::table_name( true );
 				$charset_collate = $wpdb->get_charset_collate();
@@ -123,7 +123,7 @@ trait Table_Fixtures {
 			protected static $schema_slug = 'bork-noindex';
 			protected static $uid_column = 'id';
 
-			public function get_sql() {
+			protected function get_definition() {
 				global $wpdb;
 				$table_name      = self::table_name( true );
 				$charset_collate = $wpdb->get_charset_collate();
@@ -155,7 +155,7 @@ trait Table_Fixtures {
 				'bork',
 			];
 
-			public function get_sql() {
+			protected function get_definition() {
 				return "
 					`bork` int(11) UNSIGNED NOT NULL,
 					KEY `bork` (`bork`)

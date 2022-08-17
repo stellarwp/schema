@@ -191,7 +191,14 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 	/**
 	 * {@inheritdoc}
 	 */
-	abstract public function get_sql();
+	public function get_sql() {
+		return $this->get_definition();
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	abstract protected function get_definition();
 
 	/**
 	 * Gets the field schema's version.

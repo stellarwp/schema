@@ -39,6 +39,25 @@ class Register {
 	}
 
 	/**
+	 * Register multiple field schemas.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array<string,mixed> $fields Fields to register.
+	 *
+	 * @return Fields\Collection
+	 */
+	public static function fields( array $fields ) {
+		foreach ( $fields as $field ) {
+			static::field( $field );
+		}
+
+		$container = Container::init();
+
+		return $container->make( Fields\Collection::class );
+	}
+
+	/**
 	 * Removes a field from the register.
 	 *
 	 * @since 1.0.0
@@ -120,5 +139,24 @@ class Register {
 		}
 
 		return $table;
+	}
+
+	/**
+	 * Register multiple table schemas.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @param array<string,mixed> $tables Tables to register.
+	 *
+	 * @return Tables\Collection
+	 */
+	public static function tables( array $tables ) {
+		foreach ( $tables as $table ) {
+			static::table( $table );
+		}
+
+		$container = Container::init();
+
+		return $container->make( Tables\Collection::class );
 	}
 }

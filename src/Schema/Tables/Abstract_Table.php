@@ -261,23 +261,41 @@ abstract class Abstract_Table implements Table_Schema_Interface {
 	/**
 	 * {@inheritdoc}
 	 */
-	abstract public function get_sql();
+	public function get_sql() {
+		$sql = $this->get_definition();
+
+		$field_schemas = $this->get_field_schemas();
+
+		foreach ( $field_schemas as $field_schema ) {
+			$sql = $this->inject_field_schema( $field_schema, $sql );
+		}
+
+		return $sql;
+	}
+
+	/**
+	 * Returns the table creation SQL in the format supported
+	 * by the `dbDelta` function.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string The table creation SQL, in the format supported
+	 *                by the `dbDelta` function.
+	 */
+	abstract protected function get_definition();
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function get_version(): string {
-		$schema_fields = $this->get_field_schemas( true );
-
-		$version = [
-			static::SCHEMA_VERSION,
-		];
+		$field_versions = [];
+		$schema_fields  = $this->get_field_schemas( true );
 
 		foreach ( $schema_fields as $field ) {
-			$version[] = $field->get_version();
+			$field_versions[] = $field->get_version();
 		}
 
-		return implode( ':', $version );
+		return static::SCHEMA_VERSION . ( $field_versions ? '-' . md5( implode( ':', $field_versions ) ) : '' );
 	}
 
 	/**
@@ -417,16 +435,11 @@ abstract class Abstract_Table implements Table_Schema_Interface {
 
 		$sql = $this->get_sql();
 
-		$field_schemas = $this->get_field_schemas();
-
-		foreach ( $field_schemas as $field_schema ) {
-			$sql = $this->inject_field_schema( $field_schema, $sql );
-		}
-
 		$results = (array) dbDelta( $sql );
 		$this->sync_stored_version();
 		$results = $this->after_update( $results );
 
+		$field_schemas = $this->get_field_schemas();
 		foreach ( $field_schemas as $field_schema ) {
 			$sql = $field_schema->after_update( $results );
 		}

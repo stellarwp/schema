@@ -49,13 +49,17 @@ class Schema extends Service_Provider {
 	 * @since 1.0.0
 	 */
 	private function register_hooks() : void {
-		/**
-		 * Filters the priority of the plugins_loaded action for running Builder::up.
-		 *
-		 * @param int $priority The priority of the action.
-		 */
-		$priority = apply_filters( 'stellarwp_schema_up_plugins_loaded_priority', 1000 );
+		if ( did_action( 'plugins_loaded' ) ) {
+			$this->container->make( Builder::class )->up();
+		} else {
+			/**
+			 * Filters the priority of the plugins_loaded action for running Builder::up.
+			 *
+			 * @param int $priority The priority of the action.
+			 */
+			$priority = apply_filters( 'stellarwp_schema_up_plugins_loaded_priority', 1000 );
 
-		add_action( 'plugins_loaded', $this->container->callback( Builder::class, 'up' ), $priority, 0 );
+			add_action( 'plugins_loaded', $this->container->callback( Builder::class, 'up' ), $priority, 0 );
+		}
 	}
 }

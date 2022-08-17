@@ -61,12 +61,12 @@ interface Table_Schema_Interface {
 	public static function get_schema_slug();
 
 	/**
-	 * Returns the table creation SQL in the format supported
-	 * by the `dbDelta` function.
+	 * Returns the table creation SQL with all field schema SQL injected,
+	 * in the format supported by the `dbDelta` function.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return string The table creation SQL, in the format supported
+	 * @return string The table & field schema creation SQL, in the format supported
 	 *                by the `dbDelta` function.
 	 */
 	public function get_sql();
