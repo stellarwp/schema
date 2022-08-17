@@ -17,6 +17,32 @@ class Schema_BuilderTest extends SchemaTestCase {
 	use Table_Fixtures;
 
 	/**
+	 * @param string $table Table name.
+	 *
+	 * @return array<string> List of fields for this table.
+	 */
+	public function get_table_fields( $table ) {
+		global $wpdb;
+		$q    = 'select `column_name` from information_schema.columns
+					where table_schema = database()
+					and `table_name`= %s';
+		$rows = $wpdb->get_results( $wpdb->prepare( $q, $table ) );
+
+		return array_map( function ( $row ) {
+			return $row->column_name;
+		}, $rows );
+	}
+
+	/**
+	 * @return array List of tables in this database.
+	 */
+	public function get_tables() {
+		global $wpdb;
+
+		return $wpdb->get_col( 'SHOW TABLES' );
+	}
+
+	/**
 	 * Should tables create/destroy properly.
 	 *
 	 * @test
@@ -38,6 +64,34 @@ class Schema_BuilderTest extends SchemaTestCase {
 		$tables = $this->get_tables();
 		$this->assertNotContains( $table::table_name( true ), $tables );
 		$this->assertFalse( $builder->all_tables_exist() );
+	}
+
+	/**
+	 * Should tables update properly.
+	 *
+	 * @test
+	 */
+	public function should_update_table_when_version_changes() {
+		$builder      = Container::init()->make( Schema_Builder::class );
+		$table        = $this->get_simple_table();
+		$modded_table = $this->get_modified_simple_table();
+
+		Register::table( $table );
+
+		$tables  = $this->get_tables();
+
+		$this->assertContains( $table::table_name( true ), $tables );
+		$this->assertTrue( $builder->all_tables_exist() );
+
+		$rows = $this->get_table_fields( $table::table_name( true ) );
+		$this->assertNotContains( 'something', $rows );
+
+		Register::table( $modded_table );
+
+		$rows = $this->get_table_fields( $table::table_name( true ) );
+		$this->assertContains( 'something', $rows );
+
+		$builder->down();
 	}
 
 	/**
@@ -150,32 +204,6 @@ class Schema_BuilderTest extends SchemaTestCase {
 	}
 
 	/**
-	 * @param string $table Table name.
-	 *
-	 * @return array<string> List of fields for this table.
-	 */
-	public function get_table_fields( $table ) {
-		global $wpdb;
-		$q    = 'select `column_name` from information_schema.columns
-					where table_schema = database()
-					and `table_name`= %s';
-		$rows = $wpdb->get_results( $wpdb->prepare( $q, $table ) );
-
-		return array_map( function ( $row ) {
-			return $row->column_name;
-		}, $rows );
-	}
-
-	/**
-	 * @return array List of tables in this database.
-	 */
-	public function get_tables() {
-		global $wpdb;
-
-		return $wpdb->get_col( 'SHOW TABLES' );
-	}
-
-	/**
 	 * It should support group when checking for all tables existence
 	 *
 	 * @test
@@ -199,6 +227,8 @@ class Schema_BuilderTest extends SchemaTestCase {
 			public function exists() {
 				return false;
 			}
+
+			public function get_sql() {}
 
 			public function get_version(): string {
 				return '1.0.0';
@@ -231,6 +261,8 @@ class Schema_BuilderTest extends SchemaTestCase {
 				return true;
 			}
 
+			public function get_sql() {}
+
 			public function get_version(): string {
 				return '1.0.0';
 			}
@@ -261,6 +293,8 @@ class Schema_BuilderTest extends SchemaTestCase {
 			public function exists() {
 				return true;
 			}
+
+			public function get_sql() {}
 
 			public function get_version(): string {
 				return '1.0.0';

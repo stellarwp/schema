@@ -1,5 +1,5 @@
 <?php
-namespace StellarWP\Schema\Tests\Builder;
+namespace StellarWP\Schema\Tests;
 
 use StellarWP\Schema\Builder\Abstract_Custom_Table;
 use StellarWP\Schema\Builder\Schema_Builder;

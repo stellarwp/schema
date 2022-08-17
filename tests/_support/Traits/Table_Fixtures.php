@@ -52,13 +52,12 @@ trait Table_Fixtures {
 	public function get_modified_simple_table() {
 		$table  = new class extends Abstract_Custom_Table {
 			const SCHEMA_VERSION = '2.0.0';
-			const SCHEMA_VERSION_OPTION = 'bork_simple';
-
 			protected static $base_table_name = 'simple';
 			protected static $group = 'bork';
+			protected static $schema_slug = 'bork-simple';
 			protected static $uid_column = 'id';
 
-			public function get_update_sql() {
+			public function get_sql() {
 				global $wpdb;
 				$table_name      = self::table_name( true );
 				$charset_collate = $wpdb->get_charset_collate();
@@ -86,13 +85,13 @@ trait Table_Fixtures {
 	public function get_simple_table() {
 		$table  = new class extends Abstract_Custom_Table {
 			const SCHEMA_VERSION = '1.0.0';
-			const SCHEMA_VERSION_OPTION = 'bork_simple';
 
 			protected static $base_table_name = 'simple';
 			protected static $group = 'bork';
+			protected static $schema_slug = 'bork-simple';
 			protected static $uid_column = 'id';
 
-			public function get_update_sql() {
+			public function get_sql() {
 				global $wpdb;
 				$table_name      = self::table_name( true );
 				$charset_collate = $wpdb->get_charset_collate();
@@ -118,13 +117,13 @@ trait Table_Fixtures {
 	public function get_indexless_table() {
 		$table  = new class extends Abstract_Custom_Table {
 			const SCHEMA_VERSION = '1.0.0';
-			const SCHEMA_VERSION_OPTION = 'bork_noindex';
 
 			protected static $base_table_name = 'noindex';
 			protected static $group = 'bork';
+			protected static $schema_slug = 'bork-noindex';
 			protected static $uid_column = 'id';
 
-			public function get_update_sql() {
+			public function get_sql() {
 				global $wpdb;
 				$table_name      = self::table_name( true );
 				$charset_collate = $wpdb->get_charset_collate();
@@ -149,8 +148,8 @@ trait Table_Fixtures {
 		$field  = new class extends Abstract_Custom_Field {
 			const SCHEMA_VERSION = '1.0.0';
 
-			protected static $schema_slug = 'simple-bork';
 			protected static $base_table_name = 'simple';
+			protected static $schema_slug = 'simple-bork';
 
 			protected $fields = [
 				'bork',

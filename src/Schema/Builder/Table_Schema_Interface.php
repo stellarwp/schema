@@ -54,6 +54,17 @@ interface Table_Schema_Interface {
 	public function exists();
 
 	/**
+	 * Returns the table creation SQL in the format supported
+	 * by the `dbDelta` function.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return string The table creation SQL, in the format supported
+	 *                by the `dbDelta` function.
+	 */
+	public function get_sql();
+
+	/**
 	 * Gets the table schema's version.
 	 *
 	 * @since 1.0.0

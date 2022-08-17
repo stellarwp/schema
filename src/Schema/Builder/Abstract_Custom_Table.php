@@ -7,11 +7,6 @@ use StellarWP\Schema\Fields;
 
 abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	/**
-	 * @var string|null The option key used to store the SCHEMA_VERSION.
-	 */
-	const SCHEMA_VERSION_OPTION = null;
-
-	/**
 	 * @var string|null The version number for this schema definition.
 	 */
 	const SCHEMA_VERSION = null;
@@ -35,6 +30,13 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	 * @var string The organizational group this table belongs to.
 	 */
 	protected static $group = '';
+
+	/**
+	 * @since 1.0.0
+	 *
+	 * @var string|null The slug used to identify the custom table.
+	 */
+	protected static $schema_slug;
 
 	/**
 	 * @var string The field that uniquely identifies a row in the table.
@@ -238,6 +240,15 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	}
 
 	/**
+	 * The base table name of the schema.
+	 *
+	 * @since 1.0.0
+	 */
+	public static function get_schema_slug() {
+		return static::$schema_slug;
+	}
+
+	/**
 	 * Gets the properly namespaced schema version option key.
 	 *
 	 * @since 1.0.0
@@ -245,19 +256,13 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	 * @return string The properly namespaced schema version option key.
 	 */
 	public function get_schema_version_option(): string {
-		return 'stellar_schema_version_' . static::SCHEMA_VERSION_OPTION;
+		return 'stellar_schema_version_' . static::get_schema_slug();
 	}
 
 	/**
-	 * Returns the table creation SQL in the format supported
-	 * by the `dbDelta` function.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return string The table creation SQL, in the format supported
-	 *                by the `dbDelta` function.
+	 * {@inheritdoc}
 	 */
-	abstract protected function get_update_sql();
+	abstract public function get_sql();
 
 	/**
 	 * {@inheritdoc}
@@ -411,7 +416,7 @@ abstract class Abstract_Custom_Table implements Table_Schema_Interface {
 	public function update() {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		$sql = $this->get_update_sql();
+		$sql = $this->get_sql();
 
 		$field_schemas = $this->get_field_schemas();
 
