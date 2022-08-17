@@ -94,23 +94,9 @@ Here's what the properties and method mean:
 * `$uid_column`: The name of the column that is used to uniquely identify each row.
 * `get_sql()`: This should return the SQL used to create your `sandwiches` table.
 
-### Initializing the Schema library
+### Initializing the Schema library and registering the table
 
-Within the `plugins_loaded` action, you'll need to initialize the Schema library. You do that using your Strauss-namespaced Schema class!
-
-```php
-namespace Boom\Shakalaka;
-
-use Boom\Shakalaka\StellarWP\Schema\Schema;
-
-add_action( 'plugins_loaded', static function() {
-	Schema::init();
-} );
-```
-
-### Registering the table
-
-In that same `plugins_loaded` action, register the table using the handy `Register` class:
+Within the `plugins_loaded` action, you'll need to initialize the Schema library and register the table using the handy `Register` class:
 
 ```php
 namespace Boom\Shakalaka;
