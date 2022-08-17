@@ -10,8 +10,15 @@ class Schema extends Service_Provider {
 	 *
 	 * @since 1.0.0
 	 */
-	public static function init() : void {
-		Container::init()->register( static::class );
+	public static function init(): void {
+		$container = Container::init();
+
+		if ( $container->getVar( 'stellarwp_schema_registered', false ) ) {
+			return;
+		}
+
+		$container->register( static::class );
+		$container->setVar( 'stellarwp_schema_registered', true );
 	}
 
 	/**

@@ -20,6 +20,8 @@ class Register {
 	 * @return Fields\Field_Schema_Interface
 	 */
 	public static function field( $field ) {
+		Schema::init();
+
 		if ( is_string( $field ) ) {
 			$field = new $field();
 		}
@@ -46,6 +48,8 @@ class Register {
 	 * @return Fields\Field_Schema_Interface
 	 */
 	public static function remove_field( $field ) {
+		Schema::init();
+
 		if ( is_string( $field ) ) {
 			$field = new $field();
 		}
@@ -72,6 +76,8 @@ class Register {
 	 * @return Tables\Table_Schema_Interface
 	 */
 	public static function remove_table( $table ) {
+		Schema::init();
+
 		if ( is_string( $table ) ) {
 			$table = new $table();
 		}
@@ -98,6 +104,8 @@ class Register {
 	 * @return Tables\Table_Schema_Interface
 	 */
 	public static function table( $table ) {
+		Schema::init();
+
 		if ( is_string( $table ) ) {
 			$table = new $table();
 		}

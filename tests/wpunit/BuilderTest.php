@@ -214,7 +214,9 @@ class BuilderTest extends SchemaTestCase {
 		} );
 
 		$fodz_table  = new class implements Table_Schema_Interface {
-			public static function base_table_name() {}
+			public static function base_table_name() {
+				return 'fodz';
+			}
 
 			public function drop() {}
 
@@ -251,7 +253,9 @@ class BuilderTest extends SchemaTestCase {
 			}
 		};
 		$klutz_table = new class implements Table_Schema_Interface {
-			public static function base_table_name() {}
+			public static function base_table_name() {
+				return 'klutz';
+			}
 
 			public function drop() {}
 
@@ -288,7 +292,9 @@ class BuilderTest extends SchemaTestCase {
 			}
 		};
 		$zorps_table = new class implements Table_Schema_Interface {
-			public static function base_table_name() {}
+			public static function base_table_name() {
+				return 'zorps';
+			}
 
 			public function drop() {}
 
@@ -336,6 +342,8 @@ class BuilderTest extends SchemaTestCase {
 		$this->assertTrue( $builder->all_tables_exist( 'two' ) );
 		$this->assertTrue( $builder->all_tables_exist( 'three' ) );
 
-		$builder->down();
+		Register::remove_table( $fodz_table );
+		Register::remove_table( $klutz_table );
+		Register::remove_table( $zorps_table );
 	}
 }
