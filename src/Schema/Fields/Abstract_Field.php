@@ -232,7 +232,7 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 		$base_table_name = static::base_table_name();
 
 		if ( ! isset( $tables[ $base_table_name ] ) ) {
-			return;
+			return null;
 		}
 
 		return $tables->offsetGet( $base_table_name );
