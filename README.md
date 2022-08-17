@@ -24,7 +24,7 @@ All examples within the documentation for this project will be assuming that you
 
 The examples will be using:
 
-* `Boom\Shakalaka\` as the namespace prefix
+* `Boom\Shakalaka\` as the namespace prefix, though will sometimes be referenced as `PREFIX\` for the purpose of brevity in the docs.
 * `BOOM_SHAKALAKA_` as the constant prefix.
 
 ## Getting started

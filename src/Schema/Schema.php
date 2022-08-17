@@ -6,6 +6,19 @@ use lucatume\DI52\ServiceProvider as Service_Provider;
 
 class Schema extends Service_Provider {
 	/**
+	 * Gets the field collection.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return Tables\Collection
+	 */
+	public static function field_collection() {
+		static::init();
+
+		return Container::init()->make( Fields\Collection::class );
+	}
+
+	/**
 	 * Initializes the service provider.
 	 *
 	 * @since 1.0.0
@@ -61,5 +74,18 @@ class Schema extends Service_Provider {
 
 			add_action( 'plugins_loaded', $this->container->callback( Builder::class, 'up' ), $priority, 0 );
 		}
+	}
+
+	/**
+	 * Gets the table collection.
+	 *
+	 * @since 1.0.0
+	 *
+	 * @return Tables\Collection
+	 */
+	public static function table_collection() {
+		static::init();
+
+		return Container::init()->make( Tables\Collection::class );
 	}
 }
