@@ -131,6 +131,7 @@ Here's some more advanced documentation to get you rolling on using this library
 	1. [Deregistering fields](/docs/schemas-field.md#deregistering-fields)
 	1. [Field collection](/docs/schemas-field.md#field-collection)
 	1. [Publicly accessible methods](/docs/schemas-field.md#publicly-accessible-methods)
+1. [Automated testing](/docs/automated-testing.md)
 
 ## Acknowledgements
 
