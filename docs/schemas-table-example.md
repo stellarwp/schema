@@ -22,12 +22,12 @@ class Sandwiches extends Tables\Abstract_Table {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected static $group = 'boom';
+	protected static $group = 'food';
 
 	/**
 	 * {@inheritdoc}
 	 */
-	protected static $schema_slug = 'boom-sandwiches';
+	protected static $schema_slug = 'food-sandwiches';
 
 	/**
 	 * {@inheritdoc}
@@ -81,17 +81,17 @@ Here's an example:
 use Boom\Shakalaka\Tables;
 use Boom\Shakalaka\StellarWP\Schema;
 
-// This registers a the Sandwiches table that has `$group` set to `boom`.
+// This registers a the Sandwiches table that has `$group` set to `food`.
 Register::table( Tables\Sandwiches::class );
 
-// Let's pretend there's a SomethingElse table schema that has `$group` set to `potato`.
-Register::table( Tables\SomethingElse::class );
+// Let's pretend there's a Bricks table schema that has `$group` set to `not-food`.
+Register::table( Tables\Bricks::class );
 
 // This returns all of the table schemas regardless of their group.
 $tables_in_group_boom = Schema::tables();
 
-// This returns all of the table schemas that have `$group` set to `boom`.
-$tables_in_group_boom = Schema::tables()->get_by_group( 'boom' );
+// This returns all of the table schemas that have `$group` set to `food`.
+$tables_in_group_boom = Schema::tables()->get_by_group( 'food' );
 
 foreach ( $tables_in_group_boom as $table_schema ) {
 	echo $table_schema->get_sql() . "\n";
