@@ -4,14 +4,12 @@ namespace StellarWP\Schema\Models;
 
 use InvalidArgumentException;
 use StellarWP\Schema\Models\ValueObjects\Relationship;
-use Give\Framework\Support\Contracts\Arrayable;
 use RuntimeException;
 
 /**
  * @since 2.19.6
  */
-abstract class Model implements Arrayable
-{
+abstract class Model {
 
 	/**
 	 * The model's attributes.
@@ -58,9 +56,8 @@ abstract class Model implements Arrayable
 	 *
 	 * @return void
 	 */
-	public function __construct(array $attributes = [])
-	{
-		$this->fill(array_merge($this->getPropertyDefaults(), $attributes));
+	public function __construct( array $attributes = [] ) {
+		$this->fill( array_merge( $this->getPropertyDefaults(), $attributes ) );
 
 		$this->syncOriginal();
 	}
@@ -72,8 +69,7 @@ abstract class Model implements Arrayable
 	 *
 	 * @return $this
 	 */
-	protected function syncOriginal()
-	{
+	protected function syncOriginal() {
 		$this->original = $this->attributes;
 
 		return $this;
@@ -88,9 +84,8 @@ abstract class Model implements Arrayable
 	 *
 	 * @return mixed|array
 	 */
-	public function getOriginal($key = null)
-	{
-		return $key ? $this->original[$key] : $this->original;
+	public function getOriginal( $key = null ) {
+		return $key ? $this->original[ $key ] : $this->original;
 	}
 
 	/**
@@ -102,13 +97,12 @@ abstract class Model implements Arrayable
 	 *
 	 * @return bool
 	 */
-	public function isDirty($attribute = null)
-	{
-		if (!$attribute) {
-			return (bool)$this->getDirty();
+	public function isDirty( $attribute = null ) {
+		if ( ! $attribute ) {
+			return (bool) $this->getDirty();
 		}
 
-		return array_key_exists($attribute, $this->getDirty());
+		return array_key_exists( $attribute, $this->getDirty() );
 	}
 
 	/**
@@ -120,9 +114,8 @@ abstract class Model implements Arrayable
 	 *
 	 * @return bool
 	 */
-	public function isClean($attribute = null)
-	{
-		return !$this->isDirty($attribute);
+	public function isClean( $attribute = null ) {
+		return ! $this->isDirty( $attribute );
 	}
 
 	/**
@@ -132,13 +125,12 @@ abstract class Model implements Arrayable
 	 *
 	 * @return array
 	 */
-	public function getDirty()
-	{
+	public function getDirty() {
 		$dirty = [];
 
-		foreach ($this->attributes as $key => $value) {
-			if (!array_key_exists($key, $this->original) || $value !== $this->original[$key]) {
-				$dirty[$key] = $value;
+		foreach ( $this->attributes as $key => $value ) {
+			if ( ! array_key_exists( $key, $this->original ) || $value !== $this->original[ $key ] ) {
+				$dirty[ $key ] = $value;
 			}
 		}
 
@@ -154,10 +146,9 @@ abstract class Model implements Arrayable
 	 *
 	 * @return $this
 	 */
-	public function fill(array $attributes)
-	{
-		foreach ($attributes as $key => $value) {
-			$this->setAttribute($key, $value);
+	public function fill( array $attributes ) {
+		foreach ( $attributes as $key => $value ) {
+			$this->setAttribute( $key, $value );
 		}
 
 		return $this;
@@ -174,13 +165,12 @@ abstract class Model implements Arrayable
 	 *
 	 * @throws RuntimeException
 	 */
-	public function getAttribute($key)
-	{
-		if (!array_key_exists($key, $this->properties)) {
-			throw new InvalidArgumentException("$key is not a valid property.");
+	public function getAttribute( $key ) {
+		if ( ! array_key_exists( $key, $this->properties ) ) {
+			throw new InvalidArgumentException( "$key is not a valid property." );
 		}
 
-		return $this->attributes[$key] ?? null;
+		return $this->attributes[ $key ] ?? null;
 	}
 
 	/**
@@ -189,13 +179,12 @@ abstract class Model implements Arrayable
 	 * @since 2.19.6
 	 *
 	 * @param string $key
-	 * @param mixed $value
+	 * @param mixed  $value
 	 */
-	public function setAttribute($key, $value)
-	{
-		$this->validatePropertyType($key, $value);
+	public function setAttribute( $key, $value ) {
+		$this->validatePropertyType( $key, $value );
 
-		$this->attributes[$key] = $value;
+		$this->attributes[ $key ] = $value;
 
 		return $this;
 	}
@@ -206,27 +195,26 @@ abstract class Model implements Arrayable
 	 * @since 2.19.6
 	 *
 	 * @param string $key
-	 * @param mixed $value
+	 * @param mixed  $value
 	 *
 	 * @return bool
 	 */
-	public function isPropertyTypeValid($key, $value)
-	{
-		if (is_null($value)) {
+	public function isPropertyTypeValid( $key, $value ) {
+		if ( is_null( $value ) ) {
 			return true;
 		}
 
-		$type = $this->getPropertyType($key);
+		$type = $this->getPropertyType( $key );
 
-		switch ($type) {
+		switch ( $type ) {
 			case 'int':
-				return is_int($value);
+				return is_int( $value );
 			case 'string':
-				return is_string($value);
+				return is_string( $value );
 			case 'bool':
-				return is_bool($value);
+				return is_bool( $value );
 			case 'array':
-				return is_array($value);
+				return is_array( $value );
 			default:
 				return $value instanceof $type;
 		}
@@ -236,18 +224,17 @@ abstract class Model implements Arrayable
 	 * Validate property type
 	 *
 	 * @param string $key
-	 * @param mixed $value
+	 * @param mixed  $value
 	 *
 	 * @return void
 	 *
 	 * @throws InvalidArgumentException
 	 */
-	protected function validatePropertyType($key, $value)
-	{
-		if (!$this->isPropertyTypeValid($key, $value)) {
-			$type = $this->getPropertyType($key);
+	protected function validatePropertyType( $key, $value ) {
+		if ( ! $this->isPropertyTypeValid( $key, $value ) ) {
+			$type = $this->getPropertyType( $key );
 
-			throw new InvalidArgumentException("Invalid attribute assignment. '$key' should be of type: '$type'");
+			throw new InvalidArgumentException( "Invalid attribute assignment. '$key' should be of type: '$type'" );
 		}
 	}
 
@@ -260,11 +247,10 @@ abstract class Model implements Arrayable
 	 *
 	 * @return string
 	 */
-	protected function getPropertyType($key)
-	{
-		$type = is_array($this->properties[$key]) ? $this->properties[$key][0] : $this->properties[$key];
+	protected function getPropertyType( $key ) {
+		$type = is_array( $this->properties[ $key ] ) ? $this->properties[ $key ][0] : $this->properties[ $key ];
 
-		return strtolower(trim($type));
+		return strtolower( trim( $type ) );
 	}
 
 	/**
@@ -276,10 +262,9 @@ abstract class Model implements Arrayable
 	 *
 	 * @return mixed|null
 	 */
-	protected function getPropertyDefault($key)
-	{
-		return is_array($this->properties[$key]) && isset($this->properties[$key][1])
-			? $this->properties[$key][1]
+	protected function getPropertyDefault( $key ) {
+		return is_array( $this->properties[ $key ] ) && isset( $this->properties[ $key ][1] )
+			? $this->properties[ $key ][1]
 			: null;
 	}
 
@@ -290,11 +275,10 @@ abstract class Model implements Arrayable
 	 *
 	 * @return array
 	 */
-	protected function getPropertyDefaults()
-	{
+	protected function getPropertyDefaults() {
 		$defaults = [];
-		foreach (array_keys($this->properties) as $property) {
-			$defaults[$property] = $this->getPropertyDefault($property);
+		foreach ( array_keys( $this->properties ) as $property ) {
+			$defaults[ $property ] = $this->getPropertyDefault( $property );
 		}
 
 		return $defaults;
@@ -305,8 +289,7 @@ abstract class Model implements Arrayable
 	 *
 	 * @return array
 	 */
-	public function toArray()
-	{
+	public function toArray() {
 		return $this->attributes;
 	}
 
@@ -315,17 +298,15 @@ abstract class Model implements Arrayable
 	 *
 	 * @return array
 	 */
-	public function getAttributes()
-	{
+	public function getAttributes() {
 		return $this->attributes;
 	}
 
 	/**
 	 * @return int[]|string[]
 	 */
-	public static function propertyKeys()
-	{
-		return array_keys((new static)->properties);
+	public static function propertyKeys() {
+		return array_keys( ( new static )->properties );
 	}
 
 	/**
@@ -337,13 +318,12 @@ abstract class Model implements Arrayable
 	 *
 	 * @return mixed
 	 */
-	public function __get($key)
-	{
-		if (array_key_exists($key, $this->relationships)) {
-			return $this->getRelationship($key);
+	public function __get( $key ) {
+		if ( array_key_exists( $key, $this->relationships ) ) {
+			return $this->getRelationship( $key );
 		}
 
-		return $this->getAttribute($key);
+		return $this->getAttribute( $key );
 	}
 
 	/**
@@ -352,13 +332,12 @@ abstract class Model implements Arrayable
 	 * @since 2.19.6
 	 *
 	 * @param string $key
-	 * @param mixed $value
+	 * @param mixed  $value
 	 *
 	 * @return void
 	 */
-	public function __set($key, $value)
-	{
-		$this->setAttribute($key, $value);
+	public function __set( $key, $value ) {
+		$this->setAttribute( $key, $value );
 	}
 
 	/**
@@ -370,9 +349,8 @@ abstract class Model implements Arrayable
 	 *
 	 * @return bool
 	 */
-	public function __isset($key)
-	{
-		return isset($this->attributes[$key]);
+	public function __isset( $key ) {
+		return isset( $this->attributes[ $key ] );
 	}
 
 	/**
@@ -385,26 +363,25 @@ abstract class Model implements Arrayable
 	 *
 	 * @throws InvalidArgumentException
 	 */
-	protected function getRelationship($key)
-	{
-		if (!is_callable([$this, $key])) {
-			throw new InvalidArgumentException("$key() does not exist.");
+	protected function getRelationship( $key ) {
+		if ( ! is_callable( [ $this, $key ] ) ) {
+			throw new InvalidArgumentException( "$key() does not exist." );
 		}
 
-		if ($this->hasCachedRelationship($key)) {
-			return $this->cachedRelations[$key];
+		if ( $this->hasCachedRelationship( $key ) ) {
+			return $this->cachedRelations[ $key ];
 		}
 
-		$relationship = new Relationship($this->relationships[$key]);
+		$relationship = new Relationship( $this->relationships[ $key ] );
 
-		switch (true) {
-			case ($relationship->equals(Relationship::BELONGS_TO())):
-			case ($relationship->equals(Relationship::HAS_ONE())):
-				return $this->cachedRelations[$key] = $this->$key()->get();
-			case ($relationship->equals(Relationship::HAS_MANY())):
-			case ($relationship->equals(Relationship::BELONGS_TO_MANY())):
-			case ($relationship->equals(Relationship::MANY_TO_MANY())):
-				return $this->cachedRelations[$key] = $this->$key()->getAll();
+		switch ( true ) {
+			case ( $relationship->equals( Relationship::BELONGS_TO() ) ):
+			case ( $relationship->equals( Relationship::HAS_ONE() ) ):
+				return $this->cachedRelations[ $key ] = $this->$key()->get();
+			case ( $relationship->equals( Relationship::HAS_MANY() ) ):
+			case ( $relationship->equals( Relationship::BELONGS_TO_MANY() ) ):
+			case ( $relationship->equals( Relationship::MANY_TO_MANY() ) ):
+				return $this->cachedRelations[ $key ] = $this->$key()->getAll();
 		}
 
 		return null;
@@ -415,8 +392,7 @@ abstract class Model implements Arrayable
 	 *
 	 * @since 2.20.0
 	 */
-	protected function hasCachedRelationship(string $key): bool
-	{
-		return array_key_exists($key, $this->cachedRelations);
+	protected function hasCachedRelationship( string $key ) : bool {
+		return array_key_exists( $key, $this->cachedRelations );
 	}
 }
