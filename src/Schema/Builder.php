@@ -6,7 +6,6 @@ use StellarWP\Schema\Container;
 use StellarWP\Schema\Fields;
 use StellarWP\Schema\StellarWP\DB\DB;
 use StellarWP\Schema\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
-use StellarWP\Schema\StellarWP\DB\QueryBuilder\QueryBuilder;
 use StellarWP\Schema\Tables;
 use StellarWP\Schema\Tables\Table_Schema_Interface;
 use StellarWP\Schema\Tables\Filters\Group_FilterIterator;
