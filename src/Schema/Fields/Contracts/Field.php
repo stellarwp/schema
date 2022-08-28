@@ -4,23 +4,24 @@
  *
  * @since   1.0.0
  *
- * @package StellarWP\Schema\Fields
+ * @package StellarWP\Schema\Fields\Contracts
  */
 
-namespace StellarWP\Schema\Fields;
+namespace StellarWP\Schema\Fields\Contracts;
 
-use StellarWP\Schema\Container;
+use lucatume\DI52\App;
+use lucatume\DI52\Container;
 use StellarWP\Schema\Schema;
 use StellarWP\Schema\StellarWP\DB\DB;
 
 /**
- * Class Abstract_Field
+ * Class Field
  *
  * @since   1.0.0
  *
- * @package StellarWP\Schema\Fields
+ * @package StellarWP\Schema\Fields\Contracts
  */
-abstract class Abstract_Field implements Field_Schema_Interface {
+abstract class Field implements Schema_Interface {
 	/**
 	 * @since 1.0.0
 	 *
@@ -67,7 +68,7 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 	 * @param Container $container The container to use.
 	 */
 	public function __construct( $container = null ) {
-		$this->container = $container ?: Container::init();
+		$this->container = $container ?: App::container();
 	}
 
 	/**

@@ -2,11 +2,12 @@
 
 namespace StellarWP\Schema;
 
-use lucatume\DI52\ServiceProvider as Service_Provider;
+use lucatume\DI52\App;
+use lucatume\DI52\ServiceProvider;
 
 require_once dirname( dirname( __DIR__ ) ) . '/vendor/strauss/autoload.php';
 
-class Schema extends Service_Provider {
+class Schema extends ServiceProvider {
 	const VERSION = '1.1.0';
 
 	/**
@@ -19,7 +20,7 @@ class Schema extends Service_Provider {
 	public static function builder() {
 		static::init();
 
-		return Container::init()->make( Builder::class );
+		return App::make( Builder::class );
 	}
 
 	/**
@@ -32,7 +33,7 @@ class Schema extends Service_Provider {
 	public static function fields() {
 		static::init();
 
-		return Container::init()->make( Fields\Collection::class );
+		return App::make( Fields\Collection::class );
 	}
 
 	/**
@@ -41,14 +42,14 @@ class Schema extends Service_Provider {
 	 * @since 1.0.0
 	 */
 	public static function init(): void {
-		$container = Container::init();
+		App::container();
 
-		if ( $container->getVar( 'stellarwp_schema_registered', false ) ) {
+		if ( App::getVar( 'stellarwp_schema_registered', false ) ) {
 			return;
 		}
 
-		$container->register( static::class );
-		$container->setVar( 'stellarwp_schema_registered', true );
+		App::register( static::class );
+		App::setVar( 'stellarwp_schema_registered', true );
 	}
 
 	/**
@@ -57,18 +58,18 @@ class Schema extends Service_Provider {
 	 * @since 1.0.0
 	 */
 	public function register() {
-		$this->container->singleton( static::class, $this );
-		$this->container->singleton( Builder::class, Builder::class );
-		$this->container->singleton( Fields\Collection::class, Fields\Collection::class );
-		$this->container->singleton( Tables\Collection::class, Tables\Collection::class );
+		App::singleton( static::class, $this );
+		App::singleton( Builder::class, Builder::class );
+		App::singleton( Fields\Collection::class, Fields\Collection::class );
+		App::singleton( Tables\Collection::class, Tables\Collection::class );
 
 		/**
 		 * These providers should be the ones that extend the bulk of features for CT1,
 		 * with only the bare minimum of providers registered above, to determine important state information.
 		 */
-		$this->container->register( Full_Activation_Provider::class );
+		App::register( Full_Activation_Provider::class );
 		// Set a flag in the container to indicate there was a full activation of the CT1 component.
-		$this->container->setVar( 'stellarwp_schema_fully_activated', true );
+		App::setVar( 'stellarwp_schema_fully_activated', true );
 
 		$this->register_hooks();
 	}
@@ -80,7 +81,7 @@ class Schema extends Service_Provider {
 	 */
 	private function register_hooks() : void {
 		if ( did_action( 'plugins_loaded' ) ) {
-			$this->container->make( Builder::class )->up();
+			App::make( Builder::class )->up();
 		} else {
 			/**
 			 * Filters the priority of the plugins_loaded action for running Builder::up.
@@ -89,7 +90,7 @@ class Schema extends Service_Provider {
 			 */
 			$priority = apply_filters( 'stellarwp_schema_up_plugins_loaded_priority', 1000 );
 
-			add_action( 'plugins_loaded', $this->container->callback( Builder::class, 'up' ), $priority, 0 );
+			add_action( 'plugins_loaded', App::callback( Builder::class, 'up' ), $priority, 0 );
 		}
 	}
 
@@ -103,6 +104,6 @@ class Schema extends Service_Provider {
 	public static function tables() {
 		static::init();
 
-		return Container::init()->make( Tables\Collection::class );
+		return App::make( Tables\Collection::class );
 	}
 }

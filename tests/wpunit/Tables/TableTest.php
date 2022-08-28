@@ -2,9 +2,7 @@
 
 namespace StellarWP\Schema\Tests\Tables;
 
-use StellarWP\Schema\Tables\Table_Schema_Interface;
 use StellarWP\Schema\Register;
-use StellarWP\Schema\Schema;
 use StellarWP\Schema\Tests\SchemaTestCase;
 use StellarWP\Schema\Tests\Traits\Table_Fixtures;
 

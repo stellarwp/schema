@@ -2,7 +2,7 @@
 
 namespace StellarWP\Schema\Tests;
 
-use StellarWP\Schema\Container;
+use lucatume\DI52\App;
 use StellarWP\Schema\Schema;
 
 class SchemaTestCase extends \Codeception\Test\Unit {
@@ -12,7 +12,7 @@ class SchemaTestCase extends \Codeception\Test\Unit {
 		// before
 		parent::setUp();
 
-		$container = Container::init();
+		$container = App::container();
 
 		// Force the schema to be re-initialized.
 		$container->setVar( 'stellarwp_schema_registered', false );

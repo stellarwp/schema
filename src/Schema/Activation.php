@@ -9,6 +9,7 @@
 
 namespace StellarWP\Schema;
 
+use lucatume\DI52\App;
 use StellarWP\Schema\Builder;
 
 /**
@@ -31,9 +32,12 @@ class Activation {
 	 * Handles the activation of the feature functions.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @param lucatume\DI52\Container $container The container.
 	 */
-	public static function activate() {
-		$schema_builder = Container::init()->make( Builder::class);
+	public static function activate( $container = null ) {
+		$container = $container ?: App::container();
+		$schema_builder = $container->make( Builder::class);
 		$schema_builder->up();
 	}
 
@@ -43,12 +47,14 @@ class Activation {
 	 * This method will run once a day (using transients).
 	 *
 	 * @since 1.0.0
+	 *
+	 * @param lucatume\DI52\Container $container The DI container.
 	 */
-	public static function init() {
+	public static function init( $container = null ) {
 		// Check if we ran recently.
 		$db_hash = get_transient( static::ACTIVATION_TRANSIENT );
 
-		$container = Container::init();
+		$container = $container ?: App::container();
 
 		$schema_builder = $container->make( Builder::class );
 		$hash = $schema_builder->get_registered_schemas_version_hash();
@@ -64,12 +70,12 @@ class Activation {
 			$schema_builder->up();
 		}
 
-		if ( ! Container::init()->getVar( 'stellarwp_schema_fully_activated' ) ) {
+		if ( ! $container->getVar( 'stellarwp_schema_fully_activated' ) ) {
 			/**
 			 * On new installations the full activation code will find an empty state and
 			 * will have not activated at this point, do it now if required.
 			 */
-			Container::init()->register( Full_Activation_Provider::class );
+			$container->register( Full_Activation_Provider::class );
 		}
 	}
 
@@ -77,11 +83,13 @@ class Activation {
 	 * Handles the feature deactivation.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @param lucatume\DI52\Container $container The DI container.
 	 */
-	public static function deactivate() {
-		$services = Container::init();
+	public static function deactivate( $container = null ) {
+		$container = $container ?: App::container();
 
 		// @todo Should we drop the tables here, gracefully, if no data was generated?
-		$services->make( Builder::class )->clean();
+		$container->make( Builder::class )->clean();
 	}
 }
