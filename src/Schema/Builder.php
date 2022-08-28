@@ -6,6 +6,7 @@ use StellarWP\Schema\Container;
 use StellarWP\Schema\Fields;
 use StellarWP\Schema\StellarWP\DB\DB;
 use StellarWP\Schema\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
+use StellarWP\Schema\StellarWP\DB\QueryBuilder\QueryBuilder;
 use StellarWP\Schema\Tables;
 use StellarWP\Schema\Tables\Table_Schema_Interface;
 use StellarWP\Schema\Tables\Filters\Group_FilterIterator;
@@ -248,11 +249,8 @@ class Builder {
 	 * @return array<string,mixed> A list of each creation or update result.
 	 */
 	public function up( $force = false ) {
-		global $wpdb;
-
-		//phpcs:ignore
 		try {
-			DB::get_results( "SELECT 1 FROM {$wpdb->posts} LIMIT 1" );
+			DB::table( 'posts' )->select ( 1 )->limit( 1 )->get();
 		} catch ( DatabaseQueryException $e ) {
 			// Let's not try to create the tables on a blog that's missing the basic ones.
 			return [];

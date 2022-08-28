@@ -183,12 +183,15 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 		}
 
 		$table_name = $table_schema::table_name( true );
-		$q          = 'select `column_name` from information_schema.columns
-					where table_schema = database()
-					and `table_name` = %s';
-		$rows       = DB::get_results( $wpdb->prepare( $q, $table_name ) );
-		$fields     = $this->fields();
-		$rows       = array_map( function ( $row ) {
+
+		$rows = DB::table( DB::raw( 'information_schema.statistics' ) )
+			->select( 'column_name' )
+			->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
+			->where( 'TABLE_NAME', $table_name )
+			->getAll();
+
+		$fields = $this->fields();
+		$rows   = array_map( function ( $row ) {
 			return $row->column_name;
 		}, $rows );
 

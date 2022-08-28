@@ -360,16 +360,16 @@ abstract class Abstract_Table implements Table_Schema_Interface {
 	 *
 	 * @return bool Whether the table already has an index or not.
 	 */
-	protected function has_index( $index, $table_name = null ) {
+	public function has_index( $index, $table_name = null ) {
 		$table_name = $table_name ?: static::table_name( true );
 
-		return (int) DB::get_var(
-				DB::prepare(
-					"SELECT COUNT(*) FROM information_schema.statistics WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = %s AND INDEX_NAME = %s",
-					$table_name,
-					$index
-				)
-			) >= 1;
+		$count = DB::table( DB::raw( 'information_schema.statistics' ) )
+			->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
+			->where( 'TABLE_NAME', $table_name )
+			->where( 'INDEX_NAME', $index )
+			->count();
+
+		return $count >= 1;
 	}
 
 	/**
