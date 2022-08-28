@@ -4,6 +4,8 @@ namespace StellarWP\Schema;
 
 use lucatume\DI52\ServiceProvider as Service_Provider;
 
+require_once dirname( dirname( __DIR__ ) ) . '/vendor/strauss/autoload.php';
+
 class Schema extends Service_Provider {
 	/**
 	 * Gets the Builder.

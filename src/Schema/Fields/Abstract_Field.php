@@ -11,6 +11,7 @@ namespace StellarWP\Schema\Fields;
 
 use StellarWP\Schema\Container;
 use StellarWP\Schema\Schema;
+use StellarWP\Schema\StellarWP\DB\DB;
 
 /**
  * Class Abstract_Field
@@ -136,11 +137,10 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 		 */
 		do_action( 'stellarwp_pre_drop_field', $schema_slug, $this );
 
-		global $wpdb;
 		$this_table   = $this->table_schema()::table_name( true );
 		$drop_columns = 'DROP COLUMN `' . implode( '`, DROP COLUMN `', $this->fields() ) . '`';
 
-		$results = $wpdb->query( sprintf( "ALTER TABLE %s %s", $this_table, $drop_columns ) );
+		$results = DB::query( sprintf( "ALTER TABLE %s %s", $this_table, $drop_columns ) );
 
 		/**
 		 * Runs after the custom field has been dropped.
@@ -186,7 +186,7 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 		$q          = 'select `column_name` from information_schema.columns
 					where table_schema = database()
 					and `table_name` = %s';
-		$rows       = $wpdb->get_results( $wpdb->prepare( $q, $table_name ) );
+		$rows       = DB::get_results( $wpdb->prepare( $q, $table_name ) );
 		$fields     = $this->fields();
 		$rows       = array_map( function ( $row ) {
 			return $row->column_name;

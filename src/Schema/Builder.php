@@ -4,6 +4,8 @@ namespace StellarWP\Schema;
 
 use StellarWP\Schema\Container;
 use StellarWP\Schema\Fields;
+use StellarWP\Schema\StellarWP\DB\DB;
+use StellarWP\Schema\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use StellarWP\Schema\Tables;
 use StellarWP\Schema\Tables\Table_Schema_Interface;
 use StellarWP\Schema\Tables\Filters\Group_FilterIterator;
@@ -38,7 +40,6 @@ class Builder {
 	 * @return bool Whether all custom tables exist or not. Does not check custom fields.
 	 */
 	public function all_tables_exist( $group = null ) {
-		global $wpdb;
 		$table_schemas = $this->get_registered_table_schemas();
 
 		if ( null !== $group ) {
@@ -50,7 +51,7 @@ class Builder {
 			return true;
 		}
 
-		$result = $wpdb->get_col( 'SHOW TABLES' );
+		$result = DB::get_col( 'SHOW TABLES' );
 		foreach ( $table_schemas as $table_schema ) {
 			if ( ! in_array( $table_schema::table_name(), $result, true ) ) {
 
@@ -67,8 +68,6 @@ class Builder {
 	 * @since 1.0.0
 	 */
 	public function down() {
-		global $wpdb;
-
 		/**
 		 * Runs before the custom tables are dropped.
 		 *
@@ -231,8 +230,8 @@ class Builder {
 
 		foreach ( $schemas as $class ) {
 			$no_prefix_table_name          = $class::table_name( false );
-			$prefixed_tale_name            = $class::table_name( true );
-			$wpdb->{$no_prefix_table_name} = $prefixed_tale_name;
+			$prefixed_table_name           = $class::table_name( true );
+			$wpdb->{$no_prefix_table_name} = $prefixed_table_name;
 			if ( ! in_array( $wpdb->{$no_prefix_table_name}, $wpdb->tables, true ) ) {
 				$wpdb->tables[] = $no_prefix_table_name;
 			}
@@ -252,10 +251,10 @@ class Builder {
 		global $wpdb;
 
 		//phpcs:ignore
-		$wpdb->get_results( "SELECT 1 FROM {$wpdb->posts} LIMIT 1" );
-		$posts_table_exists = '' === $wpdb->last_error;
-		// Let's not try to create the tables on a blog that's missing the basic ones.
-		if ( ! $posts_table_exists ) {
+		try {
+			DB::get_results( "SELECT 1 FROM {$wpdb->posts} LIMIT 1" );
+		} catch ( DatabaseQueryException $e ) {
+			// Let's not try to create the tables on a blog that's missing the basic ones.
 			return [];
 		}
 
