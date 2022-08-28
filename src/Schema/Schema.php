@@ -7,6 +7,8 @@ use lucatume\DI52\ServiceProvider as Service_Provider;
 require_once dirname( dirname( __DIR__ ) ) . '/vendor/strauss/autoload.php';
 
 class Schema extends Service_Provider {
+	const VERSION = '1.1.0';
+
 	/**
 	 * Gets the Builder.
 	 *
