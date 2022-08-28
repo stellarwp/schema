@@ -6,17 +6,15 @@ A library for simplifying the creation, update, and field modification of custom
 
 ## Installation
 
-It's recommended that you install the Schema as a project dependency via [Composer](https://getcomposer.org/):
+It's recommended that you install Schema as a project dependency via [Composer](https://getcomposer.org/):
 
 ```bash
 composer require stellarwp/schema
 ```
 
-### Strauss
-
-Including this library into your project as-is should be avoided. Instead, we recommend using [Strauss](https://github.com/BrianHenryIE/strauss) to ensure this library is namespaced for your project. This way, if your WordPress project is run alongside another WordPress project that uses this library, the two won't conflict!
-
-Adding Strauss to your `composer.json` is only slightly more complicated than adding a typical dependency, so checkout our [strauss docs](docs/strauss-setup.md).
+> We _actually_ recommend that this library gets included in your project using [Strauss](https://github.com/BrianHenryIE/strauss).
+>
+> Luckily, adding Strauss to your `composer.json` is only slightly more complicated than adding a typical dependency, so checkout our [strauss docs](https://github.com/stellarwp/global-docs/blob/main/docs/strauss-setup.md).
 
 ## Important note on ALL examples
 
