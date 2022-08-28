@@ -134,7 +134,7 @@ abstract class Field implements Schema_Interface {
 		 * @since 1.0.0
 		 *
 		 * @param string $schema_slug The schema slug.
-		 * @param Field_Schema_Interface $field_schema The field schema to be dropped.
+		 * @param Schema_Interface $field_schema The field schema to be dropped.
 		 */
 		do_action( 'stellarwp_pre_drop_field', $schema_slug, $this );
 
@@ -149,7 +149,7 @@ abstract class Field implements Schema_Interface {
 		 * @since 1.0.0
 		 *
 		 * @param string $schema_slug The schema slug.
-		 * @param Field_Schema_Interface $field_schema The field schema to be dropped.
+		 * @param Schema_Interface $field_schema The field schema to be dropped.
 		 */
 		do_action( 'stellarwp_post_drop_field', $schema_slug, $this );
 
@@ -161,7 +161,7 @@ abstract class Field implements Schema_Interface {
 		 * @since 1.0.0
 		 *
 		 * @param string $schema_slug The schema slug.
-		 * @param Field_Schema_Interface $field_schema The field schema to be dropped.
+		 * @param Schema_Interface $field_schema The field schema to be dropped.
 		 */
 		do_action( 'stellarwp_post_drop_field_table_version_sync', $schema_slug, $this );
 
