@@ -5,6 +5,9 @@
 $vendorstrauss = dirname(__FILE__);
 
 return array(
+   'StellarWP\Schema\MyCLabs\Enum\Enum' => $vendorstrauss . '/myclabs/php-enum/src/Enum.php',
+   'StellarWP\Schema\MyCLabs\Enum\PHPUnit\Comparator' => $vendorstrauss . '/myclabs/php-enum/src/PHPUnit/Comparator.php',
+   'StellarWP__SchemaStringable' => $vendorstrauss . '/myclabs/php-enum/stubs/Stringable.php',
    'StellarWP\Schema\lucatume\DI52\ServiceProvider' => $vendorstrauss . '/lucatume/di52/src/ServiceProvider.php',
    'StellarWP\Schema\lucatume\DI52\Builders\ClosureBuilder' => $vendorstrauss . '/lucatume/di52/src/Builders/ClosureBuilder.php',
    'StellarWP\Schema\lucatume\DI52\Builders\Resolver' => $vendorstrauss . '/lucatume/di52/src/Builders/Resolver.php',
