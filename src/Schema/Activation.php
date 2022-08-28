@@ -10,6 +10,7 @@
 namespace StellarWP\Schema;
 
 use lucatume\DI52\App;
+use lucatume\DI52\Container;
 use StellarWP\Schema\Builder;
 
 /**
@@ -33,7 +34,7 @@ class Activation {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param lucatume\DI52\Container $container The container.
+	 * @param Container $container The container.
 	 */
 	public static function activate( $container = null ) {
 		$container = $container ?: App::container();
@@ -48,7 +49,7 @@ class Activation {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param lucatume\DI52\Container $container The DI container.
+	 * @param Container $container The DI container.
 	 */
 	public static function init( $container = null ) {
 		// Check if we ran recently.
@@ -84,7 +85,7 @@ class Activation {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param lucatume\DI52\Container $container The DI container.
+	 * @param Container $container The DI container.
 	 */
 	public static function deactivate( $container = null ) {
 		$container = $container ?: App::container();
