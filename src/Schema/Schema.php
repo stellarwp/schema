@@ -46,19 +46,19 @@ class Schema {
 	 * @since 1.0.0
 	 */
 	public static function init(): void {
-
-		$container = Config::get_container();
-		$db_class  = Config::get_db();
-
-		if ( empty( $container ) || empty( $db_class ) ) {
+		if ( ! Config::has_container() || ! Config::has_db() ) {
 			throw new \RuntimeException( 'You must call StellarWP\Schema\Config::set_container() and StellarWP\Schema\Config::set_db() before calling StellarWP\Schema\Schema::init().' );
 		}
+
+		$container = Config::get_container();
 
 		if ( $container->make( 'stellarwp_schema_registered' ) ) {
 			return;
 		}
 
+		$db_class = Config::get_db();
 		$db_class::init();
+
 		$container->singleton( static::class, static::class );
 		$container->make( static::class )->register();
 		$container->bind( 'stellarwp_schema_registered', static function() { return true; } );
