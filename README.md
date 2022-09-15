@@ -16,6 +16,15 @@ composer require stellarwp/schema
 >
 > Luckily, adding Strauss to your `composer.json` is only slightly more complicated than adding a typical dependency, so checkout our [strauss docs](https://github.com/stellarwp/global-docs/blob/main/docs/strauss-setup.md).
 
+## Usage prerequisites
+
+To actually _use_ the schema library, you must have two additional libraries in your project:
+
+1. A Dependency Injection Container (DI Container) that is compatible with [di52](https://github.com/lucatume/di52) _(We recommend using di52.)_.
+1. The [stellarwp/db](https://github.com/stellarwp/db) library.
+
+In order to keep this library as light as possible, those dependcies are not included in the library itself. To avoid version compatibility issues, those libraries are _also_ not included as Composer dependencies. Instead, you must include them in your project. We recommend including them via composer [using Strauss](https://github.com/stellarwp/global-docs/blob/main/docs/strauss-setup.md), just like you have done with this library.
+
 ## Important note on ALL examples
 
 All examples within the documentation for this project will be assuming that you are using [Strauss](#strauss) to prefix the namespaces provided by this library.
@@ -28,6 +37,23 @@ The examples will be using:
 ## Getting started
 
 For a full understanding of what is available in this library and how to use it, definitely read through the full [documentation](#documentation). But for folks that want to get rolling with the basics quickly, try out the following.
+
+### Initializing the library
+
+```php
+use Boom\Shakalaka\StellarWP\Schema\Config;
+
+// You'll need a Dependency Injection Container that is compatible with https://github.com/lucatume/di52.
+use Boom\Shakalaka\lucatume\DI52\Container;
+
+// You'll need to use the StellarWP\DB library for database operations.
+use Boom\Shakalaka\StellarWP\DB\DB;
+
+$container = new Boom\Shakalaka\lucatume\DI52\Container();
+
+Config::set_container( $container );
+Config::set_db( DB::class );
+```
 
 ### Creating a table
 

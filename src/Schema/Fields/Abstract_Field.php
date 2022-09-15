@@ -9,9 +9,8 @@
 
 namespace StellarWP\Schema\Fields;
 
-use StellarWP\Schema\Container;
+use StellarWP\Schema\Config;
 use StellarWP\Schema\Schema;
-use StellarWP\Schema\StellarWP\DB\DB;
 
 /**
  * Class Abstract_Field
@@ -36,9 +35,14 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 	protected static $base_table_name = '';
 
 	/**
-	 * @var Container The dependency injection container.
+	 * @var object The dependency injection container.
 	 */
 	protected $container;
+
+	/**
+	 * @var string The db class.
+	 */
+	protected $db;
 
 	/**
 	 * @since 1.0.0
@@ -64,10 +68,12 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Container $container The container to use.
+	 * @param string $db StellarWP\DB object.
+	 * @param object $container The container to use.
 	 */
-	public function __construct( $container = null ) {
-		$this->container = $container ?: Container::init();
+	public function __construct( $db = null, $container = null ) {
+		$this->db        = $db ?: Config::get_db();
+		$this->container = $container ?: Config::get_container();
 	}
 
 	/**
@@ -140,7 +146,7 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 		$this_table   = $this->table_schema()::table_name( true );
 		$drop_columns = 'DROP COLUMN `' . implode( '`, DROP COLUMN `', $this->fields() ) . '`';
 
-		$results = DB::query( sprintf( "ALTER TABLE %s %s", $this_table, $drop_columns ) );
+		$results = $this->db::query( sprintf( "ALTER TABLE %s %s", $this_table, $drop_columns ) );
 
 		/**
 		 * Runs after the custom field has been dropped.
@@ -184,7 +190,7 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 
 		$table_name = $table_schema::table_name( true );
 
-		$rows = DB::table( DB::raw( 'information_schema.statistics' ) )
+		$rows = $this->db::table( $this->db::raw( 'information_schema.statistics' ) )
 			->select( 'column_name' )
 			->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
 			->where( 'TABLE_NAME', $table_name )

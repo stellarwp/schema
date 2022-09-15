@@ -2,10 +2,8 @@
 
 namespace StellarWP\Schema;
 
-use StellarWP\Schema\Container;
+use StellarWP\Schema\Config;
 use StellarWP\Schema\Fields;
-use StellarWP\Schema\StellarWP\DB\DB;
-use StellarWP\Schema\StellarWP\DB\Database\Exceptions\DatabaseQueryException;
 use StellarWP\Schema\Tables;
 use StellarWP\Schema\Tables\Table_Schema_Interface;
 use StellarWP\Schema\Tables\Filters\Group_FilterIterator;
@@ -15,17 +13,26 @@ class Builder {
 	/**
 	 * Container.
 	 *
-	 * @var Container
+	 * @var object
 	 */
 	protected $container;
 
 	/**
+	 * StellarWP\DB class.
+	 *
+	 * @var string
+	 */
+	protected $db;
+
+	/**
 	 * Constructor.
 	 *
-	 * @param Container $container Container instance.
+	 * @param string|null $db StellarWP\DB class.
+	 * @param object $container Container instance.
 	 */
-	public function __construct( $container = null ) {
-		$this->container = $container ?: Container::init();
+	public function __construct( $db = null, $container = null ) {
+		$this->db        = $db ?: Config::get_db();
+		$this->container = $container ?: Config::get_container();
 	}
 
 	/**
@@ -51,7 +58,7 @@ class Builder {
 			return true;
 		}
 
-		$result = DB::get_col( 'SHOW TABLES' );
+		$result = $this->db::get_col( 'SHOW TABLES' );
 		foreach ( $table_schemas as $table_schema ) {
 			if ( ! in_array( $table_schema::table_name(), $result, true ) ) {
 
@@ -249,8 +256,8 @@ class Builder {
 	 */
 	public function up( $force = false ) {
 		try {
-			DB::table( 'posts' )->select ( 1 )->limit( 1 )->get();
-		} catch ( DatabaseQueryException $e ) {
+			$this->db::table( 'posts' )->select ( 1 )->limit( 1 )->get();
+		} catch ( \Exception $e ) {
 			// Let's not try to create the tables on a blog that's missing the basic ones.
 			return [];
 		}

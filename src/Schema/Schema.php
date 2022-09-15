@@ -2,12 +2,17 @@
 
 namespace StellarWP\Schema;
 
-use lucatume\DI52\ServiceProvider as Service_Provider;
+use StellarWP\Schema\Config;
 
-require_once dirname( dirname( __DIR__ ) ) . '/vendor/strauss/autoload.php';
-
-class Schema extends Service_Provider {
+class Schema {
 	const VERSION = '1.1.0';
+
+	/**
+	 * Container object.
+	 *
+	 * @var object
+	 */
+	private $container;
 
 	/**
 	 * Gets the Builder.
@@ -19,7 +24,7 @@ class Schema extends Service_Provider {
 	public static function builder() {
 		static::init();
 
-		return Container::init()->make( Builder::class );
+		return Config::get_container()->make( Builder::class );
 	}
 
 	/**
@@ -32,7 +37,7 @@ class Schema extends Service_Provider {
 	public static function fields() {
 		static::init();
 
-		return Container::init()->make( Fields\Collection::class );
+		return Config::get_container()->make( Fields\Collection::class );
 	}
 
 	/**
@@ -41,14 +46,31 @@ class Schema extends Service_Provider {
 	 * @since 1.0.0
 	 */
 	public static function init(): void {
-		$container = Container::init();
 
-		if ( $container->getVar( 'stellarwp_schema_registered', false ) ) {
+		$container = Config::get_container();
+		$db_class  = Config::get_db();
+
+		if ( empty( $container ) || empty( $db_class ) ) {
+			throw new \RuntimeException( 'You must call StellarWP\Schema\Config::set_container() and StellarWP\Schema\Config::set_db() before calling StellarWP\Schema\Schema::init().' );
+		}
+
+		if ( $container->get( 'stellarwp_schema_registered' ) ) {
 			return;
 		}
 
-		$container->register( static::class );
-		$container->setVar( 'stellarwp_schema_registered', true );
+		$db_class::init();
+		$container->singleton( static::class, static::class, [ 'register' ] );
+		$container->make( static::class );
+		$container->bind( 'stellarwp_schema_registered', static function() { return true; } );
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param object $container
+	 */
+	public function __construct( $container = null ) {
+		$this->container = $container ?: Config::get_container();
 	}
 
 	/**
@@ -58,17 +80,20 @@ class Schema extends Service_Provider {
 	 */
 	public function register() {
 		$this->container->singleton( static::class, $this );
-		$this->container->singleton( Builder::class, Builder::class );
-		$this->container->singleton( Fields\Collection::class, Fields\Collection::class );
-		$this->container->singleton( Tables\Collection::class, Tables\Collection::class );
+		$this->container->singleton( Builder::class );
+		$this->container->singleton( Fields\Collection::class );
+		$this->container->singleton( Tables\Collection::class );
 
 		/**
 		 * These providers should be the ones that extend the bulk of features for CT1,
 		 * with only the bare minimum of providers registered above, to determine important state information.
 		 */
-		$this->container->register( Full_Activation_Provider::class );
+		$this->container->singleton( Full_Activation_Provider::class, Full_Activation_Provider::class, [ 'register' ] );
+		$this->container->make( Full_Activation_Provider::class );
+
 		// Set a flag in the container to indicate there was a full activation of the CT1 component.
-		$this->container->setVar( 'stellarwp_schema_fully_activated', true );
+		//$this->container->setVar( 'stellarwp_schema_fully_activated', true );
+		$this->container->bind( 'stellarwp_schema_fully_activated', static function() { return true; } );
 
 		$this->register_hooks();
 	}
@@ -103,6 +128,6 @@ class Schema extends Service_Provider {
 	public static function tables() {
 		static::init();
 
-		return Container::init()->make( Tables\Collection::class );
+		return Config::get_container()->make( Tables\Collection::class );
 	}
 }

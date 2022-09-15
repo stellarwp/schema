@@ -3,6 +3,7 @@
 namespace StellarWP\Schema;
 
 use StellarWP\Schema\Builder;
+use StellarWP\Schema\Config;
 use StellarWP\Schema\Fields;
 use StellarWP\Schema\Tables;
 
@@ -26,7 +27,7 @@ class Register {
 			$field = new $field();
 		}
 
-		$container = Container::init();
+		$container = Config::get_container();
 
 		Schema::fields()->add( $field );
 
@@ -123,7 +124,7 @@ class Register {
 			$table = new $table();
 		}
 
-		$container = Container::init();
+		$container = Config::get_container();
 
 		Schema::tables()->add( $table );
 

@@ -2,7 +2,7 @@
 namespace StellarWP\Schema\Tests;
 
 use StellarWP\Schema\Builder;
-use StellarWP\Schema\Container;
+use StellarWP\Schema\Config;
 use StellarWP\Schema\Register;
 use StellarWP\Schema\Tests\SchemaTestCase;
 use StellarWP\Schema\Tests\Traits;
@@ -20,7 +20,7 @@ class Full_ActivationTest extends SchemaTestCase {
 
 		Register::table( $this->get_simple_table() );
 
-		$builder       = Container::init()->make( Builder::class );
+		$builder       = Config::get_container()->make( Builder::class );
 		$table_schemas = $builder->get_registered_table_schemas();
 
 		$this->assertNotEmpty( $table_schemas );

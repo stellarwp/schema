@@ -21,10 +21,11 @@ parameters:
 	paths:
 		- %currentWorkingDirectory%/src
 
+	scanDirectories:
+		- vendor/strauss
+
 	ignoreErrors:
 		# Uses func_get_args()
 		- '#^Function add_query_arg invoked with [123] parameters?, 0 required\.$#'
 		# Uses func_get_args()
 		- '#^Function apply_filters(_ref_array)? invoked with [34567] parameters, 2 required\.$#'
-		- '#^Call to static method .+ on an unknown class StellarWP\\Schema\\StellarWP\\DB\\DB\.$#'
-		- '#^Caught class StellarWP\\Schema\\StellarWP\\DB\\Database\\.+ not found\.$#'
