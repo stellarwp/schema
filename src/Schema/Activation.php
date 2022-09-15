@@ -65,7 +65,7 @@ class Activation {
 			$schema_builder->up();
 		}
 
-		if ( ! Config::get_container()->getVar( 'stellarwp_schema_fully_activated' ) ) {
+		if ( ! Config::get_container()->make( 'stellarwp_schema_fully_activated' ) ) {
 			/**
 			 * On new installations the full activation code will find an empty state and
 			 * will have not activated at this point, do it now if required.
