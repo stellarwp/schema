@@ -54,13 +54,13 @@ class Schema {
 			throw new \RuntimeException( 'You must call StellarWP\Schema\Config::set_container() and StellarWP\Schema\Config::set_db() before calling StellarWP\Schema\Schema::init().' );
 		}
 
-		if ( $container->get( 'stellarwp_schema_registered' ) ) {
+		if ( $container->make( 'stellarwp_schema_registered' ) ) {
 			return;
 		}
 
 		$db_class::init();
-		$container->singleton( static::class, static::class, [ 'register' ] );
-		$container->make( static::class );
+		$container->singleton( static::class, static::class );
+		$container->make( static::class )->register();
 		$container->bind( 'stellarwp_schema_registered', static function() { return true; } );
 	}
 
@@ -88,8 +88,8 @@ class Schema {
 		 * These providers should be the ones that extend the bulk of features for CT1,
 		 * with only the bare minimum of providers registered above, to determine important state information.
 		 */
-		$this->container->singleton( Full_Activation_Provider::class, Full_Activation_Provider::class, [ 'register' ] );
-		$this->container->make( Full_Activation_Provider::class );
+		$this->container->singleton( Full_Activation_Provider::class, Full_Activation_Provider::class );
+		$this->container->make( Full_Activation_Provider::class )->register();
 
 		// Set a flag in the container to indicate there was a full activation of the CT1 component.
 		//$this->container->setVar( 'stellarwp_schema_fully_activated', true );
