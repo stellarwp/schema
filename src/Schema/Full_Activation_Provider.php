@@ -63,7 +63,7 @@ class Full_Activation_Provider {
 		}
 
 		$this->did_register = true;
-		$this->container->setVar( 'stellar_schema_fully_activated', true );
+		$this->container->bind( 'stellar_schema_fully_activated', fn() => true );
 
 		/*
 		 * This block should be the only one capturing exceptions thrown in the context of
@@ -95,7 +95,7 @@ class Full_Activation_Provider {
 	 * @since 1.0.0
 	 */
 	private function register_schema_hooks() {
-		$schema_builder = $this->container->make( Builder::class );
+		$schema_builder = $this->container->get( Builder::class );
 		$schema_builder->register_custom_tables_names();
 
 		if ( is_multisite() ) {

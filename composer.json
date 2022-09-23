@@ -21,7 +21,10 @@
     }
   ],
   "minimum-stability": "stable",
-  "require": {},
+  "require": {
+    "psr/container": "^1.0",
+    "stellarwp/container-contract": "^1.0"
+  },
   "require-dev": {
     "brianhenryie/strauss": "^0.11.0",
     "codeception/module-asserts": "^1.0",
@@ -42,6 +45,12 @@
   },
   "repositories": [
     {
+      "name": "stellarwp/container-contract",
+      "type": "github",
+      "url": "https://github.com/stellarwp/container-contract",
+      "no-api": true
+    },
+    {
       "name": "stellarwp/db",
       "type": "github",
       "url": "https://github.com/stellarwp/db",
@@ -51,26 +60,9 @@
   "scripts": {
     "test:analysis": [
       "phpstan analyse -c phpstan.neon.dist --memory-limit=512M"
-    ],
-    "strauss": [
-        "vendor/bin/strauss"
-    ],
-    "post-install-cmd": [
-        "@strauss"
-    ],
-    "post-update-cmd": [
-        "@strauss"
     ]
   },
   "scripts-descriptions": {
     "test:analysis": "Run static code analysis."
-  },
-  "extra": {
-    "strauss": {
-      "target_directory": "vendor/strauss",
-      "classmap_prefix": "StellarWP__Schema",
-      "constant_prefix": "STELLARWP_SCHEMA_",
-      "packages": []
-    }
   }
 }

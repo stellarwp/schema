@@ -2,11 +2,13 @@
 
 namespace StellarWP\Schema;
 
+use StellarWP\ContainerContract\ContainerInterface;
+
 class Config {
 	/**
 	 * Container object.
 	 *
-	 * @var object
+	 * @var ContainerInterface
 	 */
 	private static $container;
 
@@ -20,9 +22,9 @@ class Config {
 	/**
 	 * Get the container.
 	 *
-	 * @return object|null
+	 * @return ContainerInterface
 	 */
-	public static function get_container() {
+	public static function get_container() : ContainerInterface {
 		if ( self::$container === null ) {
 			throw new \RuntimeException( 'You must provide a container via StellarWP\Schema\Config::set_container() before attempting to fetch it.' );
 		}
@@ -33,9 +35,9 @@ class Config {
 	/**
 	 * Get the StellarWP\DB class.
 	 *
-	 * @return string|null
+	 * @return string
 	 */
-	public static function get_db() {
+	public static function get_db() : string {
 		if ( self::$db_class === null ) {
 			throw new \RuntimeException( 'You must provide a StellarWP\DB\DB::class via StellarWP\Schema\Config::set_db() before attempting to fetch it.' );
 		}
@@ -48,7 +50,7 @@ class Config {
 	 *
 	 * @return bool
 	 */
-	public static function has_container() {
+	public static function has_container() : bool {
 		return self::$container !== null;
 	}
 
@@ -57,14 +59,16 @@ class Config {
 	 *
 	 * @return bool
 	 */
-	public static function has_db() {
+	public static function has_db() : bool {
 		return self::$db_class !== null;
 	}
 
 	/**
 	 * Set the container object.
+	 *
+	 * @param ContainerInterface $container Container object.
 	 */
-	public static function set_container( $container ) {
+	public static function set_container( ContainerInterface $container ) {
 		self::$container = $container;
 	}
 
@@ -73,7 +77,7 @@ class Config {
 	 *
 	 * @param string $db_class StellarWP\DB class.
 	 */
-	public static function set_db( $db_class ) {
+	public static function set_db( string $db_class ) {
 		self::$db_class = $db_class;
 	}
 }

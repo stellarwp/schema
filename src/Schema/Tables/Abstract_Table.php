@@ -251,7 +251,7 @@ abstract class Abstract_Table implements Table_Schema_Interface {
 	 */
 	public function get_field_schemas( bool $force = false ) {
 		if ( $this->field_schemas === null || $force ) {
-			$this->field_schemas = $this->container->make( Fields\Collection::class )->get_by_table( static::base_table_name() );
+			$this->field_schemas = $this->container->get( Fields\Collection::class )->get_by_table( static::base_table_name() );
 		}
 
 		return $this->field_schemas;

@@ -33,7 +33,7 @@ class Register {
 
 		// If we've already executed plugins_loaded, automatically add the field.
 		if ( did_action( 'plugins_loaded' ) ) {
-			$container->make( Builder::class )->up();
+			$container->get( Builder::class )->up();
 		}
 
 		return $field;
@@ -130,7 +130,7 @@ class Register {
 
 		// If we've already executed plugins_loaded, automatically add the table.
 		if ( did_action( 'plugins_loaded' ) ) {
-			$container->make( Builder::class )->up();
+			$container->get( Builder::class )->up();
 		}
 
 		return $table;

@@ -156,7 +156,7 @@ class Builder {
 	 * @return Fields\Collection
 	 */
 	public function get_registered_field_schemas(): Fields\Collection {
-		return $this->container->make( Fields\Collection::class );
+		return $this->container->get( Fields\Collection::class );
 	}
 
 	/**
@@ -193,7 +193,7 @@ class Builder {
 	 * @return Tables\Collection
 	 */
 	public function get_registered_table_schemas(): Tables\Collection {
-		return $this->container->make( Tables\Collection::class );
+		return $this->container->get( Tables\Collection::class );
 	}
 
 	/**
@@ -204,7 +204,7 @@ class Builder {
 	 * @return Tables\Collection
 	 */
 	public function get_table_schemas_that_need_updates() {
-		return $this->container->make( Tables\Collection::class )->get_tables_needing_updates();
+		return $this->container->get( Tables\Collection::class )->get_tables_needing_updates();
 	}
 
 	/**

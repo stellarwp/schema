@@ -34,7 +34,7 @@ class Activation {
 	 * @since 1.0.0
 	 */
 	public static function activate() {
-		$schema_builder = Config::get_container()->make( Builder::class);
+		$schema_builder = Config::get_container()->get( Builder::class);
 		$schema_builder->up();
 	}
 
@@ -51,7 +51,7 @@ class Activation {
 
 		$container = Config::get_container();
 
-		$schema_builder = $container->make( Builder::class );
+		$schema_builder = $container->get( Builder::class );
 		$hash = $schema_builder->get_registered_schemas_version_hash();
 
 		if ( $db_hash == $hash ) {
@@ -65,12 +65,13 @@ class Activation {
 			$schema_builder->up();
 		}
 
-		if ( ! Config::get_container()->make( 'stellarwp_schema_fully_activated' ) ) {
+		if ( ! Config::get_container()->get( 'stellarwp_schema_fully_activated' ) ) {
 			/**
 			 * On new installations the full activation code will find an empty state and
 			 * will have not activated at this point, do it now if required.
 			 */
-			Config::get_container()->register( Full_Activation_Provider::class );
+			Config::get_container()->singleton( Full_Activation_Provider::class, Full_Activation_Provider::class );
+			Config::get_container()->get( Full_Activation_Provider::class )->register();
 		}
 	}
 
@@ -83,6 +84,6 @@ class Activation {
 		$services = Config::get_container();
 
 		// @todo Should we drop the tables here, gracefully, if no data was generated?
-		$services->make( Builder::class )->clean();
+		$services->get( Builder::class )->clean();
 	}
 }

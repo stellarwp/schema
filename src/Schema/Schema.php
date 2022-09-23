@@ -24,7 +24,7 @@ class Schema {
 	public static function builder() {
 		static::init();
 
-		return Config::get_container()->make( Builder::class );
+		return Config::get_container()->get( Builder::class );
 	}
 
 	/**
@@ -37,7 +37,7 @@ class Schema {
 	public static function fields() {
 		static::init();
 
-		return Config::get_container()->make( Fields\Collection::class );
+		return Config::get_container()->get( Fields\Collection::class );
 	}
 
 	/**
@@ -52,7 +52,7 @@ class Schema {
 
 		$container = Config::get_container();
 
-		if ( $container->make( 'stellarwp_schema_registered' ) ) {
+		if ( $container->get( 'stellarwp_schema_registered' ) ) {
 			return;
 		}
 
@@ -60,8 +60,8 @@ class Schema {
 		$db_class::init();
 
 		$container->singleton( static::class, static::class );
-		$container->make( static::class )->register();
-		$container->bind( 'stellarwp_schema_registered', static function() { return true; } );
+		$container->get( static::class )->register();
+		$container->bind( 'stellarwp_schema_registered', fn() => true );
 	}
 
 	/**
@@ -89,11 +89,10 @@ class Schema {
 		 * with only the bare minimum of providers registered above, to determine important state information.
 		 */
 		$this->container->singleton( Full_Activation_Provider::class, Full_Activation_Provider::class );
-		$this->container->make( Full_Activation_Provider::class )->register();
+		$this->container->get( Full_Activation_Provider::class )->register();
 
 		// Set a flag in the container to indicate there was a full activation of the CT1 component.
-		//$this->container->setVar( 'stellarwp_schema_fully_activated', true );
-		$this->container->bind( 'stellarwp_schema_fully_activated', static function() { return true; } );
+		$this->container->bind( 'stellarwp_schema_fully_activated', fn() => true );
 
 		$this->register_hooks();
 	}
@@ -105,7 +104,7 @@ class Schema {
 	 */
 	private function register_hooks() : void {
 		if ( did_action( 'plugins_loaded' ) ) {
-			$this->container->make( Builder::class )->up();
+			$this->container->get( Builder::class )->up();
 		} else {
 			/**
 			 * Filters the priority of the plugins_loaded action for running Builder::up.
@@ -114,7 +113,10 @@ class Schema {
 			 */
 			$priority = apply_filters( 'stellarwp_schema_up_plugins_loaded_priority', 1000 );
 
-			add_action( 'plugins_loaded', $this->container->callback( Builder::class, 'up' ), $priority, 0 );
+			$container = $this->container;
+			add_action( 'plugins_loaded', static function() use ( $container ) {
+				$container->get( Builder::class )->up();
+			}, $priority, 0 );
 		}
 	}
 
@@ -128,6 +130,6 @@ class Schema {
 	public static function tables() {
 		static::init();
 
-		return Config::get_container()->make( Tables\Collection::class );
+		return Config::get_container()->get( Tables\Collection::class );
 	}
 }
