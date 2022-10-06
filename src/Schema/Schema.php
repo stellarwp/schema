@@ -52,7 +52,7 @@ class Schema {
 
 		$container = Config::get_container();
 
-		if ( $container->get( 'stellarwp_schema_registered' ) ) {
+		if ( $container->has( 'stellarwp_schema_registered' ) && $container->get( 'stellarwp_schema_registered' ) ) {
 			return;
 		}
 
