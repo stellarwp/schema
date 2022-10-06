@@ -3,6 +3,9 @@
 namespace StellarWP\Schema\Tests;
 
 use lucatume\DI52\App;
+use StellarWP\Schema\Tests\Container;
+use StellarWP\Schema\Config;
+use StellarWP\DB\DB;
 use StellarWP\Schema\Schema;
 
 class SchemaTestCase extends \Codeception\Test\Unit {
@@ -12,10 +15,11 @@ class SchemaTestCase extends \Codeception\Test\Unit {
 		// before
 		parent::setUp();
 
-		$container = App::container();
+		Config::set_container( new Container() );
+		Config::set_db( DB::class );
 
 		// Force the schema to be re-initialized.
-		$container->setVar( 'stellarwp_schema_registered', false );
+		Config::get_container()->bind( 'stellarwp_schema_registered', static function() { return false; } );
 
 		Schema::init();
 	}

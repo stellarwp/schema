@@ -12,7 +12,6 @@
 
 namespace StellarWP\Schema;
 
-use lucatume\DI52\ServiceProvider as Service_Provider;
 use StellarWP\Schema\Builder;
 use WP_CLI;
 
@@ -23,15 +22,31 @@ use WP_CLI;
  *
  * @package StellarWP\Schema
  */
-class Full_Activation_Provider extends Service_Provider {
+class Full_Activation_Provider {
 	/**
-	 * A flag property indicating whether the Service Provide did register or not.
+	 * Container object.
+	 *
+	 * @var object
+	 */
+	private $container;
+
+	/**
+	 * A flag property indicating whether the Service Provider did register or not.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @var bool
 	 */
 	private $did_register = false;
+
+	/**
+	 * Constructor.
+	 *
+	 * @param object $container
+	 */
+	public function __construct( $container = null ) {
+		$this->container = $container ?: Config::get_container();
+	}
 
 	/**
 	 * Registers the filters and implementations required by the Custom Tables implementation.
@@ -48,7 +63,7 @@ class Full_Activation_Provider extends Service_Provider {
 		}
 
 		$this->did_register = true;
-		$this->container->setVar( 'stellar_schema_fully_activated', true );
+		$this->container->bind( 'stellar_schema_fully_activated', fn() => true );
 
 		/*
 		 * This block should be the only one capturing exceptions thrown in the context of
@@ -56,10 +71,7 @@ class Full_Activation_Provider extends Service_Provider {
 		 * actual business code.
 		 */
 		try {
-			// Register this provider to allow getting hold of it from third-party code.
-			$this->container->singleton( self::class, self::class );
 			$this->register_schema_hooks();
-
 		} catch ( \Throwable $t ) {
 			/**
 			 * Fires an action when an error or exception happens in the
@@ -83,7 +95,7 @@ class Full_Activation_Provider extends Service_Provider {
 	 * @since 1.0.0
 	 */
 	private function register_schema_hooks() {
-		$schema_builder = $this->container->make( Builder::class );
+		$schema_builder = $this->container->get( Builder::class );
 		$schema_builder->register_custom_tables_names();
 
 		if ( is_multisite() ) {

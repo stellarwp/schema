@@ -9,9 +9,8 @@
 
 namespace StellarWP\Schema;
 
-use lucatume\DI52\App;
-use lucatume\DI52\Container;
 use StellarWP\Schema\Builder;
+use StellarWP\Schema\Config;
 
 /**
  * Class Activation
@@ -36,9 +35,8 @@ class Activation {
 	 *
 	 * @param Container $container The container.
 	 */
-	public static function activate( $container = null ) {
-		$container = $container ?: App::container();
-		$schema_builder = $container->make( Builder::class);
+	public static function activate() {
+		$schema_builder = Config::get_container()->get( Builder::class);
 		$schema_builder->up();
 	}
 
@@ -55,9 +53,9 @@ class Activation {
 		// Check if we ran recently.
 		$db_hash = get_transient( static::ACTIVATION_TRANSIENT );
 
-		$container = $container ?: App::container();
+		$container = Config::get_container();
 
-		$schema_builder = $container->make( Builder::class );
+		$schema_builder = $container->get( Builder::class );
 		$hash = $schema_builder->get_registered_schemas_version_hash();
 
 		if ( $db_hash == $hash ) {
@@ -71,12 +69,13 @@ class Activation {
 			$schema_builder->up();
 		}
 
-		if ( ! $container->getVar( 'stellarwp_schema_fully_activated' ) ) {
+		if ( ! Config::get_container()->get( 'stellarwp_schema_fully_activated' ) ) {
 			/**
 			 * On new installations the full activation code will find an empty state and
 			 * will have not activated at this point, do it now if required.
 			 */
-			$container->register( Full_Activation_Provider::class );
+			Config::get_container()->singleton( Full_Activation_Provider::class, Full_Activation_Provider::class );
+			Config::get_container()->get( Full_Activation_Provider::class )->register();
 		}
 	}
 
@@ -87,10 +86,10 @@ class Activation {
 	 *
 	 * @param Container $container The DI container.
 	 */
-	public static function deactivate( $container = null ) {
-		$container = $container ?: App::container();
+	public static function deactivate() {
+		$services = Config::get_container();
 
 		// @todo Should we drop the tables here, gracefully, if no data was generated?
-		$container->make( Builder::class )->clean();
+		$services->get( Builder::class )->clean();
 	}
 }

@@ -2,13 +2,17 @@
 
 namespace StellarWP\Schema;
 
-use lucatume\DI52\App;
-use lucatume\DI52\ServiceProvider;
+use StellarWP\Schema\Config;
 
-require_once dirname( dirname( __DIR__ ) ) . '/vendor/strauss/autoload.php';
-
-class Schema extends ServiceProvider {
+class Schema {
 	const VERSION = '1.1.0';
+
+	/**
+	 * Container object.
+	 *
+	 * @var object
+	 */
+	private $container;
 
 	/**
 	 * Gets the Builder.
@@ -20,7 +24,7 @@ class Schema extends ServiceProvider {
 	public static function builder() {
 		static::init();
 
-		return App::make( Builder::class );
+		return Config::get_container()->get( Builder::class );
 	}
 
 	/**
@@ -33,7 +37,7 @@ class Schema extends ServiceProvider {
 	public static function fields() {
 		static::init();
 
-		return App::make( Fields\Collection::class );
+		return Config::get_container()->get( Fields\Collection::class );
 	}
 
 	/**
@@ -42,14 +46,31 @@ class Schema extends ServiceProvider {
 	 * @since 1.0.0
 	 */
 	public static function init(): void {
-		App::container();
+		if ( ! Config::has_container() || ! Config::has_db() ) {
+			throw new \RuntimeException( 'You must call StellarWP\Schema\Config::set_container() and StellarWP\Schema\Config::set_db() before calling StellarWP\Schema\Schema::init().' );
+		}
 
-		if ( App::getVar( 'stellarwp_schema_registered', false ) ) {
+		$container = Config::get_container();
+
+		if ( $container->get( 'stellarwp_schema_registered' ) ) {
 			return;
 		}
 
-		App::register( static::class );
-		App::setVar( 'stellarwp_schema_registered', true );
+		$db_class = Config::get_db();
+		$db_class::init();
+
+		$container->singleton( static::class, static::class );
+		$container->get( static::class )->register();
+		$container->bind( 'stellarwp_schema_registered', fn() => true );
+	}
+
+	/**
+	 * Constructor.
+	 *
+	 * @param object $container
+	 */
+	public function __construct( $container = null ) {
+		$this->container = $container ?: Config::get_container();
 	}
 
 	/**
@@ -58,18 +79,20 @@ class Schema extends ServiceProvider {
 	 * @since 1.0.0
 	 */
 	public function register() {
-		App::singleton( static::class, $this );
-		App::singleton( Builder::class, Builder::class );
-		App::singleton( Fields\Collection::class, Fields\Collection::class );
-		App::singleton( Tables\Collection::class, Tables\Collection::class );
+		$this->container->singleton( static::class, $this );
+		$this->container->singleton( Builder::class );
+		$this->container->singleton( Fields\Collection::class );
+		$this->container->singleton( Tables\Collection::class );
 
 		/**
 		 * These providers should be the ones that extend the bulk of features for CT1,
 		 * with only the bare minimum of providers registered above, to determine important state information.
 		 */
-		App::register( Full_Activation_Provider::class );
+		$this->container->singleton( Full_Activation_Provider::class, Full_Activation_Provider::class );
+		$this->container->get( Full_Activation_Provider::class )->register();
+
 		// Set a flag in the container to indicate there was a full activation of the CT1 component.
-		App::setVar( 'stellarwp_schema_fully_activated', true );
+		$this->container->bind( 'stellarwp_schema_fully_activated', fn() => true );
 
 		$this->register_hooks();
 	}
@@ -81,7 +104,7 @@ class Schema extends ServiceProvider {
 	 */
 	private function register_hooks() : void {
 		if ( did_action( 'plugins_loaded' ) ) {
-			App::make( Builder::class )->up();
+			$this->container->get( Builder::class )->up();
 		} else {
 			/**
 			 * Filters the priority of the plugins_loaded action for running Builder::up.
@@ -90,7 +113,10 @@ class Schema extends ServiceProvider {
 			 */
 			$priority = apply_filters( 'stellarwp_schema_up_plugins_loaded_priority', 1000 );
 
-			add_action( 'plugins_loaded', App::callback( Builder::class, 'up' ), $priority, 0 );
+			$container = $this->container;
+			add_action( 'plugins_loaded', static function() use ( $container ) {
+				$container->get( Builder::class )->up();
+			}, $priority, 0 );
 		}
 	}
 
@@ -104,6 +130,6 @@ class Schema extends ServiceProvider {
 	public static function tables() {
 		static::init();
 
-		return App::make( Tables\Collection::class );
+		return Config::get_container()->get( Tables\Collection::class );
 	}
 }

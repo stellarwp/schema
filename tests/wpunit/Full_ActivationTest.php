@@ -3,6 +3,7 @@ namespace StellarWP\Schema\Tests;
 
 use lucatume\DI52\App;
 use StellarWP\Schema\Builder;
+use StellarWP\Schema\Config;
 use StellarWP\Schema\Register;
 use StellarWP\Schema\Tests\SchemaTestCase;
 use StellarWP\Schema\Tests\Traits;
@@ -20,7 +21,7 @@ class Full_ActivationTest extends SchemaTestCase {
 
 		Register::table( $this->get_simple_table() );
 
-		$builder       = App::make( Builder::class );
+		$builder       = Config::get_container()->get( Builder::class );
 		$table_schemas = $builder->get_registered_table_schemas();
 
 		$this->assertNotEmpty( $table_schemas );

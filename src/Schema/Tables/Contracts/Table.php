@@ -2,11 +2,9 @@
 
 namespace StellarWP\Schema\Tables\Contracts;
 
-use lucatume\DI52\App;
-use lucatume\DI52\Container;
+use StellarWP\Schema\Config;
 use StellarWP\Schema\Fields;
 use StellarWP\Schema\Fields\Contracts\Schema_Interface as Field_Schema_Interface;
-use StellarWP\Schema\StellarWP\DB\DB;
 
 abstract class Table implements Schema_Interface {
 	/**
@@ -20,7 +18,12 @@ abstract class Table implements Schema_Interface {
 	protected static $base_table_name = '';
 
 	/**
-	 * @var Container The dependency injection container.
+	 * @var string The db class.
+	 */
+	protected $db;
+
+	/**
+	 * @var object The dependency injection container.
 	 */
 	protected $container;
 
@@ -60,10 +63,12 @@ abstract class Table implements Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Container $container The container to use.
+	 * @param string $db StellarWP\DB object.
+	 * @param object $container The container to use.
 	 */
-	public function __construct( $container = null ) {
-		$this->container = $container ?: App::container();
+	public function __construct( $db = null, $container = null ) {
+		$this->db        = $db ?: Config::get_db();
+		$this->container = $container ?: Config::get_container();
 	}
 
 	/**
@@ -161,13 +166,13 @@ abstract class Table implements Schema_Interface {
 
 		global $wpdb;
 		// Disable foreign key checks so we can drop without issues.
-		$key_check = DB::get_row( "SHOW VARIABLES LIKE 'foreign_key_checks'" );
+		$key_check = $this->db::get_row( "SHOW VARIABLES LIKE 'foreign_key_checks'" );
 		if ( strtolower( $key_check->Value ) === 'on' ) {
-			DB::query( "SET foreign_key_checks = 'OFF'" );
+			$this->db::query( "SET foreign_key_checks = 'OFF'" );
 		}
-		$result = DB::query( "DROP TABLE `{$this_table}`" );
+		$result = $this->db::query( "DROP TABLE `{$this_table}`" );
 		// Put setting back to original value.
-		DB::query( DB::prepare( "SET foreign_key_checks = %s", $key_check->Value ) );
+		$this->db::query( $this->db::prepare( "SET foreign_key_checks = %s", $key_check->Value ) );
 
 		/**
 		 * Runs after the custom table has been dropped.
@@ -215,9 +220,9 @@ abstract class Table implements Schema_Interface {
 
 		$this_table = static::table_name( true );
 
-		DB::query( "SET foreign_key_checks = 0" );
-		$result = DB::query( "TRUNCATE {$this_table}" );
-		DB::query( "SET foreign_key_checks = 1" );
+		$this->db::query( "SET foreign_key_checks = 0" );
+		$result = $this->db::query( "TRUNCATE {$this_table}" );
+		$this->db::query( "SET foreign_key_checks = 1" );
 
 		return $result;
 	}
@@ -232,7 +237,7 @@ abstract class Table implements Schema_Interface {
 	public function exists() {
 		$table_name = static::table_name( true );
 
-		return count( DB::get_col( DB::prepare( 'SHOW TABLES LIKE %s', $table_name ) ) ) === 1;
+		return count( $this->db::get_col( $this->db::prepare( 'SHOW TABLES LIKE %s', $table_name ) ) ) === 1;
 	}
 
 	/**
@@ -246,7 +251,7 @@ abstract class Table implements Schema_Interface {
 	 */
 	public function get_field_schemas( bool $force = false ) {
 		if ( $this->field_schemas === null || $force ) {
-			$this->field_schemas = $this->container->make( Fields\Collection::class )->get_by_table( static::base_table_name() );
+			$this->field_schemas = $this->container->get( Fields\Collection::class )->get_by_table( static::base_table_name() );
 		}
 
 		return $this->field_schemas;
@@ -364,7 +369,7 @@ abstract class Table implements Schema_Interface {
 	public function has_index( $index, $table_name = null ) {
 		$table_name = $table_name ?: static::table_name( true );
 
-		$count = DB::table( DB::raw( 'information_schema.statistics' ) )
+		$count = $this->db::table( $this->db::raw( 'information_schema.statistics' ) )
 			->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
 			->where( 'TABLE_NAME', $table_name )
 			->where( 'INDEX_NAME', $index )
@@ -491,7 +496,7 @@ abstract class Table implements Schema_Interface {
 		 */
 		do_action( 'stellarwp_schema_table_before_updete', static::table_name(), $this, $field_schemas );
 
-		$results = (array) DB::delta( $sql );
+		$results = (array) $this->db::delta( $sql );
 		$this->archive_previous_version();
 		$this->sync_stored_version();
 		$results = $this->after_update( $results );
