@@ -46,10 +46,8 @@ class Activation {
 	 * This method will run once a day (using transients).
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param Container $container The DI container.
 	 */
-	public static function init( $container = null ) {
+	public static function init() {
 		// Check if we ran recently.
 		$db_hash = get_transient( static::ACTIVATION_TRANSIENT );
 
@@ -83,8 +81,6 @@ class Activation {
 	 * Handles the feature deactivation.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param Container $container The DI container.
 	 */
 	public static function deactivate() {
 		$services = Config::get_container();
