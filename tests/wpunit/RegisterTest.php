@@ -2,7 +2,7 @@
 
 namespace StellarWP\Schema\Tests;
 
-use StellarWP\Schema\Container;
+use StellarWP\Schema\Config;
 use StellarWP\Schema\Fields;
 use StellarWP\Schema\Register;
 use StellarWP\Schema\Schema;
@@ -22,7 +22,7 @@ class RegisterTest extends SchemaTestCase {
 
 		Register::field( $field_1 );
 
-		$this->assertArrayHasKey( $field_1::get_schema_slug(), Container::init()->make( Fields\Collection::class ) );
+		$this->assertArrayHasKey( $field_1::get_schema_slug(), Config::get_container()->make( Fields\Collection::class ) );
 	}
 
 	/**
@@ -37,7 +37,7 @@ class RegisterTest extends SchemaTestCase {
 			$field_1,
 		]);
 
-		$this->assertArrayHasKey( $field_1::get_schema_slug(), Container::init()->make( Fields\Collection::class ) );
+		$this->assertArrayHasKey( $field_1::get_schema_slug(), Config::get_container()->make( Fields\Collection::class ) );
 	}
 
 	/**

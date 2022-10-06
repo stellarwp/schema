@@ -3,6 +3,7 @@
 namespace StellarWP\Schema;
 
 use StellarWP\Schema\Builder;
+use StellarWP\Schema\Config;
 use StellarWP\Schema\Fields;
 use StellarWP\Schema\Tables;
 
@@ -26,13 +27,13 @@ class Register {
 			$field = new $field();
 		}
 
-		$container = Container::init();
+		$container = Config::get_container();
 
 		Schema::fields()->add( $field );
 
 		// If we've already executed plugins_loaded, automatically add the field.
 		if ( did_action( 'plugins_loaded' ) ) {
-			$container->make( Builder::class )->up();
+			$container->get( Builder::class )->up();
 		}
 
 		return $field;
@@ -123,13 +124,13 @@ class Register {
 			$table = new $table();
 		}
 
-		$container = Container::init();
+		$container = Config::get_container();
 
 		Schema::tables()->add( $table );
 
 		// If we've already executed plugins_loaded, automatically add the table.
 		if ( did_action( 'plugins_loaded' ) ) {
-			$container->make( Builder::class )->up();
+			$container->get( Builder::class )->up();
 		}
 
 		return $table;

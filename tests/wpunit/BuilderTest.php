@@ -2,9 +2,7 @@
 
 namespace StellarWP\Schema\Tests\Builder;
 
-use StellarWP\Schema\Builder;
 use StellarWP\Schema\Tables\Table_Schema_Interface;
-use StellarWP\Schema\Container;
 use StellarWP\Schema\Register;
 use StellarWP\Schema\Schema;
 use StellarWP\Schema\Tests\SchemaTestCase;
