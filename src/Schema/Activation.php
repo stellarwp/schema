@@ -32,8 +32,6 @@ class Activation {
 	 * Handles the activation of the feature functions.
 	 *
 	 * @since 1.0.0
-	 *
-	 * @param Container $container The container.
 	 */
 	public static function activate() {
 		$schema_builder = Config::get_container()->get( Builder::class);
