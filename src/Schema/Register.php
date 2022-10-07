@@ -18,7 +18,7 @@ class Register {
 	 *
 	 * @param string $field Field class.
 	 *
-	 * @return Fields\Field_Schema_Interface
+	 * @return Fields\Contracts\Schema_Interface
 	 */
 	public static function field( $field ) {
 		Schema::init();
@@ -61,9 +61,9 @@ class Register {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string|Fields\Field_Schema_Interface $field Field Schema class.
+	 * @param string|Fields\Contracts\Schema_Interface $field Field Schema class.
 	 *
-	 * @return Fields\Field_Schema_Interface
+	 * @return Fields\Contracts\Schema_Interface
 	 */
 	public static function remove_field( $field ) {
 		Schema::init();
@@ -87,9 +87,9 @@ class Register {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string|Tables\Table_Schema_Interface $table Table Schema class.
+	 * @param string|Tables\Contracts\Schema_Interface $table Table Schema class.
 	 *
-	 * @return Tables\Table_Schema_Interface
+	 * @return Tables\Contracts\Schema_Interface
 	 */
 	public static function remove_table( $table ) {
 		Schema::init();
@@ -115,7 +115,7 @@ class Register {
 	 *
 	 * @param string $table Table class.
 	 *
-	 * @return Tables\Table_Schema_Interface
+	 * @return Tables\Contracts\Schema_Interface
 	 */
 	public static function table( $table ) {
 		Schema::init();

@@ -2,6 +2,7 @@
 
 namespace StellarWP\Schema\Tests;
 
+use lucatume\DI52\App;
 use StellarWP\Schema\Tests\Container;
 use StellarWP\Schema\Config;
 use StellarWP\DB\DB;

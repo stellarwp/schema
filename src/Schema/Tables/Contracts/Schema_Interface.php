@@ -4,19 +4,19 @@
  *
  * @since   1.0.0
  *
- * @package StellarWP\Schema\Tables
+ * @package StellarWP\Schema\Tables\Contracts
  */
 
-namespace StellarWP\Schema\Tables;
+namespace StellarWP\Schema\Tables\Contracts;
 
 /**
- * Interface Table_Schema_Interface
+ * Interface Schema_Interface
  *
  * @since   1.0.0
  *
- * @package StellarWP\Schema\Tables
+ * @package StellarWP\Schema\Tables\Contracts
  */
-interface Table_Schema_Interface {
+interface Schema_Interface {
 	/**
 	 * Returns the custom table name.
 	 *

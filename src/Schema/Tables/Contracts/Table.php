@@ -1,12 +1,12 @@
 <?php
 
-namespace StellarWP\Schema\Tables;
+namespace StellarWP\Schema\Tables\Contracts;
 
 use StellarWP\Schema\Config;
 use StellarWP\Schema\Fields;
-use StellarWP\Schema\Fields\Field_Schema_Interface;
+use StellarWP\Schema\Fields\Contracts\Schema_Interface as Field_Schema_Interface;
 
-abstract class Abstract_Table implements Table_Schema_Interface {
+abstract class Table implements Schema_Interface {
 	/**
 	 * @var string|null The version number for this schema definition.
 	 */
@@ -160,7 +160,7 @@ abstract class Abstract_Table implements Table_Schema_Interface {
 		 *
 		 * @param string $base_table_name The base table name.
 		 * @param string $table_name The full table name.
-		 * @param Table_Schema_Interface $table_schema The table schema to be dropped.
+		 * @param Schema_Interface $table_schema The table schema to be dropped.
 		 */
 		do_action( 'stellarwp_pre_drop_table', $base_table_name, $this_table, $this );
 
@@ -181,7 +181,7 @@ abstract class Abstract_Table implements Table_Schema_Interface {
 		 *
 		 * @param string $base_table_name The base table name.
 		 * @param string $table_name The full table name.
-		 * @param Table_Schema_Interface $table_schema The table schema to be dropped.
+		 * @param Schema_Interface $table_schema The table schema to be dropped.
 		 */
 		do_action( 'stellarwp_post_drop_table', $base_table_name, $this_table, $this );
 
@@ -198,7 +198,7 @@ abstract class Abstract_Table implements Table_Schema_Interface {
 		 *
 		 * @param string $base_table_name The base table name.
 		 * @param string $table_name The full table name.
-		 * @param Table_Schema_Interface $table_schema The table schema to be dropped.
+		 * @param Schema_Interface $table_schema The table schema to be dropped.
 		 */
 		do_action( 'stellarwp_post_drop_table_wpdb_update', $base_table_name, $this_table, $this );
 
@@ -491,7 +491,7 @@ abstract class Abstract_Table implements Table_Schema_Interface {
 		 * @since 1.1.0
 		 *
 		 * @param string $table_name The prefix-less table name.
-		 * @param Abstract_Table $table The table object.
+		 * @param Table $table The table object.
 		 * @param \Iterator $field_schemas An iterable collection of field schemas associated with this table.
 		 */
 		do_action( 'stellarwp_schema_table_before_updete', static::table_name(), $this, $field_schemas );
@@ -508,7 +508,7 @@ abstract class Abstract_Table implements Table_Schema_Interface {
 		 *
 		 * @param string $table_name The prefix-less table name.
 		 * @param array $results The results of the schema update.
-		 * @param Abstract_Table $table The table object.
+		 * @param Table $table The table object.
 		 * @param \Iterator $field_schemas An iterable collection of field schemas associated with this table.
 		 */
 		do_action( 'stellarwp_schema_table_before_field_schema_updete', static::table_name(), $results, $this, $field_schemas );
@@ -524,7 +524,7 @@ abstract class Abstract_Table implements Table_Schema_Interface {
 		 *
 		 * @param string $table_name The prefix-less table name.
 		 * @param array $results The results of the table and field schema updates.
-		 * @param Abstract_Table $table The table object.
+		 * @param Table $table The table object.
 		 * @param \Iterator $field_schemas An iterable collection of field schemas associated with this table.
 		 */
 		do_action( 'stellarwp_schema_table_after_updete', static::table_name(), $results, $this, $field_schemas );

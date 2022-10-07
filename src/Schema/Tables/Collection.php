@@ -2,6 +2,8 @@
 
 namespace StellarWP\Schema\Tables;
 
+use StellarWP\Schema\Tables\Contracts\Schema_Interface;
+
 class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * Table groups.
@@ -22,11 +24,11 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Table_Schema_Interface $table Table instance.
+	 * @param Schema_Interface $table Table instance.
 	 *
 	 * @return mixed
 	 */
-	public function add( Table_Schema_Interface $table ) {
+	public function add( Schema_Interface $table ) {
 		$this->offsetSet( $table::base_table_name(), $table );
 
 		$this->register_group( $table );
@@ -55,9 +57,9 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 *
 	 * @param string $key Table base name.
 	 *
-	 * @return Table_Schema_Interface
+	 * @return Schema_Interface
 	 */
-	public function get( string $key ): Table_Schema_Interface {
+	public function get( string $key ): Schema_Interface {
 		return $this->offsetGet( $key );
 	}
 
@@ -133,7 +135,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * Registers a group in the group array for the given table.
 	 *
-	 * @param Table_Schema_Interface $table Table instance.
+	 * @param Schema_Interface $table Table instance.
 	 */
 	private function register_group( $table ) {
 		$group = $table->group_name();
@@ -167,11 +169,11 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 * @since 1.0.0
 	 *
 	 * @param string $name Table name.
-	 * @param Table_Schema_Interface $table Table instance.
+	 * @param Schema_Interface $table Table instance.
 	 *
 	 * @return mixed
 	 */
-	public function set( $name, Table_Schema_Interface $table ) {
+	public function set( $name, Schema_Interface $table ) {
 		$this->offsetSet( $name, $table );
 
 		$this->register_group( $table );

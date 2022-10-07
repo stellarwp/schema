@@ -4,8 +4,9 @@ namespace StellarWP\Schema;
 
 use StellarWP\Schema\Config;
 use StellarWP\Schema\Fields;
+use StellarWP\Schema\Fields\Contracts\Schema_Interface as Field_Schema_Interface;
 use StellarWP\Schema\Tables;
-use StellarWP\Schema\Tables\Table_Schema_Interface;
+use StellarWP\Schema\Tables\Contracts\Schema_Interface as Table_Schema_Interface;
 use StellarWP\Schema\Tables\Filters\Group_FilterIterator;
 use WP_CLI;
 
@@ -89,7 +90,7 @@ class Builder {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param \Iterator $table_schemas A list of Custom_Table_Interface objects that will have their tables dropped.
+		 * @param \Iterator $table_schemas A list of Table_Schema_Interface objects that will have their tables dropped.
 		 */
 		$table_schemas = apply_filters( 'stellarwp_tables_to_drop', $table_schemas );
 
@@ -118,7 +119,7 @@ class Builder {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param \Iterator $field_classes A list of Custom_Field_Interface objects that will have their fields dropped.
+		 * @param \Iterator $field_classes A list of Field_Schema_Interface objects that will have their fields dropped.
 		 */
 		$field_schemas = apply_filters( 'stellarwp_fields_to_drop', $field_schemas );
 

@@ -4,20 +4,20 @@
  *
  * @since   1.0.0
  *
- * @package StellarWP\Schema\Fields
+ * @package StellarWP\Schema\Fields\Contracts
  */
-namespace StellarWP\Schema\Fields;
+namespace StellarWP\Schema\Fields\Contracts;
 
-use StellarWP\Schema\Tables\Abstract_Table;
+use StellarWP\Schema\Tables\Contracts\Table;
 
 /**
  * Interface Custom_Field_Interface
  *
  * @since   1.0.0
  *
- * @package StellarWP\Schema\Fields
+ * @package StellarWP\Schema\Fields\Contracts
  */
-interface Field_Schema_Interface {
+interface Schema_Interface {
 	/**
 	 * Allows extending classes that require it to run some methods
 	 * immediately after the table creation or update.
@@ -75,7 +75,7 @@ interface Field_Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @return Abstract_Table|null
+	 * @return Table|null
 	 */
 	public function table_schema();
 }

@@ -2,6 +2,8 @@
 
 namespace StellarWP\Schema\Fields;
 
+use StellarWP\Schema\Fields\Contracts\Schema_Interface;
+
 class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * Table groups.
@@ -22,11 +24,11 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Field_Schema_Interface $field Field instance.
+	 * @param Schema_Interface $field Field instance.
 	 *
 	 * @return mixed
 	 */
-	public function add( Field_Schema_Interface $field ) {
+	public function add( Schema_Interface $field ) {
 		$this->offsetSet( $field::get_schema_slug(), $field );
 
 		$this->register_group( $field );
@@ -55,9 +57,9 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 *
 	 * @param string $key Field slug.
 	 *
-	 * @return Field_Schema_Interface
+	 * @return Schema_Interface
 	 */
-	public function get( string $key ): Field_Schema_Interface {
+	public function get( string $key ): Schema_Interface {
 		return $this->offsetGet( $key );
 	}
 
@@ -120,7 +122,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * Registers a group in the group array for the given table.
 	 *
-	 * @param Field_Schema_Interface $field Field instance.
+	 * @param Schema_Interface $field Field instance.
 	 */
 	private function register_group( $field ) {
 		$group = $field->group_name();
@@ -154,11 +156,11 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 * @since 1.0.0
 	 *
 	 * @param string $name Field name.
-	 * @param Field_Schema_Interface $field Field instance.
+	 * @param Schema_Interface $field Field instance.
 	 *
 	 * @return mixed
 	 */
-	public function set( $name, Field_Schema_Interface $field ) {
+	public function set( $name, Schema_Interface $field ) {
 		$this->offsetSet( $name, $field );
 
 		$this->register_group( $field );

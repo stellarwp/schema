@@ -4,22 +4,22 @@
  *
  * @since   1.0.0
  *
- * @package StellarWP\Schema\Fields
+ * @package StellarWP\Schema\Fields\Contracts
  */
 
-namespace StellarWP\Schema\Fields;
+namespace StellarWP\Schema\Fields\Contracts;
 
 use StellarWP\Schema\Config;
 use StellarWP\Schema\Schema;
 
 /**
- * Class Abstract_Field
+ * Class Field
  *
  * @since   1.0.0
  *
- * @package StellarWP\Schema\Fields
+ * @package StellarWP\Schema\Fields\Contracts
  */
-abstract class Abstract_Field implements Field_Schema_Interface {
+abstract class Field implements Schema_Interface {
 	/**
 	 * @since 1.0.0
 	 *
@@ -139,7 +139,7 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 		 * @since 1.0.0
 		 *
 		 * @param string $schema_slug The schema slug.
-		 * @param Field_Schema_Interface $field_schema The field schema to be dropped.
+		 * @param Schema_Interface $field_schema The field schema to be dropped.
 		 */
 		do_action( 'stellarwp_pre_drop_field', $schema_slug, $this );
 
@@ -154,7 +154,7 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 		 * @since 1.0.0
 		 *
 		 * @param string $schema_slug The schema slug.
-		 * @param Field_Schema_Interface $field_schema The field schema to be dropped.
+		 * @param Schema_Interface $field_schema The field schema to be dropped.
 		 */
 		do_action( 'stellarwp_post_drop_field', $schema_slug, $this );
 
@@ -166,7 +166,7 @@ abstract class Abstract_Field implements Field_Schema_Interface {
 		 * @since 1.0.0
 		 *
 		 * @param string $schema_slug The schema slug.
-		 * @param Field_Schema_Interface $field_schema The field schema to be dropped.
+		 * @param Schema_Interface $field_schema The field schema to be dropped.
 		 */
 		do_action( 'stellarwp_post_drop_field_table_version_sync', $schema_slug, $this );
 

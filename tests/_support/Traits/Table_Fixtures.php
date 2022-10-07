@@ -4,9 +4,8 @@ namespace StellarWP\Schema\Tests\Traits;
 
 use StellarWP\Schema\Activation;
 use StellarWP\Schema\Builder;
-use StellarWP\Schema\Fields\Abstract_Field;
-use StellarWP\Schema\Register;
-use StellarWP\Schema\Tables\Abstract_Table;
+use StellarWP\Schema\Fields\Contracts\Field;
+use StellarWP\Schema\Tables\Contracts\Table;
 
 trait Table_Fixtures {
 	private function assert_custom_tables_exist() {
@@ -49,7 +48,7 @@ trait Table_Fixtures {
 	 * Get a fake table to verify its creation.
 	 */
 	public function get_modified_simple_table() {
-		$table  = new class extends Abstract_Table {
+		$table  = new class extends Table {
 			const SCHEMA_VERSION = '2.0.0';
 			protected static $base_table_name = 'simple';
 			protected static $group = 'bork';
@@ -82,7 +81,7 @@ trait Table_Fixtures {
 	 * Get a fake table to verify its creation.
 	 */
 	public function get_simple_table() {
-		$table  = new class extends Abstract_Table {
+		$table  = new class extends Table {
 			const SCHEMA_VERSION = '1.0.0';
 
 			protected static $base_table_name = 'simple';
@@ -114,7 +113,7 @@ trait Table_Fixtures {
 	 * Get a fake table to verify its creation.
 	 */
 	public function get_indexless_table() {
-		$table  = new class extends Abstract_Table {
+		$table  = new class extends Table {
 			const SCHEMA_VERSION = '1.0.0';
 
 			protected static $base_table_name = 'noindex';
@@ -144,7 +143,7 @@ trait Table_Fixtures {
 	 * Get a simple table field class.
 	 */
 	public function get_simple_table_field() {
-		$field  = new class extends Abstract_Field {
+		$field  = new class extends Field {
 			const SCHEMA_VERSION = '1.0.0';
 
 			protected static $base_table_name = 'simple';
