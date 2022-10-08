@@ -44,7 +44,7 @@ class Register {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array<string,mixed> $fields Fields to register.
+	 * @param array<mixed> $fields Fields to register.
 	 *
 	 * @return Fields\Collection
 	 */
@@ -141,7 +141,7 @@ class Register {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array<string,mixed> $tables Tables to register.
+	 * @param array<mixed> $tables Tables to register.
 	 *
 	 * @return Tables\Collection
 	 */
