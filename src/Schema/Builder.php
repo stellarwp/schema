@@ -253,7 +253,7 @@ class Builder {
 	 *
 	 * @param bool $force Whether to force the creation or update of the tables or not.
 	 *
-	 * @return array<string,mixed> A list of each creation or update result.
+	 * @return array<mixed> A list of each creation or update result.
 	 */
 	public function up( $force = false ) {
 		try {
