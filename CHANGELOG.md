@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [unreleased] Unreleased
 
+## [1.1.2] 2022-11-22
+
+* Tweak - Set the composer's `config.platform.php` to `7.0`.
+
 ## [1.1.1] 2022-10-08
 
 * Fix - Resolves some issues with docblocks that didn't pass PHPStan during actual usage of this library elsewhere.
@@ -29,3 +33,4 @@ All notable changes to this project will be documented in this file. This projec
 [1.0.0]: https://github.com/stellarwp/schema/releases/tag/1.0.0
 [1.1.0]: https://github.com/stellarwp/schema/releases/tag/1.1.0
 [1.1.1]: https://github.com/stellarwp/schema/releases/tag/1.1.1
+[1.1.2]: https://github.com/stellarwp/schema/releases/tag/1.1.2
