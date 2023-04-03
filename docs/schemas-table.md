@@ -162,17 +162,35 @@ public function after_update() {
 	$table_name = static::table_name( true );
 	$updated    = false;
 
-	if ( $this->exists() && $this->has_index( 'boom' ) ) {
-		$udpated = $wpdb->query( "ALTER TABLE `{$table_name}` ADD UNIQUE( `name` )" );
+	// Add a UNIQUE constraint on the name column.
+	if ( $this->exists() && ! $this->has_index( 'boom' ) ) {
+		$updated = $wpdb->query( "ALTER TABLE `{$table_name}` ADD UNIQUE( `name` )" );
+
+		if ( $updated ) {
+			$message = "Added UNIQUE constraint to the {$table_name} table on name.";
+		} else {
+			$message = "Failed to add a unique constraint on the {$table_name} table.";
+		}
+
+		$results[ $table_name . '.name' ] = $message;
 	}
 
-	if ( $updated ) {
-		$message = "Added UNIQUE constraint to the {$table_name} table on name.";
-	} else {
-		$message = "Failed to add a unique constraint on the {$table_name} table.";
-	}
+	// Add a FOREIGN KEY constraint on the reseller_id column.
+	if ( $this->exists() && ! $this->has_foreign_key( 'reseller_id' ) ) {
+		$referenced_table = $wpdb->prefix . 'resellers';
+		$updated = $wpdb->query( "ALTER TABLE `{$table_name}`
+			ADD FOREIGN KEY ( `reseller_id` )
+				REFERENCES `$referenced_table` ( `id` )"
+		);
 
-	$results[ $table_name . '.name' ] = $message;
+		if ( $updated ) {
+			$message = "Added FOREIGN KEY constraint to the {$table_name} table on reseller_id.";
+		} else {
+			$message = "Failed to add a FOREIGN KEY constraint on the {$table_name} table.";
+		}
+
+		$results[ $table_name . '.reseller_id' ] = $message;
+	}
 
 	return $results;
 }

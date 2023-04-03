@@ -531,4 +531,26 @@ abstract class Table implements Schema_Interface {
 
 		return $results;
 	}
+
+	/**
+	 * Checks if a foreign key exists on a table.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $foreign_key The foreign key to check for.
+	 * @param string|null $table_name The table name to check. Defaults to the current table.
+	 *
+	 * @return bool Whether the foreign key exists on the table.
+	 */
+	public function has_foreign_key( string $foreign_key, string $table_name = null ): bool {
+		$table_name = $table_name ?: static::table_name();
+
+		$count = $this->db::table( $this->db::raw( 'information_schema.statistics' ) )
+		                  ->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
+		                  ->where( 'TABLE_NAME', $table_name )
+		                  ->where( 'INDEX_NAME', $foreign_key )
+		                  ->count();
+
+		return $count >= 1;
+	}
 }
