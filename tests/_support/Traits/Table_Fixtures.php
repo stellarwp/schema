@@ -163,4 +163,50 @@ trait Table_Fixtures {
 
 		return $field;
 	}
+
+	public function get_foreign_key_table() {
+		$table = new class extends Table {
+			const SCHEMA_VERSION = '1.0.0';
+
+			protected static $base_table_name = 'foreignkey';
+			protected static $group = 'bork';
+			protected static $schema_slug = 'bork-with-foreignkey';
+			protected static $uid_column = 'id';
+
+			protected function get_definition() {
+				global $wpdb;
+				$table_name      = self::table_name( true );
+				$charset_collate = $wpdb->get_charset_collate();
+
+				return "
+					CREATE TABLE `{$table_name}` (
+						`id` int(11) UNSIGNED NOT NULL,
+						`name` varchar(25) NOT NULL,
+						`simple_id` int(11) UNSIGNED NOT NULL
+					) {$charset_collate};
+				";
+			}
+
+			protected function after_update( array $results ) {
+				if ( $this->has_foreign_key( 'simple_id' ) ) {
+					return $results;
+				}
+
+				global $wpdb;
+				$table_name   = $this->table_name();
+				$simple_table = $wpdb->prefix . 'simple';
+				$updated      = $wpdb->query( "ALTER TABLE $table_name ADD FOREIGN KEY (simple_id) REFERENCES $simple_table(id)" );
+
+				$result = $updated ?
+					'FOREIGN KEY added to ' . $table_name . ' on column simple_id to table ' . $simple_table . ' on column id' :
+					'Failed to add FOREIGN KEY NOT to ' . $table_name . ' on column simple_id to table ' . $simple_table . ' on column id';
+
+				$results[] = $result;
+
+				return $results;
+			}
+		};
+
+		return $table;
+	}
 }

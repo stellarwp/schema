@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [unreleased] Unreleased
 
-## [1.1.2] 2022-11-22
+* Feature - Added `Table::has_foreign_key()` method.
+
+## [1.1.2] 2022-11-2
 
 * Tweak - Set the composer's `config.platform.php` to `7.0`.
 
