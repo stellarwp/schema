@@ -546,10 +546,10 @@ abstract class Table implements Schema_Interface {
 		$table_name = $table_name ?: static::table_name();
 
 		$count = $this->db::table( $this->db::raw( 'information_schema.statistics' ) )
-		                  ->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
-		                  ->where( 'TABLE_NAME', $table_name )
-		                  ->where( 'INDEX_NAME', $foreign_key )
-		                  ->count();
+			->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
+			->where( 'TABLE_NAME', $table_name )
+			->where( 'INDEX_NAME', $foreign_key )
+			->count();
 
 		return $count >= 1;
 	}
