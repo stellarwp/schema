@@ -1,29 +1,14 @@
 {
   "name": "stellarwp/schema",
   "description": "A library for simplifying the creation and updates of custom tables within WordPress.",
-  "type": "library",
   "license": "GPL-2.0",
-  "platform": {
-    "php": "7.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "StellarWP\\Schema\\": "src/Schema/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "StellarWP\\Schema\\Tests\\": "tests/_support/Helper/",
-      "StellarWP\\Schema\\Tests\\Traits\\": "tests/_support/Traits/"
-    }
-  },
+  "type": "library",
   "authors": [
     {
       "name": "StellarWP",
       "email": "dev@stellarwp.com"
     }
   ],
-  "minimum-stability": "stable",
   "require": {
     "psr/container": "^1.0",
     "stellarwp/container-contract": "^1.0"
@@ -38,28 +23,40 @@
     "codeception/module-rest": "^1.0",
     "codeception/module-webdriver": "^1.0",
     "codeception/util-universalframework": "^1.0",
+    "lucatume/di52": "^3.0",
     "lucatume/wp-browser": "^3.0.14",
     "phpunit/phpunit": "~6.0",
-    "szepeviktor/phpstan-wordpress": "^1.1",
+    "stellarwp/db": "^1.0",
     "symfony/event-dispatcher-contracts": "^2.5.1",
     "symfony/string": "^5.4",
-    "lucatume/di52": "^3.0",
-    "stellarwp/db": "^1.0"
+    "szepeviktor/phpstan-wordpress": "^1.1"
   },
   "repositories": [
     {
-      "name": "stellarwp/container-contract",
       "type": "github",
       "url": "https://github.com/stellarwp/container-contract",
-      "no-api": true
+      "no-api": true,
+      "name": "stellarwp/container-contract"
     },
     {
-      "name": "stellarwp/db",
       "type": "github",
       "url": "https://github.com/stellarwp/db",
-      "no-api": true
+      "no-api": true,
+      "name": "stellarwp/db"
     }
   ],
+  "minimum-stability": "stable",
+  "autoload": {
+    "psr-4": {
+      "StellarWP\\Schema\\": "src/Schema/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "StellarWP\\Schema\\Tests\\": "tests/_support/Helper/",
+      "StellarWP\\Schema\\Tests\\Traits\\": "tests/_support/Traits/"
+    }
+  },
   "scripts": {
     "test:analysis": [
       "phpstan analyse -c phpstan.neon.dist --memory-limit=512M"
@@ -67,5 +64,8 @@
   },
   "scripts-descriptions": {
     "test:analysis": "Run static code analysis."
+  },
+  "platform": {
+    "php": "7.0"
   }
 }
