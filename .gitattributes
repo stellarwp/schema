@@ -1,6 +1,14 @@
-*               text
-.*              export-ignore
-composer.lock   text -diff
-phpstan.*       export-ignore
-phpunit.*       export-ignore
-tests           export-ignore
+* text
+/.editorconfig export-ignore
+/.env.testing export-ignore
+/.env.testing.slic export-ignore
+/.gitattributes export-ignore
+/.github/ export-ignore
+/.gitignore export-ignore
+/CHANGELOG.md export-ignore
+/codeception.dist.yml export-ignore
+/codeception.slic.yml export-ignore
+/composer.lock export-ignore text -diff linguist-generated
+/docs/ export-ignore linguist-documentation
+/phpstan.neon.dist export-ignore
+/tests/ export-ignore
