@@ -106,7 +106,7 @@ class Full_Activation_Provider {
 			add_filter( 'wpmu_drop_tables', [ $schema_builder, 'filter_tables_list' ] );
 		}
 
-		if ( defined( 'WP_CLI' ) && method_exists( '\\WP_CLI', 'add_hook' ) ) {
+		if ( defined( 'WP_CLI' ) ) {
 			WP_CLI::add_hook( 'after_invoke:site empty', [ $schema_builder, 'empty_custom_tables' ] );
 		}
 	}
