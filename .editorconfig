@@ -7,10 +7,27 @@ indent_style = tab
 indent_size = 4
 insert_final_newline = true
 trim_trailing_whitespace = true
+block_comment_start = /*
+block_comment = *
+block_comment_end = */
 
 [*.md]
 trim_trailing_whitespace = false
 
-[**.{jshintrc,json,scss-lint,yml}]
+[**.{jshintrc,json,scss-lint,yml,sql}]
 indent_style = space
 indent_size = 2
+
+[LICENSE]
+indent_style = space
+indent_size = 2
+
+[README.md]
+indent_style = unset
+
+[composer.lock]
+indent_style = space
+
+[tests/_support/_generated/**]
+trim_trailing_whitespace = unset
+indent_style = unset
