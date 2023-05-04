@@ -23,7 +23,7 @@ To actually _use_ the schema library, you must have two additional libraries in 
 1. A Dependency Injection Container (DI Container) that is compatible with [di52](https://github.com/lucatume/di52) _(We recommend using di52.)_.
 1. The [stellarwp/db](https://github.com/stellarwp/db) library.
 
-In order to keep this library as light as possible, those dependcies are not included in the library itself. To avoid version compatibility issues, those libraries are _also_ not included as Composer dependencies. Instead, you must include them in your project. We recommend including them via composer [using Strauss](https://github.com/stellarwp/global-docs/blob/main/docs/strauss-setup.md), just like you have done with this library.
+In order to keep this library as light as possible, those dependencies are not included in the library itself. To avoid version compatibility issues, those libraries are _also_ not included as Composer dependencies. Instead, you must include them in your project. We recommend including them via composer [using Strauss](https://github.com/stellarwp/global-docs/blob/main/docs/strauss-setup.md), just like you have done with this library.
 
 ## Important note on ALL examples
 
