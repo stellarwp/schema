@@ -31,20 +31,6 @@
     "symfony/string": "^5.4",
     "szepeviktor/phpstan-wordpress": "^1.1"
   },
-  "repositories": [
-    {
-      "type": "github",
-      "url": "https://github.com/stellarwp/container-contract",
-      "no-api": true,
-      "name": "stellarwp/container-contract"
-    },
-    {
-      "type": "github",
-      "url": "https://github.com/stellarwp/db",
-      "no-api": true,
-      "name": "stellarwp/db"
-    }
-  ],
   "minimum-stability": "stable",
   "autoload": {
     "psr-4": {
