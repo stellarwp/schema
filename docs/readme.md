@@ -1,4 +1,4 @@
-# Documenation index
+# Documentation index
 
 1. [Setting up Strauss](https://github.com/stellarwp/global-docs/blob/main/docs/strauss-setup.md)
 1. [Schema management](/docs/schemas.md)
