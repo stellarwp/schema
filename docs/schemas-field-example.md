@@ -6,9 +6,9 @@ Here is an example field schema:
 <?php
 namespace Boom\Shakalaka\Fields;
 
-use Boom\Shakalaka\StellarWP\Schema\Fields;
+use Boom\Shakalaka\StellarWP\Schema\Fields\Contracts\Field;
 
-class SandwichesPro extends Fields\Abstract_Field {
+class SandwichesPro extends Field {
 	/**
 	 * {@inheritdoc}
 	 */
@@ -32,7 +32,7 @@ class SandwichesPro extends Fields\Abstract_Field {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected static $fields = [
+	protected $fields = [
 		'bread',
 	];
 
@@ -50,9 +50,9 @@ class SandwichesPro extends Fields\Abstract_Field {
 
 ## Anatomy of a field schema class
 
-### `class SandwichesPro extends Fields\Abstract_Field`
+### `class SandwichesPro extends Fields\Contracts\Field`
 
-It is highly recommended that all field schema classes extend the `PREFIX\StellarWP\Schema\Fields\Abstract_Field` class (obviously, with the Strauss-enabled prefixing in place), but if you really want to change things up, you can opt to implement `PREFIX\StellarWP\Schema\Fields\Field_Schema_Interface` instead.
+It is highly recommended that all field schema classes extend the `PREFIX\StellarWP\Schema\Fields\Contracts\Field` class (obviously, with the Strauss-enabled prefixing in place), but if you really want to change things up, you can opt to implement `PREFIX\StellarWP\Schema\Fields\Contracts\Schema_Interface` instead.
 
 ### `const SCHEMA_VERSION`
 

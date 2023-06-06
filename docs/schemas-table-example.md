@@ -6,9 +6,9 @@ Here is an example table schema:
 <?php
 namespace Boom\Shakalaka\Tables;
 
-use Boom\Shakalaka\StellarWP\Schema\Tables;
+use Boom\Shakalaka\StellarWP\Schema\Tables\Contracts\Table;
 
-class Sandwiches extends Tables\Abstract_Table {
+class Sandwiches extends Table {
 	/**
 	 * {@inheritdoc}
 	 */
@@ -55,9 +55,9 @@ class Sandwiches extends Tables\Abstract_Table {
 
 ## Anatomy of a table schema class
 
-### `class Sandwiches extends Tables\Abstract_Table`
+### `class Sandwiches extends Tables\Contracts\Table`
 
-It is highly recommended that all table schema classes extend the `PREFIX\StellarWP\Schema\Tables\Abstract_Table` class (obviously, with the Strauss-enabled prefixing in place), but if you really want to change things up, you can opt to implement `PREFIX\StellarWP\Schema\Tables\Table_Schema_Interface` instead.
+It is highly recommended that all table schema classes extend the `PREFIX\StellarWP\Schema\Tables\Contracts\Table` class (obviously, with the Strauss-enabled prefixing in place), but if you really want to change things up, you can opt to implement `PREFIX\StellarWP\Schema\Tables\Contracts\Schema_Interface` instead.
 
 ### `const SCHEMA_VERSION`
 
