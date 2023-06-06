@@ -77,16 +77,4 @@ class Activation {
 			$container->get( Full_Activation_Provider::class )->register();
 		}
 	}
-
-	/**
-	 * Handles the feature deactivation.
-	 *
-	 * @since 1.0.0
-	 */
-	public static function deactivate() {
-		$services = Config::get_container();
-
-		// @todo Should we drop the tables here, gracefully, if no data was generated?
-		$services->get( Builder::class )->clean();
-	}
 }

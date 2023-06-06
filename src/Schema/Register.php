@@ -16,7 +16,7 @@ class Register {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $field Field class.
+	 * @param string|Fields\Contracts\Field $field Field class.
 	 *
 	 * @return Fields\Contracts\Schema_Interface
 	 */
@@ -113,7 +113,7 @@ class Register {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $table Table class.
+	 * @param string|Tables\Contracts\Table $table Table class.
 	 *
 	 * @return Tables\Contracts\Schema_Interface
 	 */
