@@ -46,6 +46,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * @inheritDoc
 	 */
+	#[\ReturnTypeWillChange]
 	public function current() {
 		return current( $this->fields );
 	}
@@ -101,6 +102,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * @inheritDoc
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetGet( $offset ) {
 		return $this->fields[ $offset ];
 	}
@@ -108,6 +110,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * @inheritDoc
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetSet( $offset, $value ): void {
 		$this->fields[ $offset ] = $value;
 	}
@@ -115,6 +118,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * @inheritDoc
 	 */
+	#[\ReturnTypeWillChange]
 	public function offsetUnset( $offset ): void {
 		unset( $this->fields[ $offset ] );
 	}
