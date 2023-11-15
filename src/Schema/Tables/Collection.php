@@ -46,6 +46,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * @inheritDoc
 	 */
+	#[\ReturnTypeWillChange]
 	public function current() {
 		return current( $this->tables );
 	}
