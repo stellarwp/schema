@@ -61,7 +61,7 @@ class Schema {
 
 		$container->singleton( static::class, static::class );
 		$container->get( static::class )->register();
-		$container->bind( 'stellarwp_schema_registered', fn() => true );
+		$container->bind( 'stellarwp_schema_registered', static function() { return true; } );
 	}
 
 	/**
@@ -92,7 +92,7 @@ class Schema {
 		$this->container->get( Full_Activation_Provider::class )->register();
 
 		// Set a flag in the container to indicate there was a full activation of the CT1 component.
-		$this->container->bind( 'stellarwp_schema_fully_activated', fn() => true );
+		$this->container->bind( 'stellarwp_schema_fully_activated', static function() { return true; } );
 
 		$this->register_hooks();
 	}

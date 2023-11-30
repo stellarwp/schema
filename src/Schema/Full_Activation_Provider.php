@@ -63,7 +63,7 @@ class Full_Activation_Provider {
 		}
 
 		$this->did_register = true;
-		$this->container->bind( 'stellar_schema_fully_activated', fn() => true );
+		$this->container->bind( 'stellar_schema_fully_activated', static function() { return true; } );
 
 		/*
 		 * This block should be the only one capturing exceptions thrown in the context of
