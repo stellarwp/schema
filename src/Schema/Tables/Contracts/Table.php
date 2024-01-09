@@ -438,7 +438,7 @@ abstract class Table implements Schema_Interface {
 			// @todo Error?
 		}
 
-		$version_applied = $this->get_stored_version();
+		$version_applied = $this->get_stored_version() ?: '';
 		$current_version = $this->get_version();
 
 		return version_compare( $version_applied, $current_version, '==' );
