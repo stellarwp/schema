@@ -39,7 +39,10 @@
   },
   "autoload-dev": {
     "psr-4": {
-      "StellarWP\\Schema\\Tests\\": "tests/_support/Helper/",
+      "StellarWP\\Schema\\Tests\\": [
+        "tests/_support/Helper/",
+        "tests/wpunit/"
+      ],
       "StellarWP\\Schema\\Tests\\Traits\\": "tests/_support/Traits/"
     }
   },
