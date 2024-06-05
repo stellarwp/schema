@@ -2,7 +2,13 @@
 
 namespace StellarWP\Schema\Tables\Filters;
 
-class Group_FilterIterator extends \FilterIterator implements \Countable {
+use CallbackFilterIterator;
+use Countable;
+use FilterIterator;
+use Iterator;
+
+class Group_FilterIterator extends FilterIterator implements Countable {
+
 	/**
 	 * Groups to filter.
 	 *
@@ -10,7 +16,7 @@ class Group_FilterIterator extends \FilterIterator implements \Countable {
 	 *
 	 * @var array<string>
 	 */
-	private $groups = [];
+	private $groups;
 
 	/**
 	 * Constructor.
@@ -18,9 +24,9 @@ class Group_FilterIterator extends \FilterIterator implements \Countable {
 	 * @since 1.0.0
 	 *
 	 * @param array<string> $groups Paths to filter.
-	 * @param \Iterator $iterator Iterator to filter.
+	 * @param Iterator $iterator Iterator to filter.
 	 */
-	public function __construct( array $groups, \Iterator $iterator ) {
+	public function __construct( array $groups, Iterator $iterator ) {
 		parent::__construct( $iterator );
 
 		$this->groups = $groups;
@@ -39,6 +45,8 @@ class Group_FilterIterator extends \FilterIterator implements \Countable {
 	 * @inheritDoc
 	 */
 	public function count(): int {
-		return iterator_count( $this->getInnerIterator() );
+		return iterator_count( new CallbackFilterIterator( $this->getInnerIterator(), function (): bool {
+			return $this->accept();
+		} ) );
 	}
 }
