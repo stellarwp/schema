@@ -23,7 +23,7 @@ class Group_FilterIterator extends \FilterIterator implements \Countable {
 	public function __construct( array $groups, \Iterator $iterator ) {
 		parent::__construct( $iterator );
 
-		$this->groups = (array) $groups;
+		$this->groups = $groups;
 	}
 
 	/**
