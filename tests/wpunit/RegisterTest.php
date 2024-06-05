@@ -114,6 +114,26 @@ class RegisterTest extends SchemaTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function it_should_allow_fetching_of_tables_that_need_updates() {
+		Register::tables([
+			$this->get_simple_table(),
+			$this->get_indexless_table(),
+		]);
+
+		$schema_tables = Schema::tables();
+
+		$tables = $schema_tables->get_tables_needing_updates();
+
+		$this->assertSame( 0, $tables->count() );
+
+		$schema_tables->add( $this->get_modified_simple_table() );
+
+		$this->assertSame( 1, $tables->count() );
+	}
+
+	/**
 	 * Registered tables should be removed from the collection.
 	 *
 	 * @test
