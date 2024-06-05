@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [unreleased] Unreleased
 
+
+## [1.1.7] 2024-06-05
+
+* Fix - `Collection::get_by_group()` now properly works with a single string group name.
+* Fix - `Group_FilterIterator::count()` now properly returns the filtered count and not the base iterator count.
+* Fix - `Needs_Update_FilterIterator::count()` now properly returns the filtered count and not the base iterator count.
+* Fix - Use proper PSR namespacing for tests.
+* Tests - code clean up and file name standardization.
+
+## [1.1.3] 2023-04-04
+
 * Feature - Added `Table::has_foreign_key()` method.
 
 ## [1.1.2] 2022-11-2
