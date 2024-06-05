@@ -4,6 +4,7 @@ namespace StellarWP\Schema\Tests\Traits;
 
 use StellarWP\Schema\Activation;
 use StellarWP\Schema\Builder;
+use StellarWP\Schema\Config;
 use StellarWP\Schema\Fields\Contracts\Field;
 use StellarWP\Schema\Tables\Contracts\Table;
 
@@ -107,6 +108,36 @@ trait Table_Fixtures {
 		};
 
 		return $table;
+	}
+
+	/**
+	 * Get a fake table to verify its creation.
+	 */
+	public function get_simple_table_alt_group(): Table {
+		return new class extends Table {
+			const SCHEMA_VERSION = '1.0.0';
+
+			protected static $base_table_name = 'simple-alt';
+			protected static $group = 'test';
+			protected static $schema_slug = 'bork-simple-alt';
+			protected static $uid_column = 'id';
+
+			protected function get_definition(): string {
+				global $wpdb;
+				$table_name      = self::table_name();
+				$charset_collate = $wpdb->get_charset_collate();
+
+				return "
+					CREATE TABLE `$table_name` (
+						`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+						`name` varchar(25) NOT NULL,
+						`slug` varchar(25) NOT NULL,
+						PRIMARY KEY (`id`),
+						KEY `slug` (`slug`)
+					) $charset_collate;
+				";
+			}
+		};
 	}
 
 	/**
