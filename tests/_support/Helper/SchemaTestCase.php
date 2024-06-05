@@ -2,16 +2,15 @@
 
 namespace StellarWP\Schema\Tests;
 
-use lucatume\DI52\App;
-use StellarWP\Schema\Tests\Container;
+use Codeception\Test\Unit;
 use StellarWP\Schema\Config;
 use StellarWP\DB\DB;
 use StellarWP\Schema\Schema;
 
-class SchemaTestCase extends \Codeception\Test\Unit {
+class SchemaTestCase extends Unit {
 	protected $backupGlobals = false;
 
-	public function setUp() {
+	protected function setUp() {
 		// before
 		parent::setUp();
 

@@ -2,7 +2,6 @@
 
 namespace StellarWP\Schema\Tests;
 
-use lucatume\DI52\App;
 use StellarWP\Schema\Config;
 use StellarWP\Schema\Fields;
 use StellarWP\Schema\Register;
