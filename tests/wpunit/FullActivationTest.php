@@ -1,14 +1,12 @@
 <?php
+
 namespace StellarWP\Schema\Tests;
 
-use lucatume\DI52\App;
 use StellarWP\Schema\Builder;
 use StellarWP\Schema\Config;
 use StellarWP\Schema\Register;
-use StellarWP\Schema\Tests\SchemaTestCase;
-use StellarWP\Schema\Tests\Traits;
 
-class Full_ActivationTest extends SchemaTestCase {
+class FullActivationTest extends SchemaTestCase {
 	use Traits\Table_Fixtures;
 
 	/**

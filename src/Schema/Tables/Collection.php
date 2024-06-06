@@ -75,7 +75,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 * @return Filters\Group_FilterIterator
 	 */
 	public function get_by_group( $groups, $iterator = null ): Filters\Group_FilterIterator {
-		return new Filters\Group_FilterIterator( $groups, $iterator ?: $this );
+		return new Filters\Group_FilterIterator( (array) $groups, $iterator ?: $this );
 	}
 
 	/**

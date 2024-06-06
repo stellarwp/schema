@@ -1,11 +1,10 @@
 <?php
 
-namespace StellarWP\Schema\Tests\Builder;
+namespace StellarWP\Schema\Tests;
 
 use StellarWP\Schema\Tables\Contracts\Schema_Interface as Table_Schema_Interface;
 use StellarWP\Schema\Register;
 use StellarWP\Schema\Schema;
-use StellarWP\Schema\Tests\SchemaTestCase;
 use StellarWP\Schema\Tests\Traits\Table_Fixtures;
 
 class BuilderTest extends SchemaTestCase {
