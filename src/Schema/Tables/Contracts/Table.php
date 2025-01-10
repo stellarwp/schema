@@ -221,6 +221,28 @@ abstract class Table implements Schema_Interface {
 		$this_table = static::table_name( true );
 
 		$this->db::query( "SET foreign_key_checks = 0" );
+		$result = $this->db::query( "DELETE FROM {$this_table}" );
+		$this->db::query( "SET foreign_key_checks = 1" );
+
+		return $result;
+	}
+
+	/**
+	 * Truncates the custom table.
+	 *
+	 * @since 1.1.8
+	 *
+	 * @return int|false The number of removed rows, or `false` to indicate a failure.
+	 */
+	public function truncate() {
+		if ( ! $this->exists() ) {
+			// There is really nothing to empty here.
+			return 0;
+		}
+
+		$this_table = static::table_name( true );
+
+		$this->db::query( "SET foreign_key_checks = 0" );
 		$result = $this->db::query( "TRUNCATE {$this_table}" );
 		$this->db::query( "SET foreign_key_checks = 1" );
 
@@ -535,7 +557,7 @@ abstract class Table implements Schema_Interface {
 	/**
 	 * Checks if a foreign key exists on a table.
 	 *
-	 * @since TBD
+	 * @since 1.1.3
 	 *
 	 * @param string $foreign_key The foreign key to check for.
 	 * @param string|null $table_name The table name to check. Defaults to the current table.

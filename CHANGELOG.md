@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [unreleased] Unreleased
 
+## [1.1.8] 2025-01-10
+
+* Feature - Introduce truncate method which does what the empty_table method was doing. Update empty_table to actually empty the table instead of truncating it.
+* Tweak - Decide if we can create/update during this requests based on blog's status, preventing multiple "check" queries.
 
 ## [1.1.7] 2024-06-05
 

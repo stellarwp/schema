@@ -250,16 +250,14 @@ class Builder {
 	 * Creates or updates the custom tables the plugin will use.
 	 *
 	 * @since 1.0.0
+	 * @since 1.1.8 Decided if we can perform the queries based on blog's status.
 	 *
 	 * @param bool $force Whether to force the creation or update of the tables or not.
 	 *
 	 * @return array<mixed> A list of each creation or update result.
 	 */
 	public function up( $force = false ) {
-		try {
-			$this->db::table( 'posts' )->select ( 1 )->limit( 1 )->get();
-		} catch ( \Exception $e ) {
-			// Let's not try to create the tables on a blog that's missing the basic ones.
+		if ( ! is_blog_installed() || wp_installing() ) {
 			return [];
 		}
 
