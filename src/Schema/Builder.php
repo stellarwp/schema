@@ -257,7 +257,7 @@ class Builder {
 	 */
 	public function up( $force = false ) {
 		if ( ! is_blog_installed() || wp_installing() ) {
-			return;
+			return [];
 		}
 
 		$results       = [];
