@@ -250,6 +250,7 @@ class Builder {
 	 * Creates or updates the custom tables the plugin will use.
 	 *
 	 * @since 1.0.0
+	 * @since 1.1.8 Decided if we can perform the queries based on blog's status.
 	 *
 	 * @param bool $force Whether to force the creation or update of the tables or not.
 	 *

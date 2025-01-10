@@ -230,7 +230,7 @@ abstract class Table implements Schema_Interface {
 	/**
 	 * Truncates the custom table.
 	 *
-	 * @since TBD
+	 * @since 1.1.8
 	 *
 	 * @return int|false The number of removed rows, or `false` to indicate a failure.
 	 */
@@ -557,7 +557,7 @@ abstract class Table implements Schema_Interface {
 	/**
 	 * Checks if a foreign key exists on a table.
 	 *
-	 * @since TBD
+	 * @since 1.1.3
 	 *
 	 * @param string $foreign_key The foreign key to check for.
 	 * @param string|null $table_name The table name to check. Defaults to the current table.
