@@ -18,7 +18,7 @@ abstract class Table implements Schema_Interface {
 	protected static $base_table_name = '';
 
 	/**
-	 * @var string The db class.
+	 * @var class-string<\StellarWP\DB\DB> The db class.
 	 */
 	protected $db;
 
@@ -63,7 +63,7 @@ abstract class Table implements Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $db StellarWP\DB object.
+	 * @param class-string<\StellarWP\DB\DB> $db StellarWP\DB object.
 	 * @param object $container The container to use.
 	 */
 	public function __construct( $db = null, $container = null ) {
@@ -210,6 +210,8 @@ abstract class Table implements Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
+	 *
 	 * @return int|false The number of removed rows, or `false` to indicate a failure.
 	 */
 	public function empty_table() {
@@ -232,6 +234,8 @@ abstract class Table implements Schema_Interface {
 	 *
 	 * @since 1.1.8
 	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
+	 *
 	 * @return int|false The number of removed rows, or `false` to indicate a failure.
 	 */
 	public function truncate() {
@@ -253,6 +257,8 @@ abstract class Table implements Schema_Interface {
 	 * Returns whether a table exists in the database or not.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 *
 	 * @return bool Whether a table exists in the database or not.
 	 */
@@ -385,6 +391,8 @@ abstract class Table implements Schema_Interface {
 	 * @param string      $index      The name of the index to check for.
 	 * @param string|null $table_name The table name to search the index for, or `null`
 	 *                                to use this table name.
+	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 *
 	 * @return bool Whether the table already has an index or not.
 	 */
