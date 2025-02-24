@@ -63,7 +63,7 @@ abstract class Table implements Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param class-string<\StellarWP\DB\DB> $db StellarWP\DB object.
+	 * @param class-string<\StellarWP\DB\DB>|null $db StellarWP\DB object.
 	 * @param object $container The container to use.
 	 */
 	public function __construct( $db = null, $container = null ) {

@@ -32,6 +32,8 @@ class Activation {
 	 * Handles the activation of the feature functions.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 */
 	public static function activate() {
 		$schema_builder = Config::get_container()->get( Builder::class);
@@ -44,6 +46,8 @@ class Activation {
 	 * This method will run once a day (using transients).
 	 *
 	 * @since 1.0.0
+	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 */
 	public static function init() {
 		// Check if we ran recently.

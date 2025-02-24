@@ -37,6 +37,8 @@ interface Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
+	 *
 	 * @return bool `true` if successful operation, `false` to indicate a failure.
 	 */
 	public function drop();

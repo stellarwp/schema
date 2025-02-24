@@ -21,14 +21,14 @@ class Builder {
 	/**
 	 * StellarWP\DB class.
 	 *
-	 * @var string
+	 * @var class-string<\StellarWP\DB\DB>
 	 */
 	protected $db;
 
 	/**
 	 * Constructor.
 	 *
-	 * @param string|null $db StellarWP\DB class.
+	 * @param class-string<\StellarWP\DB\DB>|null $db StellarWP\DB class.
 	 * @param object $container Container instance.
 	 */
 	public function __construct( $db = null, $container = null ) {
@@ -42,6 +42,8 @@ class Builder {
 	 * Note: the method will return `false` if even one table is missing.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 *
 	 * @param string|null $group An optional group name to restrict the check to.
 	 *
@@ -74,6 +76,8 @@ class Builder {
 	 * Trigger actions to drop the custom tables.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 */
 	public function down() {
 		/**
@@ -254,6 +258,8 @@ class Builder {
 	 *
 	 * @param bool $force Whether to force the creation or update of the tables or not.
 	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
+	 *
 	 * @return array<mixed> A list of each creation or update result.
 	 */
 	public function up( $force = false ) {
@@ -285,6 +291,8 @@ class Builder {
 	 * not really required to.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 *
 	 * @return array<mixed> A list of each creation or update result.
 	 */
