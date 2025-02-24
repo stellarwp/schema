@@ -29,7 +29,8 @@
     "stellarwp/db": "^1.1",
     "symfony/event-dispatcher-contracts": "^2.5.1",
     "symfony/string": "^5.4",
-    "szepeviktor/phpstan-wordpress": "^1.1"
+    "szepeviktor/phpstan-wordpress": "^1.1",
+    "php-stubs/wp-cli-stubs": "^2.11"
   },
   "minimum-stability": "stable",
   "autoload": {
