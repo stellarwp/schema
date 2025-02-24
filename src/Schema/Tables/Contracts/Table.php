@@ -165,7 +165,11 @@ abstract class Table implements Schema_Interface {
 		do_action( 'stellarwp_pre_drop_table', $base_table_name, $this_table, $this );
 
 		global $wpdb;
-		// Disable foreign key checks so we can drop without issues.
+
+		/**
+		 * Disable foreign key checks so we can drop without issues.
+		 * @var \stdClass $key_check
+		 */
 		$key_check = $this->db::get_row( "SHOW VARIABLES LIKE 'foreign_key_checks'" );
 		if ( strtolower( $key_check->Value ) === 'on' ) {
 			$this->db::query( "SET foreign_key_checks = 'OFF'" );
@@ -510,6 +514,7 @@ abstract class Table implements Schema_Interface {
 	 * {@inheritdoc}
 	 */
 	public function update() {
+		// @phpstan-ignore-next-line
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		$sql           = $this->get_sql();
@@ -568,11 +573,11 @@ abstract class Table implements Schema_Interface {
 	 * @since 1.1.3
 	 *
 	 * @param string $foreign_key The foreign key to check for.
-	 * @param string|null $table_name The table name to check. Defaults to the current table.
+	 * @param string $table_name The table name to check. Defaults to the current table.
 	 *
 	 * @return bool Whether the foreign key exists on the table.
 	 */
-	public function has_foreign_key( string $foreign_key, string $table_name = null ): bool {
+	public function has_foreign_key( string $foreign_key, string $table_name = '' ): bool {
 		$table_name = $table_name ?: static::table_name();
 
 		$count = $this->db::table( $this->db::raw( 'information_schema.statistics' ) )
