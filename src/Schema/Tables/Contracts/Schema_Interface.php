@@ -31,6 +31,8 @@ interface Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
+	 *
 	 * @return boolean `true` if successful operation, `false` to indicate a failure.
 	 */
 	public function drop();
@@ -40,6 +42,8 @@ interface Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
+	 *
 	 * @return int|false The number of removed rows, or `false` to indicate a failure.
 	 */
 	public function empty_table();
@@ -48,6 +52,8 @@ interface Schema_Interface {
 	 * Returns whether a table exists or not in the database.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 *
 	 * @return bool
 	 */
@@ -125,6 +131,8 @@ interface Schema_Interface {
 	 * Creates, or updates, the custom table.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 *
 	 * @return array<string,string> A map of results in the format returned by
 	 *                              the `dbDelta` function.

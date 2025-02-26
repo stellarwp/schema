@@ -15,7 +15,7 @@ class Config {
 	/**
 	 * StellarWP\DB class.
 	 *
-	 * @var string
+	 * @var class-string<\StellarWP\DB\DB>
 	 */
 	private static $db_class;
 
@@ -35,7 +35,7 @@ class Config {
 	/**
 	 * Get the StellarWP\DB class.
 	 *
-	 * @return string
+	 * @return class-string<\StellarWP\DB\DB>
 	 */
 	public static function get_db() : string {
 		if ( self::$db_class === null ) {
@@ -75,7 +75,7 @@ class Config {
 	/**
 	 * Set the StellarWP\DB class.
 	 *
-	 * @param string $db_class StellarWP\DB class.
+	 * @param class-string<\StellarWP\DB\DB> $db_class StellarWP\DB class.
 	 */
 	public static function set_db( string $db_class ) {
 		self::$db_class = $db_class;

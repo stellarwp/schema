@@ -18,7 +18,7 @@ abstract class Table implements Schema_Interface {
 	protected static $base_table_name = '';
 
 	/**
-	 * @var string The db class.
+	 * @var class-string<\StellarWP\DB\DB> The db class.
 	 */
 	protected $db;
 
@@ -63,7 +63,7 @@ abstract class Table implements Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $db StellarWP\DB object.
+	 * @param class-string<\StellarWP\DB\DB>|null $db StellarWP\DB object.
 	 * @param object $container The container to use.
 	 */
 	public function __construct( $db = null, $container = null ) {
@@ -165,7 +165,11 @@ abstract class Table implements Schema_Interface {
 		do_action( 'stellarwp_pre_drop_table', $base_table_name, $this_table, $this );
 
 		global $wpdb;
-		// Disable foreign key checks so we can drop without issues.
+
+		/**
+		 * Disable foreign key checks so we can drop without issues.
+		 * @var \stdClass $key_check
+		 */
 		$key_check = $this->db::get_row( "SHOW VARIABLES LIKE 'foreign_key_checks'" );
 		if ( strtolower( $key_check->Value ) === 'on' ) {
 			$this->db::query( "SET foreign_key_checks = 'OFF'" );
@@ -210,6 +214,8 @@ abstract class Table implements Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
+	 *
 	 * @return int|false The number of removed rows, or `false` to indicate a failure.
 	 */
 	public function empty_table() {
@@ -232,6 +238,8 @@ abstract class Table implements Schema_Interface {
 	 *
 	 * @since 1.1.8
 	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
+	 *
 	 * @return int|false The number of removed rows, or `false` to indicate a failure.
 	 */
 	public function truncate() {
@@ -253,6 +261,8 @@ abstract class Table implements Schema_Interface {
 	 * Returns whether a table exists in the database or not.
 	 *
 	 * @since 1.0.0
+	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 *
 	 * @return bool Whether a table exists in the database or not.
 	 */
@@ -386,6 +396,8 @@ abstract class Table implements Schema_Interface {
 	 * @param string|null $table_name The table name to search the index for, or `null`
 	 *                                to use this table name.
 	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
+	 *
 	 * @return bool Whether the table already has an index or not.
 	 */
 	public function has_index( $index, $table_name = null ) {
@@ -502,6 +514,7 @@ abstract class Table implements Schema_Interface {
 	 * {@inheritdoc}
 	 */
 	public function update() {
+		// @phpstan-ignore-next-line
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		$sql           = $this->get_sql();
@@ -560,11 +573,11 @@ abstract class Table implements Schema_Interface {
 	 * @since 1.1.3
 	 *
 	 * @param string $foreign_key The foreign key to check for.
-	 * @param string|null $table_name The table name to check. Defaults to the current table.
+	 * @param string $table_name The table name to check. Defaults to the current table.
 	 *
 	 * @return bool Whether the foreign key exists on the table.
 	 */
-	public function has_foreign_key( string $foreign_key, string $table_name = null ): bool {
+	public function has_foreign_key( string $foreign_key, string $table_name = '' ): bool {
 		$table_name = $table_name ?: static::table_name();
 
 		$count = $this->db::table( $this->db::raw( 'information_schema.statistics' ) )

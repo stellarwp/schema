@@ -11,12 +11,15 @@ use StellarWP\Schema\Tables;
  * A helper class for registering StellarWP Schema resources.
  */
 class Register {
+
 	/**
 	 * Register a field schema.
 	 *
 	 * @since 1.0.0
 	 *
 	 * @param string|Fields\Contracts\Field $field Field class.
+	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 *
 	 * @return Fields\Contracts\Schema_Interface
 	 */
@@ -46,6 +49,8 @@ class Register {
 	 *
 	 * @param array<mixed> $fields Fields to register.
 	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
+	 *
 	 * @return Fields\Collection
 	 */
 	public static function fields( array $fields ) {
@@ -62,6 +67,8 @@ class Register {
 	 * @since 1.0.0
 	 *
 	 * @param string|Fields\Contracts\Schema_Interface $field Field Schema class.
+	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 *
 	 * @return Fields\Contracts\Schema_Interface
 	 */
@@ -89,6 +96,8 @@ class Register {
 	 *
 	 * @param string|Tables\Contracts\Schema_Interface $table Table Schema class.
 	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
+	 *
 	 * @return Tables\Contracts\Schema_Interface
 	 */
 	public static function remove_table( $table ) {
@@ -114,6 +123,8 @@ class Register {
 	 * @since 1.0.0
 	 *
 	 * @param string|Tables\Contracts\Table $table Table class.
+	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 *
 	 * @return Tables\Contracts\Schema_Interface
 	 */
@@ -142,6 +153,8 @@ class Register {
 	 * @since 1.0.0
 	 *
 	 * @param array<mixed> $tables Tables to register.
+	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 *
 	 * @return Tables\Collection
 	 */

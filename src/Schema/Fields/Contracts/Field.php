@@ -20,6 +20,7 @@ use StellarWP\Schema\Schema;
  * @package StellarWP\Schema\Fields\Contracts
  */
 abstract class Field implements Schema_Interface {
+
 	/**
 	 * @since 1.0.0
 	 *
@@ -40,7 +41,7 @@ abstract class Field implements Schema_Interface {
 	protected $container;
 
 	/**
-	 * @var string The db class.
+	 * @var class-string<\StellarWP\DB\DB> The db class.
 	 */
 	protected $db;
 
@@ -68,7 +69,7 @@ abstract class Field implements Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string $db StellarWP\DB object.
+	 * @param class-string<\StellarWP\DB\DB>|null $db StellarWP\DB object.
 	 * @param object $container The container to use.
 	 */
 	public function __construct( $db = null, $container = null ) {
@@ -178,10 +179,11 @@ abstract class Field implements Schema_Interface {
 	 *
 	 * @since 1.0.0
 	 *
+	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
+	 *
 	 * @return bool Whether a set of fields exists in the database or not.
 	 */
 	public function exists() {
-		global $wpdb;
 		$table_schema = $this->table_schema();
 
 		if ( $table_schema === null ) {
