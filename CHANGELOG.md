@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [1.1.9] 2025-02-26
 
-* Tweak - Add @throws tags and better generics.
+* Tweak - Add @throws tags from the [stellarwp/db](https://github.com/stellarwp/db) library and better generics.
 
 
 ## [1.1.8] 2025-01-10
