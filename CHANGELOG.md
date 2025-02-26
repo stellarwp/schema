@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [unreleased] Unreleased
 
+## [1.1.9] 2025-02-26
+
+* Tweak - Add @throws tags from the [stellarwp/db](https://github.com/stellarwp/db) library and better generics.
+
+
 ## [1.1.8] 2025-01-10
 
 * Feature - Introduce truncate method which does what the empty_table method was doing. Update empty_table to actually empty the table instead of truncating it.
