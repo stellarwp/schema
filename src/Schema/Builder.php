@@ -264,7 +264,7 @@ class Builder {
 	 */
 	public function up( $force = false ) {
 		try {
-			$this->db::table( 'posts' )->select ( 1 )->limit( 1 )->get();
+			$this->db::table( 'posts' )->select( '1' )->limit( 1 )->get();
 		} catch ( \Exception $e ) {
 			// Let's not try to create the tables on a blog that's missing the basic ones.
 			return [];
