@@ -263,7 +263,10 @@ class Builder {
 	 * @return array<mixed> A list of each creation or update result.
 	 */
 	public function up( $force = false ) {
-		if ( ! is_blog_installed() || wp_installing() ) {
+		try {
+			$this->db::table( 'posts' )->select ( 1 )->limit( 1 )->get();
+		} catch ( \Exception $e ) {
+			// Let's not try to create the tables on a blog that's missing the basic ones.
 			return [];
 		}
 
