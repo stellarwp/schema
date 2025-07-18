@@ -376,7 +376,7 @@ class BuilderTest extends SchemaTestCase {
 		$table->drop();
 		// Sanity check.
 		$this->assertFalse( $table->exists() );
-		// Set up as if switching to a blog before it's installed, during its creeation.
+		// Set up as if switching to a blog before it's installed, during its creation.
 		wp_cache_delete( 'is_blog_installed' );
 		// Remove all other filters to avoid side-effects.
 		remove_all_filters( 'switch_blog' );
