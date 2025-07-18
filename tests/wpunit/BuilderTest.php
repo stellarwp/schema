@@ -365,4 +365,76 @@ class BuilderTest extends SchemaTestCase {
 		Register::remove_table( $klutz_table );
 		Register::remove_table( $zorps_table );
 	}
+
+	/**
+	 * @test
+	 */
+	public function should_not_create_tables_during_switch_blog_if_blog_not_installed(): void {
+		// Register the table.
+		$table = $this->get_simple_table();
+		Register::table( $table );
+		$table->drop();
+		// Sanity check.
+		$this->assertFalse( $table->exists() );
+		// Set up as if switching to a blog before it's installed, during its creation.
+		wp_cache_delete( 'is_blog_installed' );
+		// Remove all other filters to avoid side-effects.
+		remove_all_filters( 'switch_blog' );
+
+		$builder = Schema::builder();
+
+		add_action( 'switch_blog', [ $builder, 'update_blog_tables' ] );
+
+		do_action( 'switch_blog', 66 );
+
+		$this->assertFalse( $table->exists() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_create_tables_during_switch_blog_if_blog_installed(): void {
+		// Register the table.
+		$table = $this->get_simple_table();
+		Register::table( $table );
+		$table->drop();
+		// Sanity check.
+		$this->assertFalse( $table->exists() );
+		// Set up as if switching to a blog after it's installed.
+		wp_cache_set( 'is_blog_installed', true );
+		// Remove all other filters to avoid side-effects.
+		remove_all_filters( 'switch_blog' );
+
+		$builder = Schema::builder();
+
+		add_action( 'switch_blog', [ $builder, 'update_blog_tables' ] );
+
+		do_action( 'switch_blog', 66 );
+
+		$this->assertTrue( $table->exists() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_create_tables_during_activate_blog(): void {
+		// Register the table.
+		$table = $this->get_simple_table();
+		Register::table( $table );
+		$table->drop();
+		// Sanity check.
+		$this->assertFalse( $table->exists() );
+		// Set up as if switching to a blog after it's installed.
+		wp_cache_set( 'is_blog_installed', true );
+		// Remove all other filters to avoid side-effects.
+		remove_all_filters( 'activate_blog' );
+
+		$builder = Schema::builder();
+
+		add_action( 'activate_blog', [ $builder, 'update_blog_tables' ] );
+
+		do_action( 'activate_blog', 66 );
+
+		$this->assertTrue( $table->exists() );
+	}
 }

@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [unreleased] Unreleased
 
+## [2.0.1] 2025-07-18
+
+* Fix - Avoid dead db in multisite installations with too early checks.
+
+## [2.0.0] 2025-05-20
+
+Feature - Bump di52 to 4.0.1 and all other deps.
+
 ## [1.1.9] 2025-02-26
 
 * Tweak - Add @throws tags from the [stellarwp/db](https://github.com/stellarwp/db) library and better generics.

@@ -263,7 +263,25 @@ class Builder {
 	 * @return array<mixed> A list of each creation or update result.
 	 */
 	public function up( $force = false ) {
-		if ( ! is_blog_installed() || wp_installing() ) {
+		if ( doing_action( 'switch_blog' ) ) {
+			/*
+			 * The `switch_blog` action can be called by the `wp_initialize_site` function, before the blog exists.
+			 * Running `is_blog_installed()` in this case will kill the site with a dead db message since the
+			 * `users` table will be found (it's common for all blogs), but the `options` table will not be found for
+			 * the blog.
+			 * If the blog does not exist, the value will not be cached yet and the value will be `false`.
+			 * Else we can just use the value; this will be the case for a normal `switch_blog` action that does not
+			 * fire while creating the site.
+			 *
+			 * When is the next chance to create the tables? Likely in the `activate_blog` action that will be fired
+			 * in the same request following the blog creation or in the next `switch_blog` action.
+			 */
+			$is_blog_installed = wp_cache_get( 'is_blog_installed' );
+		} else {
+			$is_blog_installed = is_blog_installed();
+		}
+
+		if ( ! $is_blog_installed || wp_installing() ) {
 			return [];
 		}
 
