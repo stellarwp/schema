@@ -263,7 +263,13 @@ class Builder {
 	 * @return array<mixed> A list of each creation or update result.
 	 */
 	public function up( $force = false ) {
-		if ( ! is_blog_installed() || wp_installing() ) {
+		/*
+		 * The value will be `false` if the value has not been set yet or the blog is not installed.
+		 * In either case we should not try to create the tables.
+		 */
+		$is_blog_installed = wp_cache_get( 'is_blog_installed' );
+
+		if ( ! $is_blog_installed || wp_installing() ) {
 			return [];
 		}
 
