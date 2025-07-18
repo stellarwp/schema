@@ -274,7 +274,7 @@ class Builder {
 			 * fire while creating the site.
 			 *
 			 * When is the next chance to create the tables? Likely in the `activate_blog` action that will be fired
-			 * in the same request following the site blog creation, or in the next `switch_blog` action.
+			 * in the same request following the blog creation or in the next `switch_blog` action.
 			 */
 			$is_blog_installed = wp_cache_get( 'is_blog_installed' );
 		} else {
