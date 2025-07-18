@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [unreleased] Unreleased
 
+## [1.1.10] 2025-07-18
+
+* Fix - Avoid dead db in multisite installations with too early checks.
+
 ## [1.1.9] 2025-02-26
 
 * Tweak - Add @throws tags from the [stellarwp/db](https://github.com/stellarwp/db) library and better generics.
