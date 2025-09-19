@@ -64,6 +64,13 @@ interface Column_Interface extends PHP_Types, Column_Types {
 	public function get_on_update(): ?string;
 
 	/**
+	 * Get the definition of the column.
+	 *
+	 * @return string The definition of the column.
+	 */
+	public function get_definition(): string;
+
+	/**
 	 * Set the type of the column.
 	 *
 	 * @param string $type The type of the column.

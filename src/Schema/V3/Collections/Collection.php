@@ -52,8 +52,8 @@ abstract class Collection implements ArrayAccess, Iterator, Countable, JsonSeria
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string    $offset The offset to set.
-	 * @param mixed $value  The value to set.
+	 * @param string $offset The offset to set.
+	 * @param mixed  $value  The value to set.
 	 */
 	protected function set( string $offset, $value ): void {
 		$this->resources[ $offset ] = $value;
@@ -97,7 +97,7 @@ abstract class Collection implements ArrayAccess, Iterator, Countable, JsonSeria
 	 *
 	 * @param TKey $offset The offset to get.
 	 *
-	 * @return mixed|null
+	 * @return ?mixed
 	 */
 	#[ReturnTypeWillChange]
 	public function offsetGet( $offset ) {

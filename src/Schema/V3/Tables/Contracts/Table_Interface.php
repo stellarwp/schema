@@ -12,6 +12,7 @@ declare( strict_types=1 );
 namespace StellarWP\Schema\V3\Tables\Contracts;
 
 use StellarWP\Schema\Tables\Contracts\Schema_Interface as Base_Interface;
+use StellarWP\Schema\V3\Collections\Column_Collection;
 use ReturnTypeWillChange;
 
 /**
@@ -29,10 +30,25 @@ interface Table_Interface extends Base_Interface {
 	 */
 	public function get_definition(): string;
 
-	public static function get_columns(): ColumnCollection;
+	/**
+	 * Gets the columns of the table.
+	 *
+	 * @return Column_Collection The columns of the table.
+	 */
+	public static function get_columns(): Column_Collection;
 
-	public static function get_searchable_columns(): ColumnCollection;
+	/**
+	 * Gets the searchable columns of the table.
+	 *
+	 * @return Column_Collection The searchable columns of the table.
+	 */
+	public static function get_searchable_columns(): Column_Collection;
 
+	/**
+	 * Gets the schema of the table.
+	 *
+	 * @return Schema_Interface The schema of the table.
+	 */
 	public static function get_schema(): Table_Schema_Interface;
 
 	/**

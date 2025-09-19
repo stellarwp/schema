@@ -14,6 +14,7 @@ namespace StellarWP\Schema\V3\Tables\Contracts;
 use DateTimeInterface;
 use StellarWP\Schema\Tables\Contracts\Table as Base_Table;
 use StellarWP\Schema\V3\Traits\Custom_Table_Query_Methods;
+use StellarWP\Schema\V3\Collections\Column_Collection;
 
 /**
  * Class Custom_Table_Abstract
@@ -22,7 +23,7 @@ use StellarWP\Schema\V3\Traits\Custom_Table_Query_Methods;
  *
  * @package TEC\Common\Abstracts
  */
-abstract class Table extends Base_Table {
+abstract class Table extends Base_Table implements Table_Interface {
 	use Custom_Table_Query_Methods;
 
 	/**
@@ -38,41 +39,19 @@ abstract class Table extends Base_Table {
 		global $wpdb;
 		$table_name      = static::table_name( true );
 		$charset_collate = $wpdb->get_charset_collate();
-		$uid_column      = static::uid_column();
 
 		$columns = static::get_columns();
 
 		$columns_definitions = [];
-		foreach ( $columns as $column => $definition ) {
-			$column_sql = "`{$column}` {$definition['type']}";
-
-			if ( ! empty( $definition['length'] ) ) {
-				$column_sql .= "({$definition['length']})";
-			}
-
-			if ( ! empty( $definition['unsigned'] ) ) {
-				$column_sql .= ' UNSIGNED';
-			}
-
-			$column_sql .= ! empty( $definition['nullable'] ) ? ' NULL' : ' NOT NULL';
-
-			if ( ! empty( $definition['auto_increment'] ) ) {
-				$column_sql .= ' AUTO_INCREMENT';
-			}
-
-			if ( ! empty( $definition['default'] ) ) {
-				$column_sql .= ' DEFAULT ' . ( in_array( $definition['default'], self::SQL_RESERVED_DEFAULTS, true ) || in_array( $definition['php_type'], [ self::PHP_TYPE_INT, self::PHP_TYPE_BOOL, self::PHP_TYPE_FLOAT ], true ) ? $definition['default'] : "'{$definition['default']}'" );
-			}
-
-			$columns_definitions[] = $column_sql;
+		foreach ( $columns as $column ) {
+			$columns_definitions[] = $column->get_definition();
 		}
 
 		$columns_sql = implode( ',' . PHP_EOL, $columns_definitions );
 
 		return "
 			CREATE TABLE `{$table_name}` (
-				{$columns_sql},
-				PRIMARY KEY (`{$uid_column}`)
+				{$columns_sql}
 			) {$charset_collate};
 		";
 	}
@@ -107,7 +86,7 @@ abstract class Table extends Base_Table {
 	 *
 	 * @var string[]
 	 */
-	abstract public static function get_columns(): array;
+	abstract public static function get_columns(): Column_Collection;
 
 	/**
 	 * An array of all the columns that are searchable.
@@ -116,7 +95,7 @@ abstract class Table extends Base_Table {
 	 *
 	 * @return string[]
 	 */
-	public static function get_searchable_columns(): array {
+	public static function get_searchable_columns(): Column_Collection {
 		return [];
 	}
 

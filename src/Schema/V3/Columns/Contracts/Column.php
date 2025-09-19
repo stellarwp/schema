@@ -215,13 +215,53 @@ abstract class Column implements Column_Interface, Indexable {
 	/**
 	 * Set the on update value of the column.
 	 *
-	 * @param string $on_update The on update value of the column.
+	 * @param ?string $on_update The on update value of the column.
 	 *
 	 * @return self
 	 */
-	public function set_on_update( string $on_update ): self {
+	public function set_on_update( ?string $on_update ): self {
 		$this->on_update = $on_update;
 		return $this;
+	}
+
+	/**
+	 * Get the definition of the column.
+	 *
+	 * @return string The definition of the column.
+	 */
+	public function get_definition(): string {
+		$sql = "`{$this->get_name()}` {$this->get_type()}";
+
+		if ( $this instanceof Lengthable && $this instanceof Precisionable ) {
+			$sql .= "({$this->get_length()}, {$this->get_precision()})";
+		} elseif ( $this instanceof Lengthable ) {
+			$sql .= "({$this->get_length()})";
+		}
+
+		if ( $this instanceof Signable && ! $this->get_signed() ) {
+			$sql .= ' UNSIGNED';
+		}
+
+		if ( $this instanceof Precisionable ) {
+			$sql .= "({$this->get_precision()})";
+		}
+
+		$sql .= $this->get_nullable() ? ' NULL' : ' NOT NULL';
+
+		if ( $this instanceof Auto_Incrementable && $this->get_auto_increment() ) {
+			$sql .= ' AUTO_INCREMENT';
+		}
+
+		if ( $this->get_default() ) {
+			$default = $this->get_default();
+			$sql .= ' DEFAULT ' . ( in_array( $default, self::SQL_RESERVED_DEFAULTS, true ) || in_array( $this->get_type(), [ self::PHP_TYPE_INT, self::PHP_TYPE_BOOL, self::PHP_TYPE_FLOAT ], true ) ? $default : "'{$default}'" );
+		}
+
+		if ( $this->get_on_update() ) {
+			$sql .= ' ON UPDATE ' . $this->get_on_update();
+		}
+
+		return $sql;
 	}
 
 	/**
