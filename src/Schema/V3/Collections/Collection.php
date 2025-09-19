@@ -165,10 +165,10 @@ abstract class Collection implements ArrayAccess, Iterator, Countable, JsonSeria
 	 *
 	 * @param callable $callback The callback to map the collection to an array.
 	 *
-	 * @return array
+	 * @return Collection
 	 */
-	public function map( callable $callback ): array {
-		return array_map( $callback, $this->resources );
+	public function map( callable $callback ): Collection {
+		return new static( array_map( $callback, $this->resources ) );
 	}
 
 	/**

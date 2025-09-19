@@ -16,7 +16,7 @@ use DateTimeInterface;
 use Exception;
 use Generator;
 use InvalidArgumentException;
-use StellarWP\Schema\V3\Tables\Contracts\Table as Table;
+use StellarWP\Schema\V3\Columns\Contracts\Column;
 use StellarWP\Schema\Config;
 
 /**
@@ -46,16 +46,13 @@ trait Custom_Table_Query_Methods {
 		$database = Config::get_db();
 
 		do {
-			// On first iteration, we need to set the SQL_CALC_FOUND_ROWS flag.
-			$sql_calc_found_rows = 0 === $fetched ? 'SQL_CALC_FOUND_ROWS' : '';
-
 			$uid_column = static::uid_column();
 
 			$order_by = $order_by ?: $uid_column . ' ASC';
 
 			$batch = $database::get_results(
 				$database::prepare(
-					"SELECT {$sql_calc_found_rows} * FROM %i {$where_clause} ORDER BY {$order_by} LIMIT %d, %d",
+					"SELECT * FROM %i {$where_clause} ORDER BY {$order_by} LIMIT %d, %d",
 					static::table_name( true ),
 					$offset,
 					$batch_size
@@ -64,7 +61,7 @@ trait Custom_Table_Query_Methods {
 			);
 
 			// We need to get the total number of rows, only after the first batch.
-			$total  ??= $database::get_var( 'SELECT FOUND_ROWS()' );
+			$total  ??= $database::get_var( "SELECT COUNT(*) FROM %i {$where_clause}", static::table_name( true ) );
 			$fetched += count( $batch );
 
 			$offset += $batch_size;
@@ -652,19 +649,19 @@ trait Custom_Table_Query_Methods {
 		$column_type = $columns[ $column ]['php_type'];
 
 		switch ( $column_type ) {
-			case Table::PHP_TYPE_INT:
-			case Table::PHP_TYPE_BOOL:
+			case Column::PHP_TYPE_INT:
+			case Column::PHP_TYPE_BOOL:
 				$value       = is_array( $value ) ? array_map( fn( $v ) => (int) $v, $value ) : (int) $value;
 				$placeholder = '%d';
 				break;
-			case Table::PHP_TYPE_STRING:
-			case Table::PHP_TYPE_DATETIME:
+			case Column::PHP_TYPE_STRING:
+			case Column::PHP_TYPE_DATETIME:
 				$value       = is_array( $value ) ?
 					array_map( fn( $v ) => $v instanceof DateTimeInterface ? $v->format( 'Y-m-d H:i:s' ) : (string) $v, $value ) :
 					( $value instanceof DateTimeInterface ? $value->format( 'Y-m-d H:i:s' ) : (string) $value );
 				$placeholder = '%s';
 				break;
-			case Table::PHP_TYPE_FLOAT:
+			case Column::PHP_TYPE_FLOAT:
 				$value       = is_array( $value ) ? array_map( fn( $v ) => (float) $v, $value ) : (float) $value;
 				$placeholder = '%f';
 				break;
@@ -733,22 +730,22 @@ trait Custom_Table_Query_Methods {
 			}
 
 			switch ( $column_data['php_type'] ) {
-				case Table::PHP_TYPE_INT:
+				case Column::PHP_TYPE_INT:
 					$data[ $column ] = (int) $value;
 					break;
-				case Table::PHP_TYPE_STRING:
+				case Column::PHP_TYPE_STRING:
 					$data[ $column ] = (string) $value;
 					break;
-				case Table::PHP_TYPE_FLOAT:
+				case Column::PHP_TYPE_FLOAT:
 					$data[ $column ] = (float) $value;
 					break;
-				case Table::PHP_TYPE_BOOL:
+				case Column::PHP_TYPE_BOOL:
 					$data[ $column ] = (bool) $value;
 					break;
-				case Table::PHP_TYPE_JSON:
+				case Column::PHP_TYPE_JSON:
 					$data[ $column ] = (array) json_decode( $value, true );
 					break;
-				case Table::PHP_TYPE_DATETIME:
+				case Column::PHP_TYPE_DATETIME:
 					try {
 						$instance = Config::get_container()->get( DateTimeInterface::class );
 					} catch ( Exception $e ) {

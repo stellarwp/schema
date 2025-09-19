@@ -71,6 +71,13 @@ interface Column_Interface extends PHP_Types, Column_Types {
 	public function get_definition(): string;
 
 	/**
+	 * Get whether the column is searchable.
+	 *
+	 * @return bool Whether the column is searchable.
+	 */
+	public function is_searchable(): bool;
+
+	/**
 	 * Set the type of the column.
 	 *
 	 * @param string $type The type of the column.
@@ -118,6 +125,15 @@ interface Column_Interface extends PHP_Types, Column_Types {
 	 * @return self
 	 */
 	public function set_nullable( bool $nullable ): self;
+
+	/**
+	 * Set the searchable of the column.
+	 *
+	 * @param bool $searchable Whether the column is searchable.
+	 *
+	 * @return self
+	 */
+	public function set_searchable( bool $searchable ): self;
 
 	/**
 	 * Set the on update value of the column.

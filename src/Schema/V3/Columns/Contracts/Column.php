@@ -80,6 +80,13 @@ abstract class Column implements Column_Interface, Indexable {
 	protected ?string $on_update = null;
 
 	/**
+	 * Whether the column is searchable.
+	 *
+	 * @var bool
+	 */
+	protected bool $searchable = false;
+
+	/**
 	 * Constructor.
 	 *
 	 * @param string $name The name of the column.
@@ -131,6 +138,15 @@ abstract class Column implements Column_Interface, Indexable {
 	 */
 	public function get_default(): mixed {
 		return $this->default;
+	}
+
+	/**
+	 * Get the searchable of the column.
+	 *
+	 * @return bool Whether the column is searchable.
+	 */
+	public function is_searchable(): bool {
+		return $this->searchable;
 	}
 
 	/**
@@ -209,6 +225,18 @@ abstract class Column implements Column_Interface, Indexable {
 	 */
 	public function set_nullable( bool $nullable ): self {
 		$this->nullable = $nullable;
+		return $this;
+	}
+
+	/**
+	 * Set the searchable of the column.
+	 *
+	 * @param bool $searchable Whether the column is searchable.
+	 *
+	 * @return self
+	 */
+	public function set_searchable( bool $searchable ): self {
+		$this->searchable = $searchable;
 		return $this;
 	}
 

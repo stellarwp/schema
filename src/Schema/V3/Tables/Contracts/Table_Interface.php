@@ -45,11 +45,18 @@ interface Table_Interface extends Base_Interface {
 	public static function get_searchable_columns(): Column_Collection;
 
 	/**
+	 * Gets the schema history for the table.
+	 *
+	 * @return array<string, Table_Schema_Interface> The schema history for the table. The key is the version and the value is a Table_Schema_Interface object.
+	 */
+	public function get_schema_history(): array;
+
+	/**
 	 * Gets the schema of the table.
 	 *
 	 * @return Schema_Interface The schema of the table.
 	 */
-	public static function get_schema(): Table_Schema_Interface;
+	public static function get_current_schema(): Table_Schema_Interface;
 
 	/**
 	 * Transforms a result array into a model.

@@ -132,25 +132,28 @@ abstract class Abstract_Index implements Index {
 	 */
 	public function get_alter_table_with_index_definition(): string {
 		$type = $this->get_type();
+		$name = esc_sql( $this->get_name() );
 		switch ( $type ) {
 			case self::TYPE_INDEX:
-				$key = 'INDEX ' . $this->get_name();
+				$key = 'INDEX ' . $name;
 				break;
 			case self::TYPE_UNIQUE:
-				$key = 'UNIQUE KEY ' . $this->get_name();
+				$key = 'UNIQUE KEY ' . $name;
 				break;
 			case self::TYPE_PRIMARY:
 				$key = 'PRIMARY KEY';
 				break;
 			case self::TYPE_FULLTEXT:
-				$key = 'FULLTEXT INDEX ' . $this->get_name();
+				$key = 'FULLTEXT INDEX ' . $name;
 				break;
 			default:
 				throw new InvalidArgumentException( "Invalid index type: {$type}" );
 		}
 
-		$columns = implode( ', ', $this->get_columns() );
+		$columns = implode( ', ', array_map( 'esc_sql', $this->get_columns() ) );
 
-		return "ALTER TABLE `{$this->get_table_name()}` ADD {$key} ({$columns})";
+		$table_name = esc_sql( $this->get_table_name() );
+
+		return "ALTER TABLE `{$table_name}` ADD {$key} ({$columns})";
 	}
 }

@@ -11,6 +11,8 @@ declare( strict_types=1 );
 
 namespace StellarWP\Schema\V3\Collections;
 
+use StellarWP\Schema\V3\Indexes\Contracts\Index;
+
 /**
  * Class Column_Collection
  *
