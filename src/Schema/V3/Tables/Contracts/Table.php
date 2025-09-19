@@ -34,6 +34,25 @@ abstract class Table extends Base_Table implements Table_Interface {
 	use Custom_Table_Query_Methods;
 
 	/**
+	 * {@inheritdoc}
+	 */
+	public static function uid_column(): string {
+		$primary_columns = static::primary_columns();
+		return array_values( $primary_columns )[0];
+	}
+
+	/**
+	 * Gets the primary columns for the table.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string> The primary columns for the table.
+	 */
+	public static function primary_columns(): array {
+		return static::get_current_schema()->get_primary_key()->get_columns();
+	}
+
+	/**
 	 * Returns the table creation SQL in the format supported
 	 * by the `dbDelta` function.
 	 *

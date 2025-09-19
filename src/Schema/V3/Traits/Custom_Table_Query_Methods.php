@@ -46,9 +46,9 @@ trait Custom_Table_Query_Methods {
 		$database = Config::get_db();
 
 		do {
-			$uid_column = static::uid_column();
+			$primary_columns = static::primary_columns();
 
-			$order_by = $order_by ?: $uid_column . ' ASC';
+			$order_by = $order_by ?: implode( ', ', array_map( fn( $column ) => "{$column} ASC", $primary_columns ) );
 
 			$batch = $database::get_results(
 				$database::prepare(
@@ -106,10 +106,12 @@ trait Custom_Table_Query_Methods {
 	 * @return bool Whether the upsert was successful.
 	 */
 	public static function upsert( array $entry ): bool {
-		$uid_column = static::uid_column();
-		$uid        = $entry[ $uid_column ] ?? false;
+		$primary_columns = static::primary_columns();
+		$primary_values  = array_filter( array_intersect_key( $entry, array_flip( $primary_columns ) ) );
 
-		return $uid ? static::update_single( $entry ) : static::insert( $entry );
+		$is_update = count( $primary_values ) === count( $primary_columns );
+
+		return $is_update ? static::update_single( $entry ) : static::insert( $entry );
 	}
 
 	/**
@@ -173,11 +175,21 @@ trait Custom_Table_Query_Methods {
 
 		$database     = Config::get_db();
 		$prepared_ids = implode( ', ', $ids );
-		$column       = $column ?: static::uid_column();
+		$column       = $column ?
+			"{$column} IN ({$prepared_ids})" :
+			implode(
+				' AND ',
+				array_map(
+					function ( $c ) use ( $prepared_ids ) {
+						return "{$c} IN ({$prepared_ids})";
+					},
+				static::primary_columns()
+				)
+			);
 
 		return $database::query(
 			$database::prepare(
-				"DELETE FROM %i WHERE {$column} IN ({$prepared_ids}) {$more_where}",
+				"DELETE FROM %i WHERE {$column} {$more_where}",
 				static::table_name( true ),
 			)
 		);
