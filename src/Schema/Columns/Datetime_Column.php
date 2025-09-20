@@ -12,6 +12,7 @@ declare( strict_types=1 );
 namespace StellarWP\Schema\Columns;
 
 use StellarWP\Schema\Columns\Contracts\Column;
+use InvalidArgumentException;
 
 /**
  * Class Datetime_Column
@@ -34,6 +35,21 @@ class Datetime_Column extends Column {
 	 * @var string
 	 */
 	protected string $php_type = self::PHP_TYPE_DATETIME;
+
+	/**
+	 * Get the default value of the column.
+	 *
+	 * @return mixed The default value of the column.
+	 *
+	 * @throws InvalidArgumentException If the default value is not valid.
+	 */
+	public function get_default() {
+		if ( 'CURRENT_TIMESTAMP' === $this->default && $this->get_type() !== self::COLUMN_TYPE_TIMESTAMP ) {
+			throw new InvalidArgumentException( 'CURRENT_TIMESTAMP is not a valid default for a non timestamp column until MySQL 5.6.5. Please use a timestamp column instead.' );
+		}
+
+		return $this->default;
+	}
 
 	/**
 	 * Get the supported column types.

@@ -270,10 +270,6 @@ abstract class Column implements Column_Interface, Indexable {
 			$sql .= ' UNSIGNED';
 		}
 
-		if ( $this instanceof Precisionable ) {
-			$sql .= "({$this->get_precision()})";
-		}
-
 		$sql .= $this->get_nullable() ? ' NULL' : ' NOT NULL';
 
 		if ( $this instanceof Auto_Incrementable && $this->get_auto_increment() ) {
