@@ -35,6 +35,7 @@ abstract class Column implements Column_Interface, Indexable {
 		'CURRENT_TIMESTAMP',
 		'CURRENT_DATE',
 		'CURRENT_TIME',
+		'NULL',
 	];
 
 	/**

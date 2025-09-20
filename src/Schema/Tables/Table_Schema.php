@@ -164,7 +164,7 @@ class Table_Schema implements Table_Schema_Interface {
 			}
 		}
 
-		if ( array_values( $indexed_columns ) !== array_unique( array_values( $indexed_columns ) ) ) {
+		if ( array_values( $indexed_columns ) !== array_unique( array_values( $indexed_columns ), SORT_REGULAR ) ) {
 			throw new RuntimeException( 'Multiple indexes with the same column combinations.' );
 		}
 	}

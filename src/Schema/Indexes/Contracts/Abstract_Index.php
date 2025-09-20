@@ -52,6 +52,15 @@ abstract class Abstract_Index implements Index {
 	protected string $type;
 
 	/**
+	 * Constructor.
+	 *
+	 * @param string $name The name of the index.
+	 */
+	public function __construct( string $name = '' ) {
+		$this->name = $name;
+	}
+
+	/**
 	 * Get the name of the index.
 	 *
 	 * @return string The name of the index.

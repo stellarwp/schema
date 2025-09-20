@@ -16,6 +16,10 @@ use StellarWP\Schema\Indexes\Contracts\Abstract_Index;
 /**
  * Class Fulltext_Index
  *
+ * Fulltext indexes are only supporting in MySQL 5.6+.
+ *
+ * They should be avoided for projects that are usable by the whole WP community for now.
+ *
  * @since TBD
  *
  * @package StellarWP\Schema\Indexes
