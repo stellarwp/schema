@@ -4,21 +4,23 @@
  *
  * @since TBD
  *
- * @package StellarWP\Schema\Columns\Contracts
+ * @package StellarWP\Schema\Columns
  */
 
 declare( strict_types=1 );
 
-namespace StellarWP\Schema\Columns\Contracts;
+namespace StellarWP\Schema\Columns;
+
+use StellarWP\Schema\Columns\Contracts\Column;
 
 /**
  * Class Datetime_Column
  *
  * @since TBD
  *
- * @package StellarWP\Schema\Columns\Contracts
+ * @package StellarWP\Schema\Columns
  */
-abstract class Datetime_Column extends Column {
+class Datetime_Column extends Column {
 	/**
 	 * The type of the column.
 	 *

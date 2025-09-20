@@ -4,21 +4,25 @@
  *
  * @since TBD
  *
- * @package StellarWP\Schema\Columns\Contracts
+ * @package StellarWP\Schema\Columns
  */
 
 declare( strict_types=1 );
 
-namespace StellarWP\Schema\Columns\Contracts;
+namespace StellarWP\Schema\Columns;
+
+use StellarWP\Schema\Columns\Contracts\Column;
+use StellarWP\Schema\Columns\Contracts\Lengthable;
+use StellarWP\Schema\Columns\Contracts\Uniquable;
 
 /**
  * Class String_Column
  *
  * @since TBD
  *
- * @package StellarWP\Schema\Columns\Contracts
+ * @package StellarWP\Schema\Columns
  */
-abstract class String_Column extends Column implements Lengthable, Uniquable {
+class String_Column extends Column implements Lengthable, Uniquable {
 	/**
 	 * The length of the column.
 	 *
@@ -31,7 +35,7 @@ abstract class String_Column extends Column implements Lengthable, Uniquable {
 	 *
 	 * @var string
 	 */
-	protected ?string $default = null;
+	protected $default = null;
 
 	/**
 	 * The type of the column.

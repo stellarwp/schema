@@ -4,91 +4,12 @@ namespace StellarWP\Schema;
 
 use StellarWP\Schema\Builder;
 use StellarWP\Schema\Config;
-use StellarWP\Schema\Fields;
 use StellarWP\Schema\Tables;
 
 /**
  * A helper class for registering StellarWP Schema resources.
  */
 class Register {
-
-	/**
-	 * Register a field schema.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string|Fields\Contracts\Field $field Field class.
-	 *
-	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
-	 *
-	 * @return Fields\Contracts\Schema_Interface
-	 */
-	public static function field( $field ) {
-		Schema::init();
-
-		if ( is_string( $field ) ) {
-			$field = new $field();
-		}
-
-		$container = Config::get_container();
-
-		Schema::fields()->add( $field );
-
-		// If we've already executed plugins_loaded, automatically add the field.
-		if ( did_action( 'plugins_loaded' ) ) {
-			$container->get( Builder::class )->up();
-		}
-
-		return $field;
-	}
-
-	/**
-	 * Register multiple field schemas.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param array<mixed> $fields Fields to register.
-	 *
-	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
-	 *
-	 * @return Fields\Collection
-	 */
-	public static function fields( array $fields ) {
-		foreach ( $fields as $field ) {
-			static::field( $field );
-		}
-
-		return Schema::fields();
-	}
-
-	/**
-	 * Removes a field from the register.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param string|Fields\Contracts\Schema_Interface $field Field Schema class.
-	 *
-	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
-	 *
-	 * @return Fields\Contracts\Schema_Interface
-	 */
-	public static function remove_field( $field ) {
-		Schema::init();
-
-		if ( is_string( $field ) ) {
-			$field = new $field();
-		}
-
-		// If we've already executed plugins_loaded, automatically remove the field.
-		if ( did_action( 'plugins_loaded' ) ) {
-			$field->drop();
-		}
-
-		Schema::fields()->remove( $field::get_schema_slug() );
-
-		return $field;
-	}
-
 	/**
 	 * Removes a table from the register.
 	 *

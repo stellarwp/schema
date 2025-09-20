@@ -1,73 +1,79 @@
 <?php
 /**
- * The interface for the integer column.
+ * The interface for the float column.
  *
  * @since TBD
  *
- * @package StellarWP\Schema\Columns\Contracts
+ * @package StellarWP\Schema\Columns
  */
 
 declare( strict_types=1 );
 
-namespace StellarWP\Schema\Columns\Contracts;
+namespace StellarWP\Schema\Columns;
+
+use StellarWP\Schema\Columns\Contracts\Column;
+use StellarWP\Schema\Columns\Contracts\Lengthable;
+use StellarWP\Schema\Columns\Contracts\Signable;
+use StellarWP\Schema\Columns\Contracts\Precisionable;
+use StellarWP\Schema\Columns\Contracts\Uniquable;
 
 /**
- * Class Integer_Column
+ * Class Float_Column
  *
  * @since TBD
  *
- * @package StellarWP\Schema\Columns\Contracts
+ * @package StellarWP\Schema\Columns
  */
-abstract class Integer_Column extends Column implements Lengthable, Signable, Auto_Incrementable, Primarable, Uniquable {
+class Float_Column extends Column implements Lengthable, Signable, Precisionable, Uniquable {
 	/**
 	 * The length of the column.
 	 *
 	 * @var int
 	 */
-	protected int $length = 20;
+	private int $length = 20;
+
+	/**
+	 * The precision of the column.
+	 *
+	 * @var int
+	 */
+	private int $precision = 2;
 
 	/**
 	 * Whether the column is signed.
 	 *
 	 * @var bool
 	 */
-	protected bool $signed = true;
-
-	/**
-	 * Whether the column is auto increment.
-	 *
-	 * @var bool
-	 */
-	protected bool $auto_increment = false;
+	private bool $signed = true;
 
 	/**
 	 * The default value of the column.
 	 *
-	 * @var int
+	 * @var float
 	 */
-	protected ?int $default = null;
+	protected $default = null;
 
 	/**
 	 * The type of the column.
 	 *
 	 * @var string
 	 */
-	protected string $type = self::COLUMN_TYPE_BIGINT;
+	protected string $type = self::COLUMN_TYPE_FLOAT;
 
 	/**
 	 * The PHP type of the column.
 	 *
 	 * @var string
 	 */
-	protected string $php_type = self::PHP_TYPE_INT;
+	protected string $php_type = self::PHP_TYPE_FLOAT;
 
 	/**
-	 * Get the auto increment of the column.
+	 * Get the precision of the column.
 	 *
-	 * @return bool Whether the column is auto increment.
+	 * @return int The precision of the column.
 	 */
-	public function get_auto_increment(): bool {
-		return $this->auto_increment;
+	public function get_precision(): int {
+		return $this->precision;
 	}
 
 	/**
@@ -89,14 +95,14 @@ abstract class Integer_Column extends Column implements Lengthable, Signable, Au
 	}
 
 	/**
-	 * Set the auto increment of the column.
+	 * Set the precision of the column.
 	 *
-	 * @param bool $auto_increment Whether the column is auto increment.
+	 * @param int $precision The precision of the column.
 	 *
 	 * @return self
 	 */
-	public function set_auto_increment( bool $auto_increment ): self {
-		$this->auto_increment = $auto_increment;
+	public function set_precision( int $precision ): self {
+		$this->precision = $precision;
 		return $this;
 	}
 
@@ -124,13 +130,13 @@ abstract class Integer_Column extends Column implements Lengthable, Signable, Au
 		return $this;
 	}
 
-	/**
+		/**
 	 * Get the supported column types.
 	 *
 	 * @return string[] The supported column types.
 	 */
 	protected function get_supported_column_types(): array {
-		return self::SUPPORTED_INTEGER_COLUMN_TYPES;
+		return self::SUPPORTED_FLOAT_COLUMN_TYPES;
 	}
 
 	/**
@@ -140,8 +146,7 @@ abstract class Integer_Column extends Column implements Lengthable, Signable, Au
 	 */
 	protected function get_supported_php_types(): array {
 		return [
-			self::PHP_TYPE_INT,
-			self::PHP_TYPE_BOOL,
+			self::PHP_TYPE_FLOAT,
 		];
 	}
 }

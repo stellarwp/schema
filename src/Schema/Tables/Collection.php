@@ -1,10 +1,27 @@
 <?php
+/**
+ * Collection of tables.
+ *
+ * @since 1.0.0
+ *
+ * @package StellarWP\Schema\Tables
+ */
+
+declare( strict_types=1 );
 
 namespace StellarWP\Schema\Tables;
 
-use StellarWP\Schema\Tables\Contracts\Schema_Interface;
+use StellarWP\Schema\Tables\Contracts\Table_Interface;
+use ArrayAccess;
+use Countable;
+use Iterator;
 
-class Collection implements \ArrayAccess, \Countable, \Iterator {
+/**
+ * Collection of tables.
+ *
+ * @since 1.0.0
+ */
+class Collection implements ArrayAccess, Countable, Iterator {
 	/**
 	 * Table groups.
 	 *
@@ -24,11 +41,11 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param Schema_Interface $table Table instance.
+	 * @param Table_Interface $table Table instance.
 	 *
 	 * @return mixed
 	 */
-	public function add( Schema_Interface $table ) {
+	public function add( Table_Interface $table ) {
 		$this->offsetSet( $table::base_table_name(), $table );
 
 		$this->register_group( $table );
@@ -58,9 +75,9 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 *
 	 * @param string $key Table base name.
 	 *
-	 * @return Schema_Interface
+	 * @return Table_Interface
 	 */
-	public function get( string $key ): Schema_Interface {
+	public function get( string $key ): Table_Interface {
 		return $this->offsetGet( $key );
 	}
 
@@ -137,7 +154,7 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	/**
 	 * Registers a group in the group array for the given table.
 	 *
-	 * @param Schema_Interface $table Table instance.
+	 * @param Table_Interface $table Table instance.
 	 */
 	private function register_group( $table ) {
 		$group = $table->group_name();
@@ -171,11 +188,11 @@ class Collection implements \ArrayAccess, \Countable, \Iterator {
 	 * @since 1.0.0
 	 *
 	 * @param string $name Table name.
-	 * @param Schema_Interface $table Table instance.
+	 * @param Table_Interface $table Table instance.
 	 *
 	 * @return mixed
 	 */
-	public function set( $name, Schema_Interface $table ) {
+	public function set( $name, Table_Interface $table ) {
 		$this->offsetSet( $name, $table );
 
 		$this->register_group( $table );

@@ -28,19 +28,6 @@ class Schema {
 	}
 
 	/**
-	 * Gets the field collection.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return Fields\Collection
-	 */
-	public static function fields() {
-		static::init();
-
-		return Config::get_container()->get( Fields\Collection::class );
-	}
-
-	/**
 	 * Initializes the service provider.
 	 *
 	 * @since 1.0.0

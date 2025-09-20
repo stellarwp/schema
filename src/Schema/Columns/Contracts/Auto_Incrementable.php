@@ -18,7 +18,7 @@ namespace StellarWP\Schema\Columns\Contracts;
  *
  * @package StellarWP\Schema\Columns\Contracts
  */
-interface Auto_Incrementable {
+interface Auto_Incrementable extends Primarable {
 	/**
 	 * Get the auto increment of the column.
 	 *

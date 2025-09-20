@@ -9,11 +9,12 @@
 
 declare( strict_types=1 );
 
-namespace StellarWP\Schema\Tables\Contracts;
+namespace StellarWP\Schema\Tables;
 
 use StellarWP\Schema\Collections\Column_Collection;
 use StellarWP\Schema\Collections\Index_Collection;
-use StellarWP\Schema\Indexes\Contracts\Primary_Key;
+use StellarWP\Schema\Indexes\Primary_Key;
+use StellarWP\Schema\Tables\Contracts\Table_Schema_Interface;
 use StellarWP\Schema\Indexes\Contracts\Index;
 use RuntimeException;
 
@@ -56,12 +57,12 @@ class Table_Schema implements Table_Schema_Interface {
 	public function __construct( string $table_name, Column_Collection $columns, ?Index_Collection $indexes = null ) {
 		$this->table_name = $table_name;
 		$this->columns    = $columns;
-		$this->indexes    = $indexes->map(
+		$this->indexes    = $indexes ?$indexes->map(
 			function( Index $index ): Index {
 				$index->set_table_name( $this->get_table_name() );
 				return $index;
 			}
-		);
+		) : null;
 
 		$this->validate_columns();
 		$this->validate_indexes();
@@ -94,7 +95,7 @@ class Table_Schema implements Table_Schema_Interface {
 		return $this->indexes;
 	}
 
-	public function get_primary_key(): Primary_Key {
+	public function get_primary_key(): ?Primary_Key {
 		return $this->primary_key;
 	}
 
@@ -143,29 +144,28 @@ class Table_Schema implements Table_Schema_Interface {
 			$indexed_columns[ $index_column->get_name() ] = $index_column->get_name();
 		}
 
-		foreach ( $this->get_indexes() as $index ) {
-			if ( isset( $indexes[ $index->get_name() ] ) ) {
-				throw new RuntimeException( 'Index already exists.' );
-			}
-
-			if ( Index::TYPE_PRIMARY === $index->get_type() ) {
-				if ( null !== $this->primary_key ) {
-					throw new RuntimeException( 'Primary key already set. Only one primary key per table is allowed.' );
+		$all_indexes = $this->get_indexes();
+		if ( $all_indexes ) {
+			foreach ( $all_indexes as $index ) {
+				if ( isset( $indexes[ $index->get_name() ] ) ) {
+					throw new RuntimeException( 'Index already exists.' );
 				}
 
-				$this->primary_key = new Primary_Key( $index->get_name() );
-			}
+				if ( Index::TYPE_PRIMARY === $index->get_type() ) {
+					if ( null !== $this->primary_key ) {
+						throw new RuntimeException( 'Primary key already set. Only one primary key per table is allowed.' );
+					}
 
-			$indexes[ $index->get_name() ] = $index->get_type();
-			$indexed_columns[ $index->get_name() ] = $index->get_columns();
+					$this->primary_key = new Primary_Key( $index->get_name() );
+				}
+
+				$indexes[ $index->get_name() ] = $index->get_type();
+				$indexed_columns[ $index->get_name() ] = $index->get_columns();
+			}
 		}
 
 		if ( array_values( $indexed_columns ) !== array_unique( array_values( $indexed_columns ) ) ) {
 			throw new RuntimeException( 'Multiple indexes with the same column combinations.' );
-		}
-
-		if ( null === $this->primary_key ) {
-			throw new RuntimeException( 'Primary key not set.' );
 		}
 	}
 }

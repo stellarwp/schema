@@ -11,8 +11,6 @@ declare( strict_types=1 );
 
 namespace StellarWP\Schema\Columns;
 
-use StellarWP\Schema\Columns\Contracts\Integer_Column;
-
 /**
  * Class ID
  *
@@ -41,4 +39,11 @@ class ID extends Integer_Column {
 	 * @var string
 	 */
 	protected string $name = 'id';
+
+	/**
+	 * Whether the column is a primary key.
+	 *
+	 * @var bool
+	 */
+	protected bool $is_primary_key = true;
 }

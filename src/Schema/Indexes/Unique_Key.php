@@ -4,21 +4,23 @@
  *
  * @since TBD
  *
- * @package StellarWP\Schema\Indexes\Contracts
+ * @package StellarWP\Schema\Indexes
  */
 
 declare( strict_types=1 );
 
-namespace StellarWP\Schema\Indexes\Contracts;
+namespace StellarWP\Schema\Indexes;
+
+use StellarWP\Schema\Indexes\Contracts\Abstract_Index;
 
 /**
  * Class Unique_Key
  *
  * @since TBD
  *
- * @package StellarWP\Schema\Indexes\Contracts
+ * @package StellarWP\Schema\Indexes
  */
-abstract class Unique_Key extends Abstract_Index {
+class Unique_Key extends Abstract_Index {
 	/**
 	 * The type of the unique key.
 	 *

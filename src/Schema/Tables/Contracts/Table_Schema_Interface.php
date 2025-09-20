@@ -13,7 +13,7 @@ namespace StellarWP\Schema\Tables\Contracts;
 
 use StellarWP\Schema\Collections\Column_Collection;
 use StellarWP\Schema\Collections\Index_Collection;
-use StellarWP\Schema\Indexes\Contracts\Primary_Key;
+use StellarWP\Schema\Indexes\Primary_Key;
 
 /**
  * Interface Table_Schema_Interface
@@ -47,7 +47,7 @@ interface Table_Schema_Interface {
 	/**
 	 * Gets the primary key of the table.
 	 *
-	 * @return Primary_Key The primary key of the table.
+	 * @return ?Primary_Key The primary key of the table.
 	 */
-	public function get_primary_key(): Primary_Key;
+	public function get_primary_key(): ?Primary_Key;
 }

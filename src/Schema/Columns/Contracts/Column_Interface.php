@@ -54,7 +54,7 @@ interface Column_Interface extends PHP_Types, Column_Types {
 	 *
 	 * @return mixed The default value of the column.
 	 */
-	public function get_default(): mixed;
+	public function get_default();
 
 	/**
 	 * Get the on update value of the column.
@@ -66,9 +66,9 @@ interface Column_Interface extends PHP_Types, Column_Types {
 	/**
 	 * Get the definition of the column.
 	 *
-	 * @return string The definition of the column.
+	 * @return array The definition of the column.
 	 */
-	public function get_definition(): string;
+	public function get_definition(): array;
 
 	/**
 	 * Get whether the column is searchable.

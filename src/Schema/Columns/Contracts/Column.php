@@ -136,7 +136,7 @@ abstract class Column implements Column_Interface, Indexable {
 	 *
 	 * @return mixed The default value of the column.
 	 */
-	public function get_default(): mixed {
+	public function get_default() {
 		return $this->default;
 	}
 
@@ -255,9 +255,9 @@ abstract class Column implements Column_Interface, Indexable {
 	/**
 	 * Get the definition of the column.
 	 *
-	 * @return string The definition of the column.
+	 * @return array The definition of the column.
 	 */
-	public function get_definition(): string {
+	public function get_definition(): array {
 		$sql = "`{$this->get_name()}` {$this->get_type()}";
 
 		if ( $this instanceof Lengthable && $this instanceof Precisionable ) {
@@ -289,7 +289,20 @@ abstract class Column implements Column_Interface, Indexable {
 			$sql .= ' ON UPDATE ' . $this->get_on_update();
 		}
 
-		return $sql;
+		$index_sql = '';
+
+		if ( $this->is_index() ) {
+			if ( $this->is_primary_key() ) {
+				$index_sql = 'PRIMARY KEY';
+			} elseif ( $this->is_unique() ) {
+				$index_sql = 'UNIQUE KEY `' . $this->get_name() . '`';
+			} elseif ( $this->is_index() ) {
+				$index_sql = 'INDEX `' . $this->get_name() . '`';
+			}
+			$index_sql = "{$index_sql} ({$this->get_name()})";
+		}
+
+		return [ $sql, $index_sql ];
 	}
 
 	/**

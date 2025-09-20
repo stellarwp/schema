@@ -27,21 +27,21 @@ trait Indexable {
 	 *
 	 * @var bool
 	 */
-	private bool $is_index = false;
+	protected bool $is_index = false;
 
 	/**
 	 * Whether the column is unique.
 	 *
 	 * @var bool
 	 */
-	private bool $is_unique = false;
+	protected bool $is_unique = false;
 
 	/**
 	 * Whether the column is a primary key.
 	 *
 	 * @var bool
 	 */
-	private bool $is_primary_key = false;
+	protected bool $is_primary_key = false;
 
 	/**
 	 * Get whether the column is an index.
@@ -87,11 +87,11 @@ trait Indexable {
 	 *
 	 * @param bool $is_index Whether the column is an index.
 	 *
-	 * @return self
+	 * @return Indexable_Contract
 	 *
 	 * @throws InvalidArgumentException If the column is not an index.
 	 */
-	public function set_is_index( bool $is_index ): self {
+	public function set_is_index( bool $is_index ): Indexable_Contract {
 		if ( ! $this instanceof Indexable_Contract ) {
 			throw new InvalidArgumentException( 'The column is not an index.' );
 		}
@@ -105,11 +105,11 @@ trait Indexable {
 	 *
 	 * @param bool $is_unique Whether the column is unique.
 	 *
-	 * @return self
+	 * @return Uniquable
 	 *
 	 * @throws InvalidArgumentException If the column is not unique.
 	 */
-	public function set_is_unique( bool $is_unique ): self {
+	public function set_is_unique( bool $is_unique ): Uniquable {
 		if ( ! $this instanceof Uniquable ) {
 			throw new InvalidArgumentException( 'The column is not unique.' );
 		}
@@ -123,11 +123,11 @@ trait Indexable {
 	 *
 	 * @param bool $is_primary_key Whether the column is a primary key.
 	 *
-	 * @return self
+	 * @return Primarable
 	 *
 	 * @throws InvalidArgumentException If the column is not a primary key.
 	 */
-	public function set_is_primary_key( bool $is_primary_key ): self {
+	public function set_is_primary_key( bool $is_primary_key ): Primarable {
 		if ( ! $this instanceof Primarable ) {
 			throw new InvalidArgumentException( 'The column is not a primary key.' );
 		}

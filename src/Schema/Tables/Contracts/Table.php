@@ -7,9 +7,9 @@ use StellarWP\Schema\Traits\Custom_Table_Query_Methods;
 use StellarWP\Schema\Collections\Column_Collection;
 use StellarWP\Schema\Columns\Contracts\Column;
 use StellarWP\Schema\Indexes\Contracts\Index;
-use StellarWP\Schema\Indexes\Contracts\Primary_Key;
-use StellarWP\Schema\Indexes\Contracts\Unique_Key;
-use StellarWP\Schema\Indexes\Contracts\Classic_Index;
+use StellarWP\Schema\Indexes\Primary_Key;
+use StellarWP\Schema\Indexes\Unique_Key;
+use StellarWP\Schema\Indexes\Classic_Index;
 use Exception;
 use RuntimeException;
 
@@ -87,22 +87,12 @@ abstract class Table implements Table_Interface {
 	 *                              the `dbDelta` function.
 	 */
 	protected function after_update( array $results ) {
-		foreach ( static::get_columns()->get_indexes() as $column ) {
-			if ( $column->is_primary_key() ) {
-				$index = new Primary_Key( $column->get_name() );
-			} elseif ( $column->is_unique() ) {
-				$index = new Unique_Key( $column->get_name() );
-			} else {
-				$index = new Classic_Index( $column->get_name() );
-			}
-
-			$index->set_table_name( static::table_name( true ) );
-			$index->set_columns( $column->get_name() );
-
-			$this->check_and_add_index( $index );
+		$indexes = static::get_current_schema()->get_indexes();
+		if ( ! $indexes ) {
+			return $results;
 		}
 
-		foreach ( static::get_current_schema()->get_indexes() as $index ) {
+		foreach ( $indexes as $index ) {
 			$this->check_and_add_index( $index );
 		}
 
@@ -142,10 +132,6 @@ abstract class Table implements Table_Interface {
 	 */
 	public static function get_current_schema(): Table_Schema_Interface {
 		$history = static::get_schema_history();
-
-		$columns = new Column_Collection();
-		$columns[] = new ID();
-		$columns[] = ( new Integer_Column( 'post_id') )->set_signed( false )->set_is_index( true );
 
 		if ( empty( $history[ static::SCHEMA_VERSION ] ) ) {
 			throw new RuntimeException( 'The current schema version is not found in the schema history.' );
@@ -432,15 +418,23 @@ abstract class Table implements Table_Interface {
 		$columns = static::get_columns();
 
 		$columns_definitions = [];
+		$indexes_definitions = [];
 		foreach ( $columns as $column ) {
-			$columns_definitions[] = $column->get_definition();
+			[ $column_definition, $index_definition ] = $column->get_definition();
+			$columns_definitions[] = $column_definition;
+			$indexes_definitions[] = $index_definition;
 		}
 
+		$indexes_definitions = array_filter( $indexes_definitions );
+
+		$indexes_sql = ! empty( $indexes_definitions ) ? implode( ',' . PHP_EOL, $indexes_definitions ) : '';
 		$columns_sql = implode( ',' . PHP_EOL, $columns_definitions );
+
+		$columns_sql = $indexes_sql ? $columns_sql . ',' . PHP_EOL : $columns_sql;
 
 		return "
 			CREATE TABLE `{$table_name}` (
-				{$columns_sql}
+				{$columns_sql}{$indexes_sql}
 			) {$charset_collate};
 		";
 	}
@@ -474,6 +468,8 @@ abstract class Table implements Table_Interface {
 	 */
 	public function has_index( $index, $table_name = null ) {
 		$table_name = $table_name ?: static::table_name( true );
+
+		$index = $index ?: 'PRIMARY';
 
 		$count = $this->db::table( $this->db::raw( 'information_schema.statistics' ) )
 			->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )

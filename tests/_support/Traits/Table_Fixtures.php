@@ -4,9 +4,14 @@ namespace StellarWP\Schema\Tests\Traits;
 
 use StellarWP\Schema\Activation;
 use StellarWP\Schema\Builder;
+use StellarWP\Schema\Columns\ID;
 use StellarWP\Schema\Config;
-use StellarWP\Schema\Fields\Contracts\Field;
 use StellarWP\Schema\Tables\Contracts\Table;
+use StellarWP\Schema\Tables\Table_Schema;
+use StellarWP\Schema\Columns\Contracts\Column;
+use StellarWP\Schema\Columns\String_Column;
+use StellarWP\Schema\Collections\Column_Collection;
+use StellarWP\Schema\Columns\Integer_Column;
 
 trait Table_Fixtures {
 	private function assert_custom_tables_exist() {
@@ -54,24 +59,22 @@ trait Table_Fixtures {
 			protected static $base_table_name = 'simple';
 			protected static $group = 'bork';
 			protected static $schema_slug = 'bork-simple';
-			protected static $uid_column = 'id';
 
-			protected function get_definition() {
-				global $wpdb;
-				$table_name      = self::table_name( true );
-				$charset_collate = $wpdb->get_charset_collate();
+			public function get_schema_history(): array {
+				$columns = new Column_Collection();
 
-				return "
-					CREATE TABLE `{$table_name}` (
-						`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-						`name` varchar(25) NOT NULL,
-						`slug` varchar(25) NOT NULL,
-						`something` varchar(25) NOT NULL,
-						PRIMARY KEY (`id`),
-						KEY `slug` (`slug`),
-						KEY `something` (`something`)
-					) {$charset_collate};
-				";
+				$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
+				$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
+				$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 )->set_is_index( true );
+				$columns[] = ( new String_Column( 'something' ) )->set_length( 25 )->set_is_index( true );
+
+				return [
+					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns ),
+				];
+			}
+
+			public static function transform_from_array( array $result_array ) {
+				return $result_array;
 			}
 		};
 
@@ -88,22 +91,21 @@ trait Table_Fixtures {
 			protected static $base_table_name = 'simple';
 			protected static $group = 'bork';
 			protected static $schema_slug = 'bork-simple';
-			protected static $uid_column = 'id';
 
-			protected function get_definition() {
-				global $wpdb;
-				$table_name      = self::table_name( true );
-				$charset_collate = $wpdb->get_charset_collate();
+			public function get_schema_history(): array {
+				$columns = new Column_Collection();
 
-				return "
-					CREATE TABLE `{$table_name}` (
-						`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-						`name` varchar(25) NOT NULL,
-						`slug` varchar(25) NOT NULL,
-						PRIMARY KEY (`id`),
-						KEY `slug` (`slug`)
-					) {$charset_collate};
-				";
+				$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
+				$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
+				$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 )->set_is_index( true );
+
+				return [
+					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns ),
+				];
+			}
+
+			public static function transform_from_array( array $result_array ) {
+				return $result_array;
 			}
 		};
 
@@ -120,22 +122,21 @@ trait Table_Fixtures {
 			protected static $base_table_name = 'simple-alt';
 			protected static $group = 'test';
 			protected static $schema_slug = 'bork-simple-alt';
-			protected static $uid_column = 'id';
 
-			protected function get_definition(): string {
-				global $wpdb;
-				$table_name      = self::table_name();
-				$charset_collate = $wpdb->get_charset_collate();
+			public function get_schema_history(): array {
+				$columns = new Column_Collection();
 
-				return "
-					CREATE TABLE `$table_name` (
-						`id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-						`name` varchar(25) NOT NULL,
-						`slug` varchar(25) NOT NULL,
-						PRIMARY KEY (`id`),
-						KEY `slug` (`slug`)
-					) $charset_collate;
-				";
+				$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
+				$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
+				$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 )->set_is_index( true );
+
+				return [
+					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns ),
+				];
+			}
+
+			public static function transform_from_array( array $result_array ) {
+				return $result_array;
 			}
 		};
 	}
@@ -150,49 +151,25 @@ trait Table_Fixtures {
 			protected static $base_table_name = 'noindex';
 			protected static $group = 'bork';
 			protected static $schema_slug = 'bork-noindex';
-			protected static $uid_column = 'id';
 
-			protected function get_definition() {
-				global $wpdb;
-				$table_name      = self::table_name( true );
-				$charset_collate = $wpdb->get_charset_collate();
+			public function get_schema_history(): array {
+				$columns = new Column_Collection();
 
-				return "
-					CREATE TABLE `{$table_name}` (
-						`id` int(11) UNSIGNED NOT NULL,
-						`name` varchar(25) NOT NULL,
-						`slug` varchar(25) NOT NULL
-					) {$charset_collate};
-				";
+				$columns[] = ( new Integer_Column( 'id' ) )->set_length( 11 )->set_signed( false )->set_type( Column::COLUMN_TYPE_INT );
+				$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
+				$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 );
+
+				return [
+					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns ),
+				];
+			}
+
+			public static function transform_from_array( array $result_array ) {
+				return $result_array;
 			}
 		};
 
 		return $table;
-	}
-
-	/**
-	 * Get a simple table field class.
-	 */
-	public function get_simple_table_field() {
-		$field  = new class extends Field {
-			const SCHEMA_VERSION = '1.0.0';
-
-			protected static $base_table_name = 'simple';
-			protected static $schema_slug = 'simple-bork';
-
-			protected $fields = [
-				'bork',
-			];
-
-			protected function get_definition() {
-				return "
-					`bork` int(11) UNSIGNED NOT NULL,
-					KEY `bork` (`bork`)
-				";
-			}
-		};
-
-		return $field;
 	}
 
 	public function get_foreign_key_table() {
@@ -202,20 +179,17 @@ trait Table_Fixtures {
 			protected static $base_table_name = 'foreignkey';
 			protected static $group = 'bork';
 			protected static $schema_slug = 'bork-with-foreignkey';
-			protected static $uid_column = 'id';
 
-			protected function get_definition() {
-				global $wpdb;
-				$table_name      = self::table_name( true );
-				$charset_collate = $wpdb->get_charset_collate();
+			public function get_schema_history(): array {
+				$columns = new Column_Collection();
 
-				return "
-					CREATE TABLE `{$table_name}` (
-						`id` int(11) UNSIGNED NOT NULL,
-						`name` varchar(25) NOT NULL,
-						`simple_id` int(11) UNSIGNED NOT NULL
-					) {$charset_collate};
-				";
+				$columns[] = ( new Integer_Column( 'id' ) )->set_length( 11 )->set_signed( false )->set_type( Column::COLUMN_TYPE_INT );
+				$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
+				$columns[] = ( new Integer_Column( 'simple_id' ) )->set_length( 11 )->set_signed( false )->set_type( Column::COLUMN_TYPE_INT );
+
+				return [
+					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns ),
+				];
 			}
 
 			protected function after_update( array $results ) {
@@ -224,7 +198,7 @@ trait Table_Fixtures {
 				}
 
 				global $wpdb;
-				$table_name   = $this->table_name();
+				$table_name   = static::table_name();
 				$simple_table = $wpdb->prefix . 'simple';
 				$updated      = $wpdb->query( "ALTER TABLE $table_name ADD FOREIGN KEY (simple_id) REFERENCES $simple_table(id)" );
 
@@ -235,6 +209,10 @@ trait Table_Fixtures {
 				$results[] = $result;
 
 				return $results;
+			}
+
+			public static function transform_from_array( array $result_array ) {
+				return $result_array;
 			}
 		};
 

@@ -2,20 +2,38 @@
 
 namespace StellarWP\Schema\Tests;
 
-use StellarWP\Schema\Tables\Contracts\Schema_Interface as Table_Schema_Interface;
+use StellarWP\Schema\Tables\Contracts\Table_Interface as Table_Schema_Interface;
 use StellarWP\Schema\Register;
 use StellarWP\Schema\Schema;
 use StellarWP\Schema\Tests\Traits\Table_Fixtures;
+use StellarWP\Schema\Collections\Column_Collection;
+use StellarWP\Schema\Tables\Table_Schema;
 
+/**
+ * Class BuilderTest
+ *
+ * @since TBD
+ *
+ * @package StellarWP\Schema\Tests
+ */
 class BuilderTest extends SchemaTestCase {
 	use Table_Fixtures;
+
+	/**
+	 * @return array List of tables in this database.
+	 */
+	public function get_tables() {
+		global $wpdb;
+
+		return $wpdb->get_col( 'SHOW TABLES' );
+	}
 
 	/**
 	 * @param string $table Table name.
 	 *
 	 * @return array<string> List of fields for this table.
 	 */
-	public function get_table_fields( $table ) {
+	public function get_table_columns( $table ) {
 		global $wpdb;
 		$q    = 'select `column_name` from information_schema.columns
 					where table_schema = database()
@@ -25,15 +43,6 @@ class BuilderTest extends SchemaTestCase {
 		return array_map( function ( $row ) {
 			return $row->column_name;
 		}, $rows );
-	}
-
-	/**
-	 * @return array List of tables in this database.
-	 */
-	public function get_tables() {
-		global $wpdb;
-
-		return $wpdb->get_col( 'SHOW TABLES' );
 	}
 
 	/**
@@ -77,101 +86,14 @@ class BuilderTest extends SchemaTestCase {
 		$this->assertContains( $table::table_name( true ), $tables );
 		$this->assertTrue( $builder->all_tables_exist() );
 
-		$rows = $this->get_table_fields( $table::table_name( true ) );
+		$rows = $this->get_table_columns( $table::table_name( true ) );
 		$this->assertNotContains( 'something', $rows );
 
 		Register::table( $modded_table );
 
-		$rows = $this->get_table_fields( $table::table_name( true ) );
+		$rows = $this->get_table_columns( $table::table_name( true ) );
 		$this->assertContains( 'something', $rows );
 
-		$builder->down();
-	}
-
-	/**
-	 * Should fields create/destroy properly.
-	 *
-	 * @test
-	 */
-	public function should_up_down_field_schema() {
-		$builder      = Schema::builder();
-		$table_schema = $this->get_simple_table();
-		$field_schema = $this->get_simple_table_field();
-
-		Register::table( $table_schema );
-		Register::field( $field_schema );
-
-		// Validate expected state.
-		$rows = $this->get_table_fields( $field_schema->table_schema()::table_name( true ) );
-
-		foreach ( $field_schema->fields() as $field ) {
-			$this->assertContains( $field, $rows );
-		}
-
-		add_filter( 'stellarwp_schema_table_drop_simple', '__return_false' );
-
-		// Bring down with dropping disabled (default).
-		$builder->down();
-
-		// Validate expected state.
-		$rows = $this->get_table_fields( $field_schema->table_schema()::table_name( true ) );
-
-		foreach ( $field_schema->fields() as $field ) {
-			$this->assertContains( $field, $rows );
-		}
-
-		add_filter( 'stellarwp_drop_field_enabled', '__return_true' );
-
-		// Bring down with dropping enabled.
-		$builder->down();
-
-		remove_filter( 'stellarwp_schema_table_drop_simple', '__return_false' );
-		remove_filter( 'stellarwp_drop_field_enabled', '__return_true' );
-
-		// Validate expected state.
-		$rows = $this->get_table_fields( $field_schema->table_schema()::table_name( true ) );
-
-		foreach ( $field_schema->fields() as $field ) {
-			$this->assertNotContains( $field, $rows );
-		}
-
-		// Clean up.
-		$builder->down();
-	}
-
-	/**
-	 * Tests the `exists` function finds the fields properly.
-	 *
-	 * @test
-	 */
-	public function should_field_exists() {
-		$builder      = Schema::builder();
-		$table_schema = $this->get_simple_table();
-		$field_schema = $this->get_simple_table_field();
-
-		Register::table( $table_schema );
-		Register::field( $field_schema );
-
-		$this->assertTrue( $field_schema->exists() );
-
-		// Keep our table - validate the field changes.
-		add_filter( 'stellarwp_schema_table_drop_simple', '__return_false' );
-
-		// Bring down with dropping disabled (default).
-		$builder->down();
-		$this->assertTrue( $field_schema->exists() );
-
-		add_filter( 'stellarwp_drop_field_enabled', '__return_true' );
-
-		// Bring down with dropping enabled.
-		$builder->down();
-
-		remove_filter( 'stellarwp_schema_table_drop_simple', '__return_false' );
-		remove_filter( 'stellarwp_drop_field_enabled', '__return_true' );
-
-		$this->assertFalse( $field_schema->exists() );
-
-		// Cleanup.
 		$builder->down();
 	}
 
@@ -183,7 +105,6 @@ class BuilderTest extends SchemaTestCase {
 	public function should_sync_version() {
 		$builder      = Schema::builder();
 		$table_schema = $this->get_simple_table();
-		$field_schema = $this->get_simple_table_field();
 
 		Register::table( $table_schema );
 
@@ -197,7 +118,6 @@ class BuilderTest extends SchemaTestCase {
 		$this->assertNotEquals( $table_schema->get_version(), $table_version );
 
 		Register::table( $table_schema );
-		Register::field( $field_schema );
 
 		// Is version there?
 		$table_version      = get_option( $table_schema->get_schema_version_option() );
@@ -249,6 +169,26 @@ class BuilderTest extends SchemaTestCase {
 				return 'fodz';
 			}
 
+			public function get_definition(): string {
+				return '';
+			}
+
+			public static function get_columns(): Column_Collection {
+				return new Column_Collection();
+			}
+
+			public static function get_searchable_columns(): Column_Collection {
+				return new Column_Collection();
+			}
+
+			public function get_schema_history(): array {
+				return [];
+			}
+
+			public static function get_current_schema(): Table_Schema {
+				return new Table_Schema( 'fodz', new Column_Collection() );
+			}
+
 			public function get_sql() {}
 
 			public function get_version(): string {
@@ -270,10 +210,34 @@ class BuilderTest extends SchemaTestCase {
 			public function update() {
 				return [];
 			}
+
+			public static function transform_from_array( array $result_array ) {
+				return $result_array;
+			}
 		};
 		$klutz_table = new class implements Table_Schema_Interface {
 			public static function base_table_name() {
 				return 'klutz';
+			}
+
+			public function get_definition(): string {
+				return '';
+			}
+
+			public static function get_columns(): Column_Collection {
+				return new Column_Collection();
+			}
+
+			public static function get_searchable_columns(): Column_Collection {
+				return new Column_Collection();
+			}
+
+			public function get_schema_history(): array {
+				return [];
+			}
+
+			public static function get_current_schema(): Table_Schema {
+				return new Table_Schema( 'klutz', new Column_Collection() );
 			}
 
 			public function drop() {}
@@ -309,6 +273,10 @@ class BuilderTest extends SchemaTestCase {
 			public function update() {
 				return [];
 			}
+
+			public static function transform_from_array( array $result_array ) {
+				return $result_array;
+			}
 		};
 		$zorps_table = new class implements Table_Schema_Interface {
 			public static function base_table_name() {
@@ -325,6 +293,26 @@ class BuilderTest extends SchemaTestCase {
 
 			public static function get_schema_slug() {
 				return 'zorps';
+			}
+
+			public function get_definition(): string {
+				return '';
+			}
+
+			public static function get_columns(): Column_Collection {
+				return new Column_Collection();
+			}
+
+			public static function get_searchable_columns(): Column_Collection {
+				return new Column_Collection();
+			}
+
+			public function get_schema_history(): array {
+				return [];
+			}
+
+			public static function get_current_schema(): Table_Schema {
+				return new Table_Schema( 'zorps', new Column_Collection() );
 			}
 
 			public function get_sql() {}
@@ -347,6 +335,10 @@ class BuilderTest extends SchemaTestCase {
 
 			public function update() {
 				return [];
+			}
+
+			public static function transform_from_array( array $result_array ) {
+				return $result_array;
 			}
 		};
 
