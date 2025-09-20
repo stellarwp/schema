@@ -115,7 +115,7 @@ interface Column_Interface extends PHP_Types, Column_Types {
 	 *
 	 * @throws InvalidArgumentException If the default is not valid.
 	 */
-	public function set_default( mixed $default ): self;
+	public function set_default( $default ): self;
 
 	/**
 	 * Set the nullable of the column.

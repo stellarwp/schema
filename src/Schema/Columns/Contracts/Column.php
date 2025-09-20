@@ -211,7 +211,7 @@ abstract class Column implements Column_Interface, Indexable {
 	 *
 	 * @return self
 	 */
-	public function set_default( mixed $default ): self {
+	public function set_default( $default ): self {
 		$this->default = $default;
 		return $this;
 	}

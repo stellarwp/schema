@@ -11,7 +11,7 @@ declare( strict_types=1 );
 
 namespace StellarWP\Schema\Columns;
 
-use StellarWP\Schema\Columns\Contracts\Datetime_Column;
+use StellarWP\Schema\Columns\Datetime_Column;
 
 /**
  * Class Created_At
@@ -33,5 +33,5 @@ class Created_At extends Datetime_Column {
 	 *
 	 * @var string
 	 */
-	protected string $default = 'CURRENT_TIMESTAMP';
+	protected $default = 'CURRENT_TIMESTAMP';
 }
