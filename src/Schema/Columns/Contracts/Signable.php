@@ -29,7 +29,7 @@ interface Signable {
 	/**
 	 * Set the signed of the column.
 	 *
-	 * @param int $signed Whether the column is signed.
+	 * @param bool $signed Whether the column is signed.
 	 *
 	 * @return self
 	 */

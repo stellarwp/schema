@@ -181,7 +181,7 @@ class BuilderTest extends SchemaTestCase {
 				return new Column_Collection();
 			}
 
-			public function get_schema_history(): array {
+			public static function get_schema_history(): array {
 				return [];
 			}
 
@@ -232,7 +232,7 @@ class BuilderTest extends SchemaTestCase {
 				return new Column_Collection();
 			}
 
-			public function get_schema_history(): array {
+			public static function get_schema_history(): array {
 				return [];
 			}
 
@@ -307,7 +307,7 @@ class BuilderTest extends SchemaTestCase {
 				return new Column_Collection();
 			}
 
-			public function get_schema_history(): array {
+			public static function get_schema_history(): array {
 				return [];
 			}
 

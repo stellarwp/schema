@@ -87,7 +87,7 @@ trait Custom_Table_Query_Methods {
 		$batch = static::fetch_all( $batch_size, ARRAY_A, $where_clause, $order_by );
 
 		foreach ( $batch as $row ) {
-			yield static::transform_from_array( static::amend_value_types( $row ) );
+			yield static::transform_from_array( self::amend_value_types( $row ) );
 		}
 	}
 
@@ -483,13 +483,13 @@ trait Custom_Table_Query_Methods {
 		if ( $search ) {
 			$searchable_columns = static::get_searchable_columns();
 
-			if ( $searchable_columns ) {
-				$search_where = [];
+			$search_where = [];
 
-				foreach ( $searchable_columns as $column ) {
-					$search_where[] = $database::prepare( "{$joined_prefix}{$column->get_name()} LIKE %s", '%' . $database::esc_like( $search ) . '%' );
-				}
+			foreach ( $searchable_columns as $column ) {
+				$search_where[] = $database::prepare( "{$joined_prefix}{$column->get_name()} LIKE %s", '%' . $database::esc_like( $search ) . '%' );
+			}
 
+			if ( ! empty( $search_where ) ) {
 				$where[] = '(' . implode( ' OR ', $search_where ) . ')';
 			}
 		}
@@ -672,7 +672,7 @@ trait Custom_Table_Query_Methods {
 	 * @param string $column   The column to prepare the value for.
 	 * @param mixed  $value    The value to prepare.
 	 *
-	 * @return array<mixed, string> The prepared value and placeholder.
+	 * @return array{0: mixed, 1: string} The prepared value and placeholder.
 	 *
 	 * @throws InvalidArgumentException If the column does not exist.
 	 */

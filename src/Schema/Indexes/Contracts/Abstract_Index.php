@@ -89,6 +89,7 @@ abstract class Abstract_Index implements Index {
 	 * @return string[] The columns of the index.
 	 */
 	public function get_columns(): array {
+		/** @var array<string> */
 		return empty( $this->columns ) ? [ $this->get_name() ] : $this->columns;
 	}
 
@@ -100,6 +101,7 @@ abstract class Abstract_Index implements Index {
 	 * @return self
 	 */
 	public function set_columns( string ...$columns ): self {
+		/** @var array<string> $columns */
 		$this->columns = $columns;
 		return $this;
 	}
@@ -159,7 +161,10 @@ abstract class Abstract_Index implements Index {
 				throw new InvalidArgumentException( "Invalid index type: {$type}" );
 		}
 
-		$columns = implode( ', ', array_map( 'esc_sql', $this->get_columns() ) );
+		/** @var array<string> $esc_columns */
+		$esc_columns = array_map( 'esc_sql', $this->get_columns() );
+
+		$columns = implode( ', ', $esc_columns );
 
 		$table_name = esc_sql( $this->get_table_name() );
 

@@ -53,7 +53,7 @@ class Column_Collection extends Collection {
 	/**
 	 * @inheritDoc
 	 *
-	 * @param TKey $offset The offset to get.
+	 * @param string $offset The offset to get.
 	 *
 	 * @return ?Column
 	 */
@@ -64,7 +64,7 @@ class Column_Collection extends Collection {
 	/**
 	 * @inheritDoc
 	 *
-	 * @param TKey   $offset The offset to set.
+	 * @param string $offset The offset to set.
 	 * @param Column $value  The value to set.
 	 */
 	public function offsetSet( $offset, $value ): void {
@@ -79,7 +79,7 @@ class Column_Collection extends Collection {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param TKey $key The key to get.
+	 * @param string $key The key to get.
 	 *
 	 * @return ?Column
 	 */
@@ -117,11 +117,6 @@ class Column_Collection extends Collection {
 	 * @return array<Column>
 	 */
 	public function get_indexes(): array {
-		return array_filter(
-			$this->resources,
-			function ( Column $column ) {
-				return $column instanceof Indexable && $column->is_index();
-			}
-		);
+		return array_filter( $this->resources, fn ( Column $column ) => $column->is_index() );
 	}
 }

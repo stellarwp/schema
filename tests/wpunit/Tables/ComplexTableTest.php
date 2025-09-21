@@ -44,7 +44,7 @@ class ComplexTableTest extends SchemaTestCase {
 			protected static $group = 'test_v3';
 			protected static $schema_slug = 'test-v3-comprehensive';
 
-			public function get_schema_history(): array {
+			public static function get_schema_history(): array {
 				$columns = new Column_Collection();
 
 				// Primary key with auto increment
@@ -173,7 +173,7 @@ class ComplexTableTest extends SchemaTestCase {
 			protected static $group = 'test_v3';
 			protected static $schema_slug = 'test-v3-indexed';
 
-			public function get_schema_history(): array {
+			public static function get_schema_history(): array {
 				$columns = new Column_Collection();
 
 				// Primary key
@@ -255,7 +255,7 @@ class ComplexTableTest extends SchemaTestCase {
 			protected static $group = 'test_v3';
 			protected static $schema_slug = 'test-v3-timestamp';
 
-			public function get_schema_history(): array {
+			public static function get_schema_history(): array {
 				$columns = new Column_Collection();
 
 				$columns[] = ( new ID( 'id' ) )
@@ -300,7 +300,7 @@ class ComplexTableTest extends SchemaTestCase {
 			protected static $group = 'test_v3';
 			protected static $schema_slug = 'test-v3-created-at';
 
-			public function get_schema_history(): array {
+			public static function get_schema_history(): array {
 				$columns = new Column_Collection();
 
 				$columns[] = ( new ID( 'id' ) )
@@ -340,7 +340,7 @@ class ComplexTableTest extends SchemaTestCase {
 			protected static $group = 'test_v3';
 			protected static $schema_slug = 'test-v3-updated-at';
 
-			public function get_schema_history(): array {
+			public static function get_schema_history(): array {
 				$columns = new Column_Collection();
 
 				$columns[] = ( new ID( 'id' ) )

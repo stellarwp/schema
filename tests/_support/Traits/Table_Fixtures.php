@@ -60,7 +60,7 @@ trait Table_Fixtures {
 			protected static $group = 'bork';
 			protected static $schema_slug = 'bork-simple';
 
-			public function get_schema_history(): array {
+			public static function get_schema_history(): array {
 				$columns = new Column_Collection();
 
 				$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
@@ -92,7 +92,7 @@ trait Table_Fixtures {
 			protected static $group = 'bork';
 			protected static $schema_slug = 'bork-simple';
 
-			public function get_schema_history(): array {
+			public static function get_schema_history(): array {
 				$columns = new Column_Collection();
 
 				$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
@@ -123,7 +123,7 @@ trait Table_Fixtures {
 			protected static $group = 'test';
 			protected static $schema_slug = 'bork-simple-alt';
 
-			public function get_schema_history(): array {
+			public static function get_schema_history(): array {
 				$columns = new Column_Collection();
 
 				$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
@@ -152,7 +152,7 @@ trait Table_Fixtures {
 			protected static $group = 'bork';
 			protected static $schema_slug = 'bork-noindex';
 
-			public function get_schema_history(): array {
+			public static function get_schema_history(): array {
 				$columns = new Column_Collection();
 
 				$columns[] = ( new Integer_Column( 'id' ) )->set_length( 11 )->set_signed( false )->set_type( Column::COLUMN_TYPE_INT );
@@ -180,7 +180,7 @@ trait Table_Fixtures {
 			protected static $group = 'bork';
 			protected static $schema_slug = 'bork-with-foreignkey';
 
-			public function get_schema_history(): array {
+			public static function get_schema_history(): array {
 				$columns = new Column_Collection();
 
 				$columns[] = ( new Integer_Column( 'id' ) )->set_length( 11 )->set_signed( false )->set_type( Column::COLUMN_TYPE_INT );

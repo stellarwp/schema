@@ -20,7 +20,6 @@ parameters:
 	level: 5
 	inferPrivatePropertyTypeFromConstructor: true
 	reportUnmatchedIgnoredErrors: false
-	checkGenericClassInNonGenericObjectType: false
 
 	# Paths to be analyzed.
 	paths:

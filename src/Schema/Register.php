@@ -5,6 +5,8 @@ namespace StellarWP\Schema;
 use StellarWP\Schema\Builder;
 use StellarWP\Schema\Config;
 use StellarWP\Schema\Tables;
+use StellarWP\Schema\Tables\Contracts\Table_Interface;
+use StellarWP\Schema\Tables\Collection;
 
 /**
  * A helper class for registering StellarWP Schema resources.
@@ -15,13 +17,13 @@ class Register {
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string|Tables\Contracts\Schema_Interface $table Table Schema class.
+	 * @param string|Table_Interface $table Table Schema class.
 	 *
 	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 *
-	 * @return Tables\Contracts\Schema_Interface
+	 * @return Table_Interface
 	 */
-	public static function remove_table( $table ) {
+	public static function remove_table( $table ): Table_Interface {
 		Schema::init();
 
 		if ( is_string( $table ) ) {
@@ -47,9 +49,9 @@ class Register {
 	 *
 	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 *
-	 * @return Tables\Contracts\Schema_Interface
+	 * @return Table_Interface
 	 */
-	public static function table( $table ) {
+	public static function table( $table ): Table_Interface {
 		Schema::init();
 
 		if ( is_string( $table ) ) {
@@ -77,9 +79,9 @@ class Register {
 	 *
 	 * @throws \StellarWP\DB\Database\Exceptions\DatabaseQueryException If the query fails.
 	 *
-	 * @return Tables\Collection
+	 * @return Collection
 	 */
-	public static function tables( array $tables ) {
+	public static function tables( array $tables ): Collection {
 		foreach ( $tables as $table ) {
 			static::table( $table );
 		}

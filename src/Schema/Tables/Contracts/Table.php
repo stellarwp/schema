@@ -99,7 +99,7 @@ abstract class Table implements Table_Interface {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @var Column_Collection
+	 * @return Column_Collection The columns of the table.
 	 */
 	public static function get_columns(): Column_Collection {
 		return static::get_current_schema()->get_columns();
@@ -110,9 +110,10 @@ abstract class Table implements Table_Interface {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return string[]
+	 * @return Column_Collection The searchable columns of the table.
 	 */
 	public static function get_searchable_columns(): Column_Collection {
+		/** @var Column_Collection */
 		return static::get_columns()->filter( fn ( Column $column ) => $column->is_searchable() );
 	}
 
@@ -224,9 +225,9 @@ abstract class Table implements Table_Interface {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param string $base_table_name The base table name.
-		 * @param string $table_name The full table name.
-		 * @param Schema_Interface $table_schema The table schema to be dropped.
+		 * @param string          $base_table_name The base table name.
+		 * @param string          $table_name      The full table name.
+		 * @param Table_Interface $table_schema    The table schema to be dropped.
 		 */
 		do_action( 'stellarwp_pre_drop_table', $base_table_name, $this_table, $this );
 
@@ -249,9 +250,9 @@ abstract class Table implements Table_Interface {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param string $base_table_name The base table name.
-		 * @param string $table_name The full table name.
-		 * @param Schema_Interface $table_schema The table schema to be dropped.
+		 * @param string          $base_table_name The base table name.
+		 * @param string          $table_name      The full table name.
+		 * @param Table_Interface $table_schema    The table schema to be dropped.
 		 */
 		do_action( 'stellarwp_post_drop_table', $base_table_name, $this_table, $this );
 
@@ -266,9 +267,9 @@ abstract class Table implements Table_Interface {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param string $base_table_name The base table name.
-		 * @param string $table_name The full table name.
-		 * @param Schema_Interface $table_schema The table schema to be dropped.
+		 * @param string          $base_table_name The base table name.
+		 * @param string          $table_name      The full table name.
+		 * @param Table_Interface $table_schema    The table schema to be dropped.
 		 */
 		do_action( 'stellarwp_post_drop_table_wpdb_update', $base_table_name, $this_table, $this );
 
@@ -541,6 +542,8 @@ abstract class Table implements Table_Interface {
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
 		$sql = $this->get_sql();
+
+		$results = [];
 
 		try {
 			/**

@@ -52,7 +52,7 @@ class Index_Collection extends Collection {
 	/**
 	 * @inheritDoc
 	 *
-	 * @param TKey $offset The offset to get.
+	 * @param string $offset The offset to get.
 	 *
 	 * @return ?Index
 	 */
@@ -63,8 +63,8 @@ class Index_Collection extends Collection {
 	/**
 	 * @inheritDoc
 	 *
-	 * @param TKey  $offset The offset to set.
-	 * @param Index $value  The value to set.
+	 * @param string $offset The offset to set.
+	 * @param Index  $value  The value to set.
 	 */
 	public function offsetSet( $offset, $value ): void {
 		if ( ! $offset ) {
@@ -78,7 +78,7 @@ class Index_Collection extends Collection {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param TKey $key The key to get.
+	 * @param string $key The key to get.
 	 *
 	 * @return ?Index
 	 */

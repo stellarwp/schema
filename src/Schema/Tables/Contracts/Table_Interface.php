@@ -62,14 +62,14 @@ interface Table_Interface {
 	 *
 	 * @return array<string, Table_Schema_Interface> The schema history for the table. The key is the version and the value is a Table_Schema_Interface object.
 	 */
-	public function get_schema_history(): array;
+	public static function get_schema_history(): array;
 
 	/**
 	 * Gets the schema of the table.
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return Schema_Interface The schema of the table.
+	 * @return Table_Schema_Interface The schema of the table.
 	 */
 	public static function get_current_schema(): Table_Schema_Interface;
 

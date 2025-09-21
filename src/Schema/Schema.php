@@ -68,7 +68,6 @@ class Schema {
 	public function register() {
 		$this->container->singleton( static::class, $this );
 		$this->container->singleton( Builder::class );
-		$this->container->singleton( Fields\Collection::class );
 		$this->container->singleton( Tables\Collection::class );
 
 		/**

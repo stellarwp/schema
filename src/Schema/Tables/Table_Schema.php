@@ -57,12 +57,16 @@ class Table_Schema implements Table_Schema_Interface {
 	public function __construct( string $table_name, Column_Collection $columns, ?Index_Collection $indexes = null ) {
 		$this->table_name = $table_name;
 		$this->columns    = $columns;
-		$this->indexes    = $indexes ?$indexes->map(
+
+		$filtered_indexes = $indexes ? $indexes->map(
 			function( Index $index ): Index {
 				$index->set_table_name( $this->get_table_name() );
 				return $index;
 			}
 		) : null;
+
+		/** @var ?Index_Collection $filtered_indexes */
+		$this->indexes = $filtered_indexes;
 
 		$this->validate_columns();
 		$this->validate_indexes();
@@ -135,7 +139,10 @@ class Table_Schema implements Table_Schema_Interface {
 					throw new RuntimeException( 'Primary key already set. Only one primary key per table is allowed.' );
 				}
 
-				$this->primary_key = ( new Primary_Key( $index_column->get_name() ) )->set_columns( $index_column->get_name() )->set_table_name( $this->get_table_name() );
+				/** @var Primary_Key $primary_key */
+				$primary_key = ( new Primary_Key( $index_column->get_name() ) )->set_columns( $index_column->get_name() )->set_table_name( $this->get_table_name() );
+
+				$this->primary_key = $primary_key;
 				$indexes[ $index_column->get_name() ] = Index::TYPE_PRIMARY;
 				continue;
 			}
@@ -156,6 +163,7 @@ class Table_Schema implements Table_Schema_Interface {
 						throw new RuntimeException( 'Primary key already set. Only one primary key per table is allowed.' );
 					}
 
+					/** @var Primary_Key $index */
 					$this->primary_key = $index;
 				}
 

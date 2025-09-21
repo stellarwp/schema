@@ -41,7 +41,7 @@ abstract class Collection implements ArrayAccess, Iterator, Countable, JsonSeria
 	 *
 	 * @param array $resources An array of items.
 	 */
-	public function __construct( array $resources = [] ) {
+	final public function __construct( array $resources = [] ) {
 		foreach ( $resources as $offset => $value ) {
 			$this->set( (string) $offset, $value );
 		}
@@ -84,7 +84,7 @@ abstract class Collection implements ArrayAccess, Iterator, Countable, JsonSeria
 	/**
 	 * @inheritDoc
 	 *
-	 * @param TKey $offset The offset to check.
+	 * @param string $offset The offset to check.
 	 *
 	 * @return bool
 	 */
@@ -95,7 +95,7 @@ abstract class Collection implements ArrayAccess, Iterator, Countable, JsonSeria
 	/**
 	 * @inheritDoc
 	 *
-	 * @param TKey $offset The offset to get.
+	 * @param string $offset The offset to get.
 	 *
 	 * @return ?mixed
 	 */
@@ -107,8 +107,8 @@ abstract class Collection implements ArrayAccess, Iterator, Countable, JsonSeria
 	/**
 	 * @inheritDoc
 	 *
-	 * @param TKey  $offset The offset to set.
-	 * @param mixed $value  The value to set.
+	 * @param string $offset The offset to set.
+	 * @param mixed  $value  The value to set.
 	 */
 	public function offsetSet( $offset, $value ): void {
 		if ( ! $offset ) {
@@ -120,7 +120,7 @@ abstract class Collection implements ArrayAccess, Iterator, Countable, JsonSeria
 	/**
 	 * @inheritDoc
 	 *
-	 * @param TKey $offset The offset to unset.
+	 * @param string $offset The offset to unset.
 	 */
 	public function offsetUnset( $offset ): void {
 		unset( $this->resources[ $offset ] );
@@ -165,9 +165,9 @@ abstract class Collection implements ArrayAccess, Iterator, Countable, JsonSeria
 	 *
 	 * @param callable $callback The callback to map the collection to an array.
 	 *
-	 * @return Collection
+	 * @return self
 	 */
-	public function map( callable $callback ): Collection {
+	public function map( callable $callback ): self {
 		return new static( array_map( $callback, $this->resources ) );
 	}
 
@@ -178,9 +178,9 @@ abstract class Collection implements ArrayAccess, Iterator, Countable, JsonSeria
 	 *
 	 * @param callable $callback The callback to filter the collection.
 	 *
-	 * @return Collection
+	 * @return self
 	 */
-	public function filter( callable $callback ): Collection {
+	public function filter( callable $callback ): self {
 		return new static( array_filter( $this->resources, $callback ) );
 	}
 
@@ -189,7 +189,7 @@ abstract class Collection implements ArrayAccess, Iterator, Countable, JsonSeria
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param TKey $key The key to get.
+	 * @param string $key The key to get.
 	 *
 	 * @return ?mixed
 	 */
