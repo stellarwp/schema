@@ -135,7 +135,7 @@ class Table_Schema implements Table_Schema_Interface {
 					throw new RuntimeException( 'Primary key already set. Only one primary key per table is allowed.' );
 				}
 
-				$this->primary_key = new Primary_Key( $index_column->get_name() );
+				$this->primary_key = ( new Primary_Key( $index_column->get_name() ) )->set_columns( $index_column->get_name() )->set_table_name( $this->get_table_name() );
 				$indexes[ $index_column->get_name() ] = Index::TYPE_PRIMARY;
 				continue;
 			}
@@ -156,7 +156,7 @@ class Table_Schema implements Table_Schema_Interface {
 						throw new RuntimeException( 'Primary key already set. Only one primary key per table is allowed.' );
 					}
 
-					$this->primary_key = new Primary_Key( $index->get_name() );
+					$this->primary_key = $index;
 				}
 
 				$indexes[ $index->get_name() ] = $index->get_type();

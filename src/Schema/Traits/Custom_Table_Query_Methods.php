@@ -39,7 +39,7 @@ trait Custom_Table_Query_Methods {
 	 *
 	 * @return Generator<array<string, mixed>> The rows from the table.
 	 */
-	public static function fetch_all( int $batch_size = 50, string $output = OBJECT, string $where_clause = '', string $order_by = '' ): Generator {
+	protected static function fetch_all( int $batch_size = 50, string $output = OBJECT, string $where_clause = '', string $order_by = '' ): Generator {
 		$fetched  = 0;
 		$total    = null;
 		$offset   = 0;
@@ -50,24 +50,45 @@ trait Custom_Table_Query_Methods {
 
 			$order_by = $order_by ?: implode( ', ', array_map( fn( $column ) => "{$column} ASC", $primary_columns ) );
 
+			$query = $database::prepare(
+				"SELECT * FROM %i {$where_clause} ORDER BY {$order_by} LIMIT %d, %d",
+				static::table_name( true ),
+				$offset,
+				$batch_size
+			);
+
 			$batch = $database::get_results(
-				$database::prepare(
-					"SELECT * FROM %i {$where_clause} ORDER BY {$order_by} LIMIT %d, %d",
-					static::table_name( true ),
-					$offset,
-					$batch_size
-				),
+				$query,
 				$output
 			);
 
 			// We need to get the total number of rows, only after the first batch.
-			$total  ??= $database::get_var( "SELECT COUNT(*) FROM %i {$where_clause}", static::table_name( true ) );
+			$total  ??= $database::get_var( $database::prepare( "SELECT COUNT(*) FROM %i {$where_clause}", static::table_name( true ) ) );
 			$fetched += count( $batch );
 
 			$offset += $batch_size;
 
 			yield from $batch;
 		} while ( $fetched < $total );
+	}
+
+	/**
+	 * Fetches all the rows from the table using a batched query.
+	 *
+	 * @since TBD
+	 *
+	 * @param int    $batch_size   The number of rows to fetch per batch.
+	 * @param string $where_clause The optional WHERE clause to use.
+	 * @param string $order_by     The optional ORDER BY clause to use.
+	 *
+	 * @return Generator<array<string, mixed>> The rows from the table.
+	 */
+	public static function get_all( int $batch_size = 50, string $where_clause = '', string $order_by = '' ): Generator {
+		$batch = static::fetch_all( $batch_size, ARRAY_A, $where_clause, $order_by );
+
+		foreach ( $batch as $row ) {
+			yield static::transform_from_array( static::amend_value_types( $row ) );
+		}
 	}
 
 	/**
@@ -204,6 +225,7 @@ trait Custom_Table_Query_Methods {
 	 * @return array<string> The prepared statements and values.
 	 */
 	protected static function prepare_statements_values( array $entries ): array {
+		$database = Config::get_db();
 		$columns          = array_keys( $entries[0] );
 		$prepared_columns = implode(
 			', ',
@@ -215,7 +237,7 @@ trait Custom_Table_Query_Methods {
 		$prepared_values  = implode(
 			', ',
 			array_map(
-				static fn ( array $entry ) => '(' . implode( ', ', array_map( static fn( $e ) => DB::prepare( '%s', $e instanceof DateTimeInterface ? $e->format( 'Y-m-d H:i:s' ) : $e ), $entry ) ) . ')',
+				static fn ( array $entry ) => '(' . implode( ', ', array_map( static fn( $e ) => $database::prepare( '%s', $e instanceof DateTimeInterface ? $e->format( 'Y-m-d H:i:s' ) : $e ), $entry ) ) . ')',
 				$entries
 			)
 		);
@@ -235,7 +257,7 @@ trait Custom_Table_Query_Methods {
 	 *
 	 * @return Generator<array<string, mixed>> The rows from the table.
 	 */
-	public static function fetch_all_where( string $where_clause, int $batch_size = 50, string $output = OBJECT, string $order_by = '' ): Generator {
+	protected static function fetch_all_where( string $where_clause, int $batch_size = 50, string $output = OBJECT, string $order_by = '' ): Generator {
 		return static::fetch_all( $batch_size, $output, $where_clause, $order_by );
 	}
 
@@ -249,7 +271,7 @@ trait Custom_Table_Query_Methods {
 	 *
 	 * @return array|object|null The row from the table, or `null` if no row was found.
 	 */
-	public static function fetch_first_where( string $where_clause, string $output = OBJECT ) {
+	protected static function fetch_first_where( string $where_clause, string $output = OBJECT ) {
 		$database = Config::get_db();
 
 		return $database::get_row(
@@ -297,7 +319,7 @@ trait Custom_Table_Query_Methods {
 		$database = Config::get_db();
 
 		$queries = [];
-		$columns = array_keys( static::get_columns() );
+		$columns = static::get_columns()->get_names();
 		foreach ( $entries as $entry ) {
 			$uid = $entry[ $uid_column ] ?? '';
 
@@ -373,7 +395,7 @@ trait Custom_Table_Query_Methods {
 		$orderby = $args['orderby'] ?? static::uid_column();
 		$order   = strtoupper( $args['order'] ?? 'ASC' );
 
-		if ( ! in_array( $orderby, array_keys( static::get_columns() ), true ) ) {
+		if ( ! in_array( $orderby, static::get_columns()->get_names(), true ) ) {
 			$orderby = static::uid_column();
 		}
 
@@ -409,7 +431,7 @@ trait Custom_Table_Query_Methods {
 			$output
 		);
 
-		$results = array_map( fn( $result ) => self::amend_value_types( $result ), $results );
+		$results = array_map( fn( $result ) => static::transform_from_array( self::amend_value_types( $result ) ), $results );
 
 		/**
 		 * Fires after the results of the query are fetched.
@@ -461,18 +483,18 @@ trait Custom_Table_Query_Methods {
 		if ( $search ) {
 			$searchable_columns = static::get_searchable_columns();
 
-			if ( ! empty( $searchable_columns ) ) {
+			if ( $searchable_columns ) {
 				$search_where = [];
 
 				foreach ( $searchable_columns as $column ) {
-					$search_where[] = $database::prepare( "{$joined_prefix}{$column} LIKE %s", '%' . $database::esc_like( $search ) . '%' );
+					$search_where[] = $database::prepare( "{$joined_prefix}{$column->get_name()} LIKE %s", '%' . $database::esc_like( $search ) . '%' );
 				}
 
 				$where[] = '(' . implode( ' OR ', $search_where ) . ')';
 			}
 		}
 
-		$columns = array_keys( static::get_columns() );
+		$columns = static::get_columns()->get_names();
 
 		foreach ( $args as $arg ) {
 			if ( ! is_array( $arg ) ) {
@@ -556,9 +578,9 @@ trait Custom_Table_Query_Methods {
 
 		$join_condition = array_map( 'trim', explode( '=', $join_condition, 2 ) );
 
-		$secondary_table_columns = array_keys( $join_table::get_columns() );
+		$secondary_table_columns = $join_table::get_columns()->get_names();
 
-		$both_table_columns = array_merge( array_keys( static::get_columns() ), $secondary_table_columns );
+		$both_table_columns = array_merge( static::get_columns()->get_names(), $secondary_table_columns );
 
 		if ( ! in_array( $join_condition[0], $both_table_columns, true ) || ! in_array( $join_condition[1], $both_table_columns, true ) ) {
 			throw new InvalidArgumentException( 'The join condition must contain valid columns.' );
@@ -590,20 +612,23 @@ trait Custom_Table_Query_Methods {
 	 *
 	 * @since TBD
 	 *
-	 * @param string $column The column to get the models by.
-	 * @param mixed  $value  The value to get the models by.
-	 * @param int    $limit  The limit of models to return.
+	 * @param string $column   The column to get the models by.
+	 * @param mixed  $value    The value to get the models by.
+	 * @param string $operator The operator to use.
+	 * @param int    $limit    The limit of models to return.
 	 *
 	 * @return mixed[] The models, or an empty array if no models are found.
 	 *
 	 * @throws InvalidArgumentException If the column does not exist.
 	 */
-	public static function get_all_by( string $column, $value, int $limit = 50 ): ?array{
+	public static function get_all_by( string $column, $value, string $operator = '=', int $limit = 50 ): ?array{
 		[ $value, $placeholder ] = self::prepare_value_for_query( $column, $value );
+
+		$operator = strtoupper( $operator );
 
 		$database = Config::get_db();
 		$results  = [];
-		foreach ( static::fetch_all_where( $database::prepare( "WHERE {$column} = {$placeholder}", $value ), $limit, ARRAY_A ) as $task_array ) {
+		foreach ( static::fetch_all_where( $database::prepare( "WHERE {$column} {$operator} {$placeholder}", $value ), $limit, ARRAY_A ) as $task_array ) {
 			if ( empty( $task_array[ static::uid_column() ] ) ) {
 				continue;
 			}
@@ -654,13 +679,16 @@ trait Custom_Table_Query_Methods {
 	private static function prepare_value_for_query( string $column, $value ): array {
 		$columns = static::get_columns();
 
-		if ( ! isset( $columns[ $column ] ) ) {
+		/** @var ?Column $column */
+		$column = $columns->get( $column );
+
+		if ( ! $column ) {
 			throw new InvalidArgumentException( "Column $column does not exist." );
 		}
 
-		$column_type = $columns[ $column ]['php_type'];
+		$column_type = $column->get_php_type();
 
-		switch ( $column_type ) {
+		switch ( $column->get_php_type() ) {
 			case Column::PHP_TYPE_INT:
 			case Column::PHP_TYPE_BOOL:
 				$value       = is_array( $value ) ? array_map( fn( $v ) => (int) $v, $value ) : (int) $value;
@@ -727,21 +755,25 @@ trait Custom_Table_Query_Methods {
 	 * @return array<string, mixed> The amended data.
 	 *
 	 * @throws InvalidArgumentException If the column type is unsupported.
+	 * @throws InvalidArgumentException If the datetime value format is invalid.
 	 */
 	private static function amend_value_types( array $data ): array {
 		$columns = static::get_columns();
+		$column_names = $columns->get_names();
 		foreach ( $data as $column => $value ) {
-			if ( ! isset( $columns[ $column ] ) ) {
+			if ( ! in_array( $column, $column_names, true ) ) {
 				continue;
 			}
 
-			$column_data = $columns[ $column ];
+			$column_object = $columns->get( $column );
 
-			if ( ! empty( $column_data['nullable'] ) && null === $value ) {
+			if ( $column_object->get_nullable() && null === $value ) {
 				continue;
 			}
 
-			switch ( $column_data['php_type'] ) {
+			$column_php_type = $column_object->get_php_type();
+
+			switch ( $column_php_type ) {
 				case Column::PHP_TYPE_INT:
 					$data[ $column ] = (int) $value;
 					break;
@@ -765,9 +797,18 @@ trait Custom_Table_Query_Methods {
 					}
 
 					$data[ $column ] = $instance::createFromFormat( 'Y-m-d H:i:s', $value );
+
+					if ( ! $data[ $column ] instanceof DateTimeInterface ) {
+						$data[ $column ] = $instance::createFromFormat( 'Y-m-d', $value );
+					}
+
+					if ( ! $data[ $column ] instanceof DateTimeInterface ) {
+						throw new InvalidArgumentException( "Invalid datetime value format: {$value}." );
+					}
+
 					break;
 				default:
-					throw new InvalidArgumentException( "Unsupported column type: {$column_data['php_type']}." );
+					throw new InvalidArgumentException( "Unsupported column type: {$column_php_type}." );
 			}
 		}
 

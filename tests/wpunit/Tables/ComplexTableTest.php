@@ -20,6 +20,7 @@ use StellarWP\Schema\Columns\Last_Changed;
 use StellarWP\Schema\Columns\Contracts\Column;
 use StellarWP\Schema\Indexes\Classic_Index;
 use StellarWP\Schema\Indexes\Unique_Key;
+use DateTime;
 
 class ComplexTableTest extends SchemaTestCase {
 	/**
@@ -157,16 +158,6 @@ class ComplexTableTest extends SchemaTestCase {
 			}
 
 			public static function transform_from_array( array $result_array ) {
-				// Transform boolean
-				if ( isset( $result_array['is_active'] ) ) {
-					$result_array['is_active'] = (bool) $result_array['is_active'];
-				}
-
-				// Transform JSON
-				if ( isset( $result_array['json_data'] ) ) {
-					$result_array['json_data'] = json_decode( $result_array['json_data'], true );
-				}
-
 				return $result_array;
 			}
 		};
@@ -249,9 +240,6 @@ class ComplexTableTest extends SchemaTestCase {
 			}
 
 			public static function transform_from_array( array $result_array ) {
-				if ( isset( $result_array['status'] ) ) {
-					$result_array['status'] = (int) $result_array['status'];
-				}
 				return $result_array;
 			}
 		};
@@ -451,15 +439,9 @@ class ComplexTableTest extends SchemaTestCase {
 		$this->assertGreaterThan( 0, $insert_id );
 
 		// Retrieve and verify data
-		$result = $wpdb->get_row(
-			$wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $insert_id ),
-			ARRAY_A
-		);
+		$result = $table::get_by_id( $insert_id );
 
 		$this->assertNotNull( $result );
-
-		// Transform the result
-		$result = $table::transform_from_array( $result );
 
 		// Verify integer types
 		$this->assertSame( $insert_id, (int) $result['id'] );
@@ -485,11 +467,12 @@ class ComplexTableTest extends SchemaTestCase {
 		$this->assertStringContainsString( 'Long text content', $result['longtext_col'] );
 
 		// Verify datetime types
-		$this->assertEquals( '2024-01-15', $result['date_col'] );
-		$this->assertEquals( '2024-01-15 14:30:00', $result['datetime_col'] );
+		$this->assertEquals( '2024-01-15', $result['date_col']->format( 'Y-m-d' ) );
+		$this->assertEquals( '2024-01-15 14:30:00', $result['datetime_col']->format( 'Y-m-d H:i:s' ) );
 
 		// Verify special columns - only last_changed is in comprehensive table
 		$this->assertNotNull( $result['last_changed'] );
+		$this->assertInstanceOf( DateTime::class, $result['last_changed'] );
 
 		// Verify boolean transformation
 		$this->assertIsBool( $result['is_active'] );
@@ -855,5 +838,347 @@ class ComplexTableTest extends SchemaTestCase {
 		$this->assertTrue( $timestamp_table->exists() );
 		$this->assertTrue( $created_at_table->exists() );
 		$this->assertTrue( $updated_at_table->exists() );
+	}
+
+	/**
+	 * Test data type transformations through Schema API methods.
+	 *
+	 * @test
+	 */
+	public function should_transform_data_types_through_api() {
+		global $wpdb;
+
+		$table = $this->get_comprehensive_table();
+		Register::table( $table );
+
+		// Insert test data directly
+		$data = [
+			'tinyint_col' => 1,
+			'smallint_col' => 100,
+			'mediumint_col' => 1000,
+			'int_col' => 123456,
+			'bigint_col' => '9876543210',
+			'float_col' => 99.99,
+			'decimal_col' => '456.789',
+			'double_col' => 3.14159265359,
+			'char_col' => 'CHAR',
+			'varchar_col' => 'api_test_' . time(),
+			'tinytext_col' => 'Tiny API text',
+			'text_col' => 'Regular API text content',
+			'mediumtext_col' => 'Medium API text content',
+			'longtext_col' => 'Long API text content',
+			'date_col' => '2024-03-15',
+			'datetime_col' => '2024-03-15 10:30:00',
+			'is_active' => 1,
+			'json_data' => json_encode( [ 'api' => true, 'version' => 3, 'features' => [ 'type_safety', 'transformations' ] ] ),
+		];
+
+		$wpdb->insert( $table::table_name(), $data );
+		$insert_id = $wpdb->insert_id;
+
+		// Test get_by_id method
+		$result = $table::get_by_id( $insert_id );
+
+		$this->assertNotNull( $result );
+		$this->assertIsArray( $result );
+
+		// Verify integer types are properly cast
+		$this->assertIsInt( $result['id'] );
+		$this->assertIsInt( $result['tinyint_col'] );
+		$this->assertIsInt( $result['smallint_col'] );
+		$this->assertIsInt( $result['mediumint_col'] );
+		$this->assertIsInt( $result['int_col'] );
+		$this->assertEquals( 123456, $result['int_col'] );
+
+		// Bigint remains as string to avoid precision loss
+		$this->assertEquals( '9876543210', $result['bigint_col'] );
+
+		// Verify float types
+		$this->assertIsFloat( $result['float_col'] );
+		$this->assertIsFloat( $result['decimal_col'] );
+		$this->assertIsFloat( $result['double_col'] );
+		$this->assertEqualsWithDelta( 99.99, $result['float_col'], 0.01 );
+		$this->assertEqualsWithDelta( 456.789, $result['decimal_col'], 0.001 );
+
+		// Verify string types
+		$this->assertIsString( $result['char_col'] );
+		$this->assertIsString( $result['varchar_col'] );
+		$this->assertIsString( $result['tinytext_col'] );
+		$this->assertIsString( $result['text_col'] );
+
+		// Verify boolean transformation
+		$this->assertIsBool( $result['is_active'] );
+		$this->assertTrue( $result['is_active'] );
+
+		// Verify JSON transformation
+		$this->assertIsArray( $result['json_data'] );
+		$this->assertTrue( $result['json_data']['api'] );
+		$this->assertEquals( 3, $result['json_data']['version'] );
+		$this->assertContains( 'type_safety', $result['json_data']['features'] );
+	}
+
+	/**
+	 * Test get_first_by method with type transformations.
+	 *
+	 * @test
+	 */
+	public function should_transform_types_with_get_first_by() {
+		global $wpdb;
+
+		$table = $this->get_comprehensive_table();
+		Register::table( $table );
+
+		// Insert multiple records
+		$unique_varchar = 'first_by_test_' . time();
+		$data = [
+			'varchar_col' => $unique_varchar,
+			'int_col' => 42,
+			'float_col' => 3.14,
+			'is_active' => 0,
+			'json_data' => json_encode( [ 'method' => 'get_first_by', 'test' => true ] ),
+		];
+
+		$wpdb->insert( $table::table_name(), $data );
+
+		// Test get_first_by
+		$result = $table::get_first_by( 'varchar_col', $unique_varchar );
+
+		$this->assertNotNull( $result );
+
+		// Verify type transformations
+		$this->assertIsInt( $result['int_col'] );
+		$this->assertEquals( 42, $result['int_col'] );
+
+		$this->assertIsFloat( $result['float_col'] );
+		$this->assertEqualsWithDelta( 3.14, $result['float_col'], 0.01 );
+
+		$this->assertIsBool( $result['is_active'] );
+		$this->assertFalse( $result['is_active'] );
+
+		$this->assertIsArray( $result['json_data'] );
+		$this->assertEquals( 'get_first_by', $result['json_data']['method'] );
+		$this->assertTrue( $result['json_data']['test'] );
+	}
+
+	/**
+	 * Test get_all_by method with type transformations.
+	 *
+	 * @test
+	 */
+	public function should_transform_types_with_get_all_by() {
+		global $wpdb;
+
+		$table = $this->get_comprehensive_table();
+		Register::table( $table );
+
+		// Insert multiple records with same int_col value
+		$shared_int_value = 999;
+		for ( $i = 1; $i <= 3; $i++ ) {
+			$data = [
+				'varchar_col' => 'get_all_test_' . $i . '_' . time(),
+				'int_col' => $shared_int_value,
+				'float_col' => $i * 1.5,
+				'is_active' => $i % 2,
+				'json_data' => json_encode( [ 'index' => $i, 'batch' => 'test' ] ),
+			];
+			$wpdb->insert( $table::table_name(), $data );
+		}
+
+		// Test get_all_by
+		$results = $table::get_all_by( 'int_col', $shared_int_value );
+
+		$this->assertIsArray( $results );
+		$this->assertGreaterThanOrEqual( 3, count( $results ) );
+
+		foreach ( $results as $index => $result ) {
+			// Verify each result has proper type transformations
+			$this->assertIsInt( $result['int_col'] );
+			$this->assertEquals( $shared_int_value, $result['int_col'] );
+
+			$this->assertIsFloat( $result['float_col'] );
+
+			$this->assertIsBool( $result['is_active'] );
+
+			$this->assertIsArray( $result['json_data'] );
+			$this->assertArrayHasKey( 'index', $result['json_data'] );
+			$this->assertEquals( 'test', $result['json_data']['batch'] );
+		}
+	}
+
+	/**
+	 * Test paginate method with type transformations.
+	 *
+	 * @test
+	 */
+	public function should_transform_types_with_paginate() {
+		global $wpdb;
+
+		$table = $this->get_comprehensive_table();
+		Register::table( $table );
+
+		// Insert test records for pagination
+		$base_time = time();
+		for ( $i = 1; $i <= 5; $i++ ) {
+			$data = [
+				'varchar_col' => 'paginate_test_' . $i . '_' . $base_time,
+				'int_col' => $i * 10,
+				'float_col' => $i * 2.5,
+				'is_active' => $i <= 3 ? 1 : 0,
+				'json_data' => json_encode( [ 'page_item' => $i, 'total' => 5 ] ),
+			];
+			$wpdb->insert( $table::table_name(), $data );
+		}
+
+		// Test paginate with search and filters
+		$args = [
+			'term' => 'paginate_test',
+			[
+				'column' => 'is_active',
+				'value' => 1,
+				'operator' => '=',
+			],
+		];
+
+		$results = $table::paginate( $args, 10, 1, [ '*' ], '', '', [], ARRAY_A );
+
+		$this->assertIsArray( $results );
+		$this->assertNotEmpty( $results );
+
+		foreach ( $results as $result ) {
+			// Verify type transformations in paginated results
+			$this->assertIsInt( $result['int_col'] );
+			$this->assertIsFloat( $result['float_col'] );
+			$this->assertIsBool( $result['is_active'] );
+			$this->assertTrue( $result['is_active'] ); // We filtered for active only
+
+			$this->assertIsArray( $result['json_data'] );
+			$this->assertArrayHasKey( 'page_item', $result['json_data'] );
+			$this->assertEquals( 5, $result['json_data']['total'] );
+		}
+	}
+
+	/**
+	 * Test fetch_all generator with type transformations.
+	 *
+	 * @test
+	 */
+	public function should_transform_types_with_fetch_all() {
+		global $wpdb;
+
+		$table = $this->get_comprehensive_table();
+		Register::table( $table );
+
+		// Insert a few test records
+		$base_time = time();
+		for ( $i = 1; $i <= 2; $i++ ) {
+			$data = [
+				'varchar_col' => 'fetch_all_test_' . $i . '_' . $base_time,
+				'int_col' => $i * 100,
+				'float_col' => $i * 0.5,
+				'is_active' => 1,
+				'json_data' => json_encode( [ 'fetched' => true, 'order' => $i ] ),
+			];
+			$wpdb->insert( $table::table_name(), $data );
+		}
+
+		// Test fetch_all_where
+		$count = 0;
+
+		foreach ( $table::get_all_by( 'varchar_col', 'fetch_all_test_%' . $base_time, 'LIKE' ) as $row ) {
+			// Note: fetch_all returns raw data without transformation
+			// We need to manually transform it
+			$transformed = $table::transform_from_array( $row );
+
+			// Verify the transformation worked
+			$this->assertIsInt( $transformed['int_col'] );
+			$this->assertIsBool( $transformed['is_active'] );
+			$this->assertIsArray( $transformed['json_data'] );
+			$this->assertTrue( $transformed['json_data']['fetched'] );
+
+			$count++;
+		}
+
+		$this->assertGreaterThanOrEqual( 2, $count );
+	}
+
+	/**
+	 * Test nullable column handling through API.
+	 *
+	 * @test
+	 */
+	public function should_handle_null_values_in_api() {
+		global $wpdb;
+
+		$table = $this->get_comprehensive_table();
+		Register::table( $table );
+
+		// Insert record with NULL values
+		$unique_varchar = 'null_test_' . time();
+		$data = [
+			'varchar_col' => $unique_varchar,
+			'smallint_col' => null,
+			'decimal_col' => null,
+			'text_col' => null,
+			'date_col' => null,
+			'json_data' => '{}',
+		];
+
+		$wpdb->insert( $table::table_name(), $data );
+
+		// Retrieve through API
+		$result = $table::get_first_by( 'varchar_col', $unique_varchar );
+
+		$this->assertNotNull( $result );
+
+		// Verify NULL values are preserved
+		$this->assertNull( $result['smallint_col'] );
+		$this->assertNull( $result['decimal_col'] );
+		$this->assertNull( $result['text_col'] );
+		$this->assertNull( $result['date_col'] );
+
+		// Non-nullable fields should have their defaults
+		$this->assertIsInt( $result['tinyint_col'] );
+		$this->assertEquals( 0, $result['tinyint_col'] );
+	}
+
+	/**
+	 * Test special column types through API.
+	 *
+	 * @test
+	 */
+	public function should_handle_special_columns_through_api() {
+		global $wpdb;
+
+		$table = $this->get_updated_at_table();
+		Register::table( $table );
+
+		// Insert record
+		$content = 'Special columns test ' . time();
+		$table::insert( [
+			'content' => $content,
+		] );
+
+		// Retrieve through API
+		$result = $table::get_first_by( 'content', $content );
+
+		$this->assertNotNull( $result );
+		$this->assertEquals( $content, $result['content'] );
+
+		// Updated_at should be null on insert
+		$this->assertNull( $result['updated_at'] );
+
+		// Update the record
+		sleep( 1 );
+		$wpdb->update(
+			$table::table_name(),
+			[ 'content' => $content . ' updated' ],
+			[ 'id' => $result['id'] ]
+		);
+
+		// Retrieve again
+		$updated = $table::get_by_id( $result['id'] );
+
+		// Now updated_at should have a value
+		$this->assertInstanceOf( DateTime::class, $updated['updated_at'] );
 	}
 }

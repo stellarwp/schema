@@ -84,7 +84,29 @@ class Column_Collection extends Collection {
 	 * @return ?Column
 	 */
 	public function get( string $key ): ?Column {
-		return $this->offsetGet( $key );
+		foreach ( $this->resources as $column ) {
+			if ( $column->get_name() === $key ) {
+				return $column;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Gets the names from the collection.
+	 *
+	 * @since TBD
+	 *
+	 * @return array<string>
+	 */
+	public function get_names(): array {
+		return array_map(
+			function ( Column $column ) {
+				return $column->get_name();
+			},
+			$this->resources
+		);
 	}
 
 	/**

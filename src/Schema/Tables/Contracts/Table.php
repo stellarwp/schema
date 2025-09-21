@@ -49,11 +49,6 @@ abstract class Table implements Table_Interface {
 	protected static $schema_slug;
 
 	/**
-	 * @var string The field that uniquely identifies a row in the table.
-	 */
-	protected static $uid_column = '';
-
-	/**
 	 * Ordered collection of table update methods.
 	 *
 	 * Keys should be the SCHEMA_VERSION and the values should be the method to call.
