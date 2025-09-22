@@ -22,13 +22,6 @@ use StellarWP\Schema\Columns\Datetime_Column;
  */
 class Created_At extends Datetime_Column {
 	/**
-	 * The name of the column.
-	 *
-	 * @var string
-	 */
-	protected string $name = 'created_at';
-
-	/**
 	 * The default value of the column.
 	 *
 	 * @var string

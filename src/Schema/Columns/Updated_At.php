@@ -22,13 +22,6 @@ use StellarWP\Schema\Columns\Datetime_Column;
  */
 class Updated_At extends Datetime_Column {
 	/**
-	 * The name of the column.
-	 *
-	 * @var string
-	 */
-	protected string $name = 'updated_at';
-
-	/**
 	 * Whether the column can be null.
 	 *
 	 * @var bool

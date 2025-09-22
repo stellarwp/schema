@@ -22,13 +22,6 @@ use StellarWP\Schema\Columns\Datetime_Column;
  */
 class Last_Changed extends Datetime_Column {
 	/**
-	 * The name of the column.
-	 *
-	 * @var string
-	 */
-	protected string $name = 'last_changed';
-
-	/**
 	 * The default value of the column.
 	 *
 	 * @var string
