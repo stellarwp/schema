@@ -843,19 +843,19 @@ trait Custom_Table_Query_Methods {
 					$instance = DateTime::class;
 				}
 
-				$value = $instance::createFromFormat( 'Y-m-d H:i:s', $value );
+				$new_value = $instance::createFromFormat( 'Y-m-d H:i:s', $value );
 
-				if ( $value instanceof DateTimeInterface ) {
-					return $value;
+				if ( $new_value instanceof DateTimeInterface ) {
+					return $new_value;
 				}
 
-				$value = $instance::createFromFormat( 'Y-m-d', $value );
+				$new_value = $instance::createFromFormat( 'Y-m-d', $value );
 
-				if ( ! $value instanceof DateTimeInterface ) {
+				if ( ! $new_value instanceof DateTimeInterface ) {
 					throw new InvalidArgumentException( "Invalid datetime value format: {$value}." );
 				}
 
-				return $value;
+				return $new_value;
 			default:
 				throw new InvalidArgumentException( "Unsupported column type: {$type}." );
 		}
