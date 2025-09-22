@@ -45,115 +45,120 @@ class ComplexTableTest extends SchemaTestCase {
 			protected static $schema_slug = 'test-v3-comprehensive';
 
 			public static function get_schema_history(): array {
-				$columns = new Column_Collection();
+				$table_name = static::table_name( true );
+				$callable = function() use ( $table_name ) {
+					$columns = new Column_Collection();
 
-				// Primary key with auto increment
-				$columns[] = ( new ID( 'id' ) )
-					->set_length( 11 )
-					->set_type( Column::COLUMN_TYPE_BIGINT )
-					->set_auto_increment( true );
+					// Primary key with auto increment
+					$columns[] = ( new ID( 'id' ) )
+						->set_length( 11 )
+						->set_type( Column::COLUMN_TYPE_BIGINT )
+						->set_auto_increment( true );
 
-				// Integer types
-				$columns[] = ( new Integer_Column( 'tinyint_col' ) )
-					->set_type( Column::COLUMN_TYPE_TINYINT )
-					->set_length( 3 )
-					->set_signed( false )
-					->set_default( 0 );
+					// Integer types
+					$columns[] = ( new Integer_Column( 'tinyint_col' ) )
+						->set_type( Column::COLUMN_TYPE_TINYINT )
+						->set_length( 3 )
+						->set_signed( false )
+						->set_default( 0 );
 
-				$columns[] = ( new Integer_Column( 'smallint_col' ) )
-					->set_type( Column::COLUMN_TYPE_SMALLINT )
-					->set_length( 5 )
-					->set_signed( true )
-					->set_nullable( true );
+					$columns[] = ( new Integer_Column( 'smallint_col' ) )
+						->set_type( Column::COLUMN_TYPE_SMALLINT )
+						->set_length( 5 )
+						->set_signed( true )
+						->set_nullable( true );
 
-				$columns[] = ( new Integer_Column( 'mediumint_col' ) )
-					->set_type( Column::COLUMN_TYPE_MEDIUMINT )
-					->set_length( 8 )
-					->set_default( 100 );
+					$columns[] = ( new Integer_Column( 'mediumint_col' ) )
+						->set_type( Column::COLUMN_TYPE_MEDIUMINT )
+						->set_length( 8 )
+						->set_default( 100 );
 
-				$columns[] = ( new Integer_Column( 'int_col' ) )
-					->set_type( Column::COLUMN_TYPE_INT )
-					->set_length( 11 )
-					->set_signed( true )
-					->set_is_index( true );
+					$columns[] = ( new Integer_Column( 'int_col' ) )
+						->set_type( Column::COLUMN_TYPE_INT )
+						->set_length( 11 )
+						->set_signed( true )
+						->set_is_index( true );
 
-				$columns[] = ( new Integer_Column( 'bigint_col' ) )
-					->set_type( Column::COLUMN_TYPE_BIGINT )
-					->set_length( 20 )
-					->set_signed( false );
+					$columns[] = ( new Integer_Column( 'bigint_col' ) )
+						->set_type( Column::COLUMN_TYPE_BIGINT )
+						->set_length( 20 )
+						->set_signed( false );
 
-				// Float types
-				// For FLOAT(10,2) - 10 total digits, 2 decimal places
-				$columns[] = ( new Float_Column( 'float_col' ) )
-					->set_type( Column::COLUMN_TYPE_FLOAT )
-					->set_length( 10 )
-					->set_precision( 2 )
-					->set_default( 0.0 );
+					// Float types
+					// For FLOAT(10,2) - 10 total digits, 2 decimal places
+					$columns[] = ( new Float_Column( 'float_col' ) )
+						->set_type( Column::COLUMN_TYPE_FLOAT )
+						->set_length( 10 )
+						->set_precision( 2 )
+						->set_default( 0.0 );
 
-				// For DECIMAL(15,4) - 15 total digits, 4 decimal places
-				$columns[] = ( new Float_Column( 'decimal_col' ) )
-					->set_type( Column::COLUMN_TYPE_DECIMAL )
-					->set_length( 15 )
-					->set_precision( 4 )
-					->set_nullable( true );
+					// For DECIMAL(15,4) - 15 total digits, 4 decimal places
+					$columns[] = ( new Float_Column( 'decimal_col' ) )
+						->set_type( Column::COLUMN_TYPE_DECIMAL )
+						->set_length( 15 )
+						->set_precision( 4 )
+						->set_nullable( true );
 
-				// For DOUBLE(22,8) - 22 total digits, 8 decimal places
-				$columns[] = ( new Float_Column( 'double_col' ) )
-					->set_type( Column::COLUMN_TYPE_DOUBLE )
-					->set_length( 22 )
-					->set_precision( 8 );
+					// For DOUBLE(22,8) - 22 total digits, 8 decimal places
+					$columns[] = ( new Float_Column( 'double_col' ) )
+						->set_type( Column::COLUMN_TYPE_DOUBLE )
+						->set_length( 22 )
+						->set_precision( 8 );
 
-				// String types
-				$columns[] = ( new String_Column( 'char_col' ) )
-					->set_type( Column::COLUMN_TYPE_CHAR )
-					->set_length( 10 )
-					->set_default( 'DEFAULT' );
+					// String types
+					$columns[] = ( new String_Column( 'char_col' ) )
+						->set_type( Column::COLUMN_TYPE_CHAR )
+						->set_length( 10 )
+						->set_default( 'DEFAULT' );
 
-				$columns[] = ( new String_Column( 'varchar_col' ) )
-					->set_type( Column::COLUMN_TYPE_VARCHAR )
-					->set_length( 255 )
-					->set_searchable( true )
-					->set_is_unique( true );
+					$columns[] = ( new String_Column( 'varchar_col' ) )
+						->set_type( Column::COLUMN_TYPE_VARCHAR )
+						->set_length( 255 )
+						->set_searchable( true )
+						->set_is_unique( true );
 
-				// Text types
-				$columns[] = ( new Text_Column( 'tinytext_col' ) )
-					->set_type( Column::COLUMN_TYPE_TINYTEXT );
+					// Text types
+					$columns[] = ( new Text_Column( 'tinytext_col' ) )
+						->set_type( Column::COLUMN_TYPE_TINYTEXT );
 
-				$columns[] = ( new Text_Column( 'text_col' ) )
-					->set_type( Column::COLUMN_TYPE_TEXT )
-					->set_nullable( true );
+					$columns[] = ( new Text_Column( 'text_col' ) )
+						->set_type( Column::COLUMN_TYPE_TEXT )
+						->set_nullable( true );
 
-				$columns[] = ( new Text_Column( 'mediumtext_col' ) )
-					->set_type( Column::COLUMN_TYPE_MEDIUMTEXT );
+					$columns[] = ( new Text_Column( 'mediumtext_col' ) )
+						->set_type( Column::COLUMN_TYPE_MEDIUMTEXT );
 
-				$columns[] = ( new Text_Column( 'longtext_col' ) )
-					->set_type( Column::COLUMN_TYPE_LONGTEXT );
+					$columns[] = ( new Text_Column( 'longtext_col' ) )
+						->set_type( Column::COLUMN_TYPE_LONGTEXT );
 
-				// Datetime types
-				$columns[] = ( new Datetime_Column( 'date_col' ) )
-					->set_type( Column::COLUMN_TYPE_DATE )
-					->set_nullable( true );
+					// Datetime types
+					$columns[] = ( new Datetime_Column( 'date_col' ) )
+						->set_type( Column::COLUMN_TYPE_DATE )
+						->set_nullable( true );
 
-				$columns[] = ( new Datetime_Column( 'datetime_col' ) )
-					->set_type( Column::COLUMN_TYPE_DATETIME )
-					->set_default( '0000-00-00 00:00:00' );
+					$columns[] = ( new Datetime_Column( 'datetime_col' ) )
+						->set_type( Column::COLUMN_TYPE_DATETIME )
+						->set_default( '0000-00-00 00:00:00' );
 
-				$columns[] = new Last_Changed( 'last_changed' );
+					$columns[] = new Last_Changed( 'last_changed' );
 
-				// Boolean column
-				$columns[] = ( new Integer_Column( 'is_active' ) )
-					->set_type( Column::COLUMN_TYPE_TINYINT )
-					->set_length( 1 )
-					->set_default( 1 )
-					->set_php_type( Column::PHP_TYPE_BOOL );
+					// Boolean column
+					$columns[] = ( new Integer_Column( 'is_active' ) )
+						->set_type( Column::COLUMN_TYPE_TINYINT )
+						->set_length( 1 )
+						->set_default( 1 )
+						->set_php_type( Column::PHP_TYPE_BOOL );
 
-				// JSON column (stored as text)
-				$columns[] = ( new Text_Column( 'json_data' ) )
-					->set_type( Column::COLUMN_TYPE_TEXT )
-					->set_php_type( Column::PHP_TYPE_JSON );
+					// JSON column (stored as text)
+					$columns[] = ( new Text_Column( 'json_data' ) )
+						->set_type( Column::COLUMN_TYPE_TEXT )
+						->set_php_type( Column::PHP_TYPE_JSON );
+
+					return new Table_Schema( $table_name, $columns );
+				};
 
 				return [
-					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns ),
+					static::SCHEMA_VERSION => $callable,
 				];
 			}
 
@@ -174,68 +179,73 @@ class ComplexTableTest extends SchemaTestCase {
 			protected static $schema_slug = 'test-v3-indexed';
 
 			public static function get_schema_history(): array {
-				$columns = new Column_Collection();
+				$table_name = static::table_name( true );
+				$callable = function() use ( $table_name ) {
+					$columns = new Column_Collection();
 
-				// Primary key
-				$columns[] = ( new ID( 'id' ) )
-					->set_length( 11 )
-					->set_type( Column::COLUMN_TYPE_INT )
-					->set_auto_increment( true );
+					// Primary key
+					$columns[] = ( new ID( 'id' ) )
+						->set_length( 11 )
+						->set_type( Column::COLUMN_TYPE_INT )
+						->set_auto_increment( true );
 
-				// Columns for various indexes
-				$columns[] = ( new String_Column( 'unique_email' ) )
-					->set_length( 255 )
-					->set_is_unique( true );
+					// Columns for various indexes
+					$columns[] = ( new String_Column( 'unique_email' ) )
+						->set_length( 255 )
+						->set_is_unique( true );
 
-				$columns[] = ( new String_Column( 'indexed_slug' ) )
-					->set_length( 200 )
-					->set_is_index( true );
+					$columns[] = ( new String_Column( 'indexed_slug' ) )
+						->set_length( 200 )
+						->set_is_index( true );
 
-				$columns[] = ( new Integer_Column( 'user_id' ) )
-					->set_type( Column::COLUMN_TYPE_INT )
-					->set_length( 11 )
-					->set_is_index( true );
+					$columns[] = ( new Integer_Column( 'user_id' ) )
+						->set_type( Column::COLUMN_TYPE_INT )
+						->set_length( 11 )
+						->set_is_index( true );
 
-				$columns[] = ( new String_Column( 'category' ) )
-					->set_length( 100 );
+					$columns[] = ( new String_Column( 'category' ) )
+						->set_length( 100 );
 
-				$columns[] = ( new String_Column( 'tag' ) )
-					->set_length( 100 );
+					$columns[] = ( new String_Column( 'tag' ) )
+						->set_length( 100 );
 
-				$columns[] = ( new Text_Column( 'searchable_content' ) )
-					->set_type( Column::COLUMN_TYPE_TEXT );
+					$columns[] = ( new Text_Column( 'searchable_content' ) )
+						->set_type( Column::COLUMN_TYPE_TEXT );
 
-				$columns[] = ( new String_Column( 'title' ) )
-					->set_length( 255 );
+					$columns[] = ( new String_Column( 'title' ) )
+						->set_length( 255 );
 
-				$columns[] = ( new Text_Column( 'description' ) )
-					->set_type( Column::COLUMN_TYPE_TEXT );
+					$columns[] = ( new Text_Column( 'description' ) )
+						->set_type( Column::COLUMN_TYPE_TEXT );
 
-				$columns[] = ( new Integer_Column( 'status' ) )
-					->set_type( Column::COLUMN_TYPE_TINYINT )
-					->set_length( 1 )
-					->set_default( 1 );
+					$columns[] = ( new Integer_Column( 'status' ) )
+						->set_type( Column::COLUMN_TYPE_TINYINT )
+						->set_length( 1 )
+						->set_default( 1 );
 
-				$columns[] = ( new Datetime_Column( 'published_at' ) )
-					->set_type( Column::COLUMN_TYPE_DATETIME );
+					$columns[] = ( new Datetime_Column( 'published_at' ) )
+						->set_type( Column::COLUMN_TYPE_DATETIME );
 
-				// Define additional indexes
-				$indexes = new Index_Collection();
+					// Define additional indexes
+					$indexes = new Index_Collection();
 
-				// Composite index
-				$indexes[] = ( new Classic_Index( 'idx_category_tag' ) )
-					->set_columns( 'category', 'tag' );
+					// Composite index
+					$indexes[] = ( new Classic_Index( 'idx_category_tag' ) )
+						->set_columns( 'category', 'tag' );
 
-				// Another composite with different order
-				$indexes[] = ( new Classic_Index( 'idx_status_published' ) )
-					->set_columns( 'status', 'published_at' );
+					// Another composite with different order
+					$indexes[] = ( new Classic_Index( 'idx_status_published' ) )
+						->set_columns( 'status', 'published_at' );
 
-				// Unique composite key
-				$indexes[] = ( new Unique_Key( 'uk_user_category' ) )
-					->set_columns( 'user_id', 'category' );
+					// Unique composite key
+					$indexes[] = ( new Unique_Key( 'uk_user_category' ) )
+						->set_columns( 'user_id', 'category' );
+
+					return new Table_Schema( $table_name, $columns, $indexes );
+				};
 
 				return [
-					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns, $indexes ),
+					static::SCHEMA_VERSION => $callable,
 				];
 			}
 
@@ -256,79 +266,88 @@ class ComplexTableTest extends SchemaTestCase {
 			protected static $schema_slug = 'test-v3-timestamp';
 
 			public static function get_schema_history(): array {
-				$columns = new Column_Collection();
+				$table_name = static::table_name( true );
+				$callable = function() use ( $table_name ) {
+					$columns = new Column_Collection();
 
-				$columns[] = ( new ID( 'id' ) )
-					->set_length( 11 )
-					->set_type( Column::COLUMN_TYPE_INT );
+					$columns[] = ( new ID( 'id' ) )
+						->set_length( 11 )
+						->set_type( Column::COLUMN_TYPE_INT );
 
-				$columns[] = ( new String_Column( 'title' ) )
-					->set_length( 255 );
+					$columns[] = ( new String_Column( 'title' ) )
+						->set_length( 255 );
 
-				$columns[] = ( new Datetime_Column( 'timestamp_col' ) )
-					->set_type( Column::COLUMN_TYPE_TIMESTAMP )
-					->set_default( 'CURRENT_TIMESTAMP' )
-					->set_on_update( 'CURRENT_TIMESTAMP' );
+					$columns[] = ( new Datetime_Column( 'timestamp_col' ) )
+						->set_type( Column::COLUMN_TYPE_TIMESTAMP )
+						->set_default( 'CURRENT_TIMESTAMP' )
+						->set_on_update( 'CURRENT_TIMESTAMP' );
 
-				$columns[] = ( new Datetime_Column( 'created_date' ) )
-					->set_type( Column::COLUMN_TYPE_DATETIME )
-					->set_default( '0000-00-00 00:00:00' );
+					$columns[] = ( new Datetime_Column( 'created_date' ) )
+						->set_type( Column::COLUMN_TYPE_DATETIME )
+						->set_default( '0000-00-00 00:00:00' );
 
-				$columns[] = ( new Datetime_Column( 'updated_date' ) )
-					->set_type( Column::COLUMN_TYPE_DATETIME )
-					->set_nullable( true )
-					->set_default( 'NULL' );
+					$columns[] = ( new Datetime_Column( 'updated_date' ) )
+						->set_type( Column::COLUMN_TYPE_DATETIME )
+						->set_nullable( true )
+						->set_default( 'NULL' );
+					return new Table_Schema( $table_name, $columns );
+				};
 
-				return [
-					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns ),
-				];
-			}
+					return [
+						static::SCHEMA_VERSION => $callable,
+					];
+				}
 
-			public static function transform_from_array( array $result_array ) {
-				return $result_array;
-			}
-		};
-	}
+				public static function transform_from_array( array $result_array ) {
+					return $result_array;
+				}
+			};
+		}
 
-	/**
-	 * Get a table with Created_At column.
-	 */
-	public function get_created_at_table(): Table {
-		return new class extends Table {
-			const SCHEMA_VERSION = '3.0.0';
-			protected static $base_table_name = 'created_at_table';
-			protected static $group = 'test_v3';
-			protected static $schema_slug = 'test-v3-created-at';
+		/**
+		 * Get a table with Created_At column.
+		 */
+		public function get_created_at_table(): Table {
+			return new class extends Table {
+				const SCHEMA_VERSION = '3.0.0';
+				protected static $base_table_name = 'created_at_table';
+				protected static $group = 'test_v3';
+				protected static $schema_slug = 'test-v3-created-at';
 
-			public static function get_schema_history(): array {
-				$columns = new Column_Collection();
+				public static function get_schema_history(): array {
+					$table_name = static::table_name( true );
+					$callable = function() use ( $table_name ) {
+						$columns = new Column_Collection();
 
-				$columns[] = ( new ID( 'id' ) )
-					->set_length( 11 )
-					->set_type( Column::COLUMN_TYPE_INT )
-					->set_auto_increment( true );
+						$columns[] = ( new ID( 'id' ) )
+							->set_length( 11 )
+							->set_type( Column::COLUMN_TYPE_INT )
+							->set_auto_increment( true );
 
-				$columns[] = ( new String_Column( 'name' ) )
-					->set_length( 100 );
+						$columns[] = ( new String_Column( 'name' ) )
+							->set_length( 100 );
 
-				// Created_At column
-				$columns[] = new Created_At( 'created_at' );
+						// Created_At column
+						$columns[] = new Created_At( 'created_at' );
 
-				// Regular datetime for comparison
-				$columns[] = ( new Datetime_Column( 'other_date' ) )
-					->set_type( Column::COLUMN_TYPE_DATETIME )
-					->set_nullable( true );
+						// Regular datetime for comparison
+						$columns[] = ( new Datetime_Column( 'other_date' ) )
+							->set_type( Column::COLUMN_TYPE_DATETIME )
+							->set_nullable( true );
 
-				return [
-					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns ),
-				];
-			}
+						return new Table_Schema( $table_name, $columns );
+					};
 
-			public static function transform_from_array( array $result_array ) {
-				return $result_array;
-			}
-		};
-	}
+					return [
+						static::SCHEMA_VERSION => $callable,
+					];
+				}
+
+				public static function transform_from_array( array $result_array ) {
+					return $result_array;
+				}
+			};
+		}
 
 	/**
 	 * Get a table with Updated_At column.
@@ -341,19 +360,24 @@ class ComplexTableTest extends SchemaTestCase {
 			protected static $schema_slug = 'test-v3-updated-at';
 
 			public static function get_schema_history(): array {
-				$columns = new Column_Collection();
+				$table_name = static::table_name( true );
+				$callable = function() use ( $table_name ) {
+					$columns = new Column_Collection();
 
-				$columns[] = ( new ID( 'id' ) )
-					->set_length( 11 )
-					->set_type( Column::COLUMN_TYPE_INT );
+					$columns[] = ( new ID( 'id' ) )
+						->set_length( 11 )
+						->set_type( Column::COLUMN_TYPE_INT );
 
-				$columns[] = ( new String_Column( 'content' ) )
-					->set_length( 255 );
+					$columns[] = ( new String_Column( 'content' ) )
+						->set_length( 255 );
 
-				$columns[] = new Updated_At( 'updated_at' );
+					$columns[] = new Updated_At( 'updated_at' );
+
+					return new Table_Schema( $table_name, $columns );
+				};
 
 				return [
-					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns ),
+					static::SCHEMA_VERSION => $callable,
 				];
 			}
 

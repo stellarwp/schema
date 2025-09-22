@@ -61,15 +61,20 @@ trait Table_Fixtures {
 			protected static $schema_slug = 'bork-simple';
 
 			public static function get_schema_history(): array {
-				$columns = new Column_Collection();
+				$table_name = static::table_name( true );
+				$callable = function() use ( $table_name ) {
+					$columns = new Column_Collection();
 
-				$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
-				$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
-				$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 )->set_is_index( true );
-				$columns[] = ( new String_Column( 'something' ) )->set_length( 25 )->set_is_index( true );
+					$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
+					$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
+					$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 )->set_is_index( true );
+					$columns[] = ( new String_Column( 'something' ) )->set_length( 25 )->set_is_index( true );
+
+					return new Table_Schema( $table_name, $columns );
+				};
 
 				return [
-					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns ),
+					static::SCHEMA_VERSION => $callable,
 				];
 			}
 
@@ -93,14 +98,18 @@ trait Table_Fixtures {
 			protected static $schema_slug = 'bork-simple';
 
 			public static function get_schema_history(): array {
-				$columns = new Column_Collection();
+				$table_name = static::table_name( true );
+				$callable = function() use ( $table_name ) {
+					$columns = new Column_Collection();
 
-				$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
-				$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
-				$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 )->set_is_index( true );
+					$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
+					$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
+					$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 )->set_is_index( true );
+					return new Table_Schema( $table_name, $columns );
+				};
 
 				return [
-					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns ),
+					static::SCHEMA_VERSION => $callable,
 				];
 			}
 
@@ -124,14 +133,18 @@ trait Table_Fixtures {
 			protected static $schema_slug = 'bork-simple-alt';
 
 			public static function get_schema_history(): array {
-				$columns = new Column_Collection();
+				$table_name = static::table_name( true );
+				$callable = function() use ( $table_name ) {
+					$columns = new Column_Collection();
 
-				$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
-				$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
-				$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 )->set_is_index( true );
+					$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
+					$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
+					$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 )->set_is_index( true );
+					return new Table_Schema( $table_name, $columns );
+				};
 
 				return [
-					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns ),
+					static::SCHEMA_VERSION => $callable,
 				];
 			}
 
@@ -153,14 +166,18 @@ trait Table_Fixtures {
 			protected static $schema_slug = 'bork-noindex';
 
 			public static function get_schema_history(): array {
-				$columns = new Column_Collection();
+				$table_name = static::table_name( true );
+				$callable = function() use ( $table_name ) {
+					$columns = new Column_Collection();
 
-				$columns[] = ( new Integer_Column( 'id' ) )->set_length( 11 )->set_signed( false )->set_type( Column::COLUMN_TYPE_INT );
-				$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
-				$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 );
+					$columns[] = ( new Integer_Column( 'id' ) )->set_length( 11 )->set_signed( false )->set_type( Column::COLUMN_TYPE_INT );
+					$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
+					$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 );
+					return new Table_Schema( $table_name, $columns );
+				};
 
 				return [
-					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns ),
+					static::SCHEMA_VERSION => $callable,
 				];
 			}
 
@@ -181,14 +198,18 @@ trait Table_Fixtures {
 			protected static $schema_slug = 'bork-with-foreignkey';
 
 			public static function get_schema_history(): array {
-				$columns = new Column_Collection();
+				$table_name = static::table_name( true );
+				$callable = function() use ( $table_name ) {
+					$columns = new Column_Collection();
 
-				$columns[] = ( new Integer_Column( 'id' ) )->set_length( 11 )->set_signed( false )->set_type( Column::COLUMN_TYPE_INT );
-				$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
-				$columns[] = ( new Integer_Column( 'simple_id' ) )->set_length( 11 )->set_signed( false )->set_type( Column::COLUMN_TYPE_INT );
+					$columns[] = ( new Integer_Column( 'id' ) )->set_length( 11 )->set_signed( false )->set_type( Column::COLUMN_TYPE_INT );
+					$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
+					$columns[] = ( new Integer_Column( 'simple_id' ) )->set_length( 11 )->set_signed( false )->set_type( Column::COLUMN_TYPE_INT );
+					return new Table_Schema( $table_name, $columns );
+				};
 
 				return [
-					static::SCHEMA_VERSION => new Table_Schema( static::table_name( true ), $columns ),
+					static::SCHEMA_VERSION => $callable,
 				];
 			}
 
