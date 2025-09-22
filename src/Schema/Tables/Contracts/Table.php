@@ -127,13 +127,21 @@ abstract class Table implements Table_Interface {
 	 * @throws RuntimeException If the current schema version is not found in the schema history.
 	 */
 	public static function get_current_schema(): Table_Schema_Interface {
+		static $current_schema = null;
+
+		if ( null !== $current_schema ) {
+			return $current_schema;
+		}
+
 		$history = static::get_schema_history();
 
 		if ( empty( $history[ static::SCHEMA_VERSION ] ) ) {
 			throw new RuntimeException( 'The current schema version is not found in the schema history.' );
 		}
 
-		return $history[ static::SCHEMA_VERSION ];
+		$current_schema = $history[ static::SCHEMA_VERSION ]();
+
+		return $current_schema;
 	}
 
 	/**

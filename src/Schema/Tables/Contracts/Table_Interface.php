@@ -60,7 +60,7 @@ interface Table_Interface {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @return array<string, Table_Schema_Interface> The schema history for the table. The key is the version and the value is a Table_Schema_Interface object.
+	 * @return array<string, callable:Table_Schema_Interface> The schema history for the table. The key is the version and the value is a callable that returns a Table_Schema_Interface object.
 	 */
 	public static function get_schema_history(): array;
 
