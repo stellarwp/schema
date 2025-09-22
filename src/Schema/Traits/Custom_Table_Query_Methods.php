@@ -225,6 +225,37 @@ trait Custom_Table_Query_Methods {
 	 * @return array<string> The prepared statements and values.
 	 */
 	protected static function prepare_statements_values( array $entries ): array {
+		$uid_column = static::uid_column();
+		$entries    = array_map(
+			function ( $entry ) use ( $uid_column ) {
+				unset( $entry[ $uid_column ] );
+				return $entry;
+			},
+			$entries
+		);
+
+		$columns = static::get_columns();
+
+		$entries = array_map(
+			function ( $entry ) use ( $columns ) {
+				foreach ( $columns as $column ) {
+					if ( ! isset( $entry[ $column->get_name() ] ) ) {
+						continue;
+					}
+
+					switch ( $column->get_php_type() ) {
+						case Column::PHP_TYPE_JSON:
+							$entry[ $column->get_name() ] = wp_json_encode( $entry[ $column->get_name() ] );
+							break;
+						default:
+							break;
+					}
+				}
+				return $entry;
+			},
+			$entries
+		);
+
 		$database = Config::get_db();
 		$columns          = array_keys( $entries[0] );
 		$prepared_columns = implode(
