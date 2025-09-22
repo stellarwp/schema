@@ -800,7 +800,7 @@ trait Custom_Table_Query_Methods {
 			case Column::PHP_TYPE_BOOL:
 				return (bool) $value;
 			case Column::PHP_TYPE_JSON:
-				return (array) json_decode( $value, true );
+				return is_string( $value ) ? (array) json_decode( $value, true ) : (array) $value;
 			case Column::PHP_TYPE_DATETIME:
 				try {
 					$instance = Config::get_container()->get( DateTimeInterface::class );
