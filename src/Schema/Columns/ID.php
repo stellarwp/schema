@@ -34,13 +34,6 @@ class ID extends Integer_Column {
 	protected bool $auto_increment = true;
 
 	/**
-	 * The name of the column.
-	 *
-	 * @var string
-	 */
-	protected string $name = 'id';
-
-	/**
 	 * Whether the column is a primary key.
 	 *
 	 * @var bool
