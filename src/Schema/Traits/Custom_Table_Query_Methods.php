@@ -132,7 +132,7 @@ trait Custom_Table_Query_Methods {
 
 		$is_update = count( $primary_values ) === count( $primary_columns );
 
-		return $is_update ? static::update_single( $entry ) : static::insert( $entry );
+		return $is_update ? static::update_single( $entry ) : (bool) static::insert( $entry );
 	}
 
 	/**
