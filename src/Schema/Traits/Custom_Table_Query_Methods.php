@@ -773,45 +773,56 @@ trait Custom_Table_Query_Methods {
 
 			$column_php_type = $column_object->get_php_type();
 
-			switch ( $column_php_type ) {
-				case Column::PHP_TYPE_INT:
-					$data[ $column ] = (int) $value;
-					break;
-				case Column::PHP_TYPE_STRING:
-					$data[ $column ] = (string) $value;
-					break;
-				case Column::PHP_TYPE_FLOAT:
-					$data[ $column ] = (float) $value;
-					break;
-				case Column::PHP_TYPE_BOOL:
-					$data[ $column ] = (bool) $value;
-					break;
-				case Column::PHP_TYPE_JSON:
-					$data[ $column ] = (array) json_decode( $value, true );
-					break;
-				case Column::PHP_TYPE_DATETIME:
-					try {
-						$instance = Config::get_container()->get( DateTimeInterface::class );
-					} catch ( Exception $e ) {
-						$instance = DateTime::class;
-					}
-
-					$data[ $column ] = $instance::createFromFormat( 'Y-m-d H:i:s', $value );
-
-					if ( ! $data[ $column ] instanceof DateTimeInterface ) {
-						$data[ $column ] = $instance::createFromFormat( 'Y-m-d', $value );
-					}
-
-					if ( ! $data[ $column ] instanceof DateTimeInterface ) {
-						throw new InvalidArgumentException( "Invalid datetime value format: {$value}." );
-					}
-
-					break;
-				default:
-					throw new InvalidArgumentException( "Unsupported column type: {$column_php_type}." );
-			}
+			$data[ $column ] = static::cast_value_based_on_type( $column_php_type, $value );
 		}
 
 		return $data;
+	}
+
+	/**
+	 * Casts a value based on the type.
+	 *
+	 * @since TBD
+	 *
+	 * @param string $type The type to cast the value to.
+	 * @param mixed  $value The value to cast.
+	 *
+	 * @return mixed The cast value.
+	 */
+	public static function cast_value_based_on_type( string $type, $value ) {
+		switch ( $type ) {
+			case Column::PHP_TYPE_INT:
+				return (int) $value;
+			case Column::PHP_TYPE_STRING:
+				return (string) $value;
+			case Column::PHP_TYPE_FLOAT:
+				return (float) $value;
+			case Column::PHP_TYPE_BOOL:
+				return (bool) $value;
+			case Column::PHP_TYPE_JSON:
+				return (array) json_decode( $value, true );
+			case Column::PHP_TYPE_DATETIME:
+				try {
+					$instance = Config::get_container()->get( DateTimeInterface::class );
+				} catch ( Exception $e ) {
+					$instance = DateTime::class;
+				}
+
+				$value = $instance::createFromFormat( 'Y-m-d H:i:s', $value );
+
+				if ( $value instanceof DateTimeInterface ) {
+					return $value;
+				}
+
+				$value = $instance::createFromFormat( 'Y-m-d', $value );
+
+				if ( ! $value instanceof DateTimeInterface ) {
+					throw new InvalidArgumentException( "Invalid datetime value format: {$value}." );
+				}
+
+				return $value;
+			default:
+				throw new InvalidArgumentException( "Unsupported column type: {$type}." );
+		}
 	}
 }
