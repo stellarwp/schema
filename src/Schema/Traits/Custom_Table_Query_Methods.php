@@ -802,6 +802,10 @@ trait Custom_Table_Query_Methods {
 			case Column::PHP_TYPE_JSON:
 				return is_string( $value ) ? (array) json_decode( $value, true ) : (array) $value;
 			case Column::PHP_TYPE_DATETIME:
+				if ( $value instanceof DateTimeInterface ) {
+					return $value;
+				}
+
 				try {
 					$instance = Config::get_container()->get( DateTimeInterface::class );
 				} catch ( Exception $e ) {
