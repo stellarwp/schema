@@ -266,11 +266,20 @@ trait Custom_Table_Query_Methods {
 				$columns
 			)
 		);
-		$prepared_values  = implode(
-			', ',
+
+		$prepared_values = [];
+		foreach ( $entries as $row_index => $entry ) {
+			$prepared_values[ $row_index ] = [];
+			foreach ( $entry as $column => $value ) {
+				[ $prepared_value, $placeholder ] = static::prepare_value_for_query( $column, $value );
+				$prepared_values[ $row_index ][] = $database::prepare( $placeholder, $prepared_value );
+			}
+		}
+
+		$prepared_values = implode( ', ',
 			array_map(
-				static fn ( array $entry ) => '(' . implode( ', ', array_map( static fn( $e ) => $database::prepare( '%s', $e instanceof DateTimeInterface ? $e->format( 'Y-m-d H:i:s' ) : $e ), $entry ) ) . ')',
-				$entries
+				static fn ( array $entry ) => '(' . implode( ', ', $entry ) . ')',
+				$prepared_values
 			)
 		);
 
