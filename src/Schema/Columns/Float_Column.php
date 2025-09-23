@@ -60,7 +60,7 @@ class Float_Column extends Column implements Lengthable, Signable, Precisionable
 	 *
 	 * @var string
 	 */
-	protected string $type = Column_Types::FLOAT;
+	protected string $type = Column_Types::DECIMAL;
 
 	/**
 	 * The PHP type of the column.
