@@ -742,6 +742,10 @@ trait Custom_Table_Query_Methods {
 					( $value instanceof DateTimeInterface ? $value->format( 'Y-m-d H:i:s' ) : (string) $value );
 				$placeholder = '%s';
 				break;
+			case PHP_Types::JSON:
+				$value       = is_string( $value ) ? $value : wp_json_encode( $value );
+				$placeholder = '%s';
+				break;
 			case PHP_Types::FLOAT:
 				$value       = is_array( $value ) ? array_map( fn( $v ) => (float) $v, $value ) : (float) $value;
 				$placeholder = '%f';
