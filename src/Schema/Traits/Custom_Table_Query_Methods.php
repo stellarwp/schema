@@ -271,7 +271,7 @@ trait Custom_Table_Query_Methods {
 		foreach ( $entries as $row_index => $entry ) {
 			$prepared_values[ $row_index ] = [];
 			foreach ( $entry as $column => $value ) {
-				[ $prepared_value, $placeholder ] = static::prepare_value_for_query( $column, $value );
+				[ $prepared_value, $placeholder ] = self::prepare_value_for_query( $column, $value );
 				$prepared_values[ $row_index ][] = $database::prepare( $placeholder, $prepared_value );
 			}
 		}
