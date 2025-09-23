@@ -17,11 +17,11 @@ use StellarWP\Schema\Columns\Datetime_Column;
 use StellarWP\Schema\Columns\Created_At;
 use StellarWP\Schema\Columns\Updated_At;
 use StellarWP\Schema\Columns\Last_Changed;
-use StellarWP\Schema\Columns\Contracts\Column;
 use StellarWP\Schema\Indexes\Classic_Index;
 use StellarWP\Schema\Indexes\Unique_Key;
 use DateTime;
 use StellarWP\Schema\Columns\Column_Types;
+use StellarWP\Schema\Columns\PHP_Types;
 
 class ComplexTableTest extends SchemaTestCase {
 	/**
