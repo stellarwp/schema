@@ -16,6 +16,8 @@ use StellarWP\Schema\Columns\Contracts\Lengthable;
 use StellarWP\Schema\Columns\Contracts\Signable;
 use StellarWP\Schema\Columns\Contracts\Precisionable;
 use StellarWP\Schema\Columns\Contracts\Uniquable;
+use StellarWP\Schema\Columns\PHP_Types;
+use StellarWP\Schema\Columns\Column_Types;
 
 /**
  * Class Float_Column
@@ -58,14 +60,14 @@ class Float_Column extends Column implements Lengthable, Signable, Precisionable
 	 *
 	 * @var string
 	 */
-	protected string $type = self::COLUMN_TYPE_FLOAT;
+	protected string $type = Column_Types::FLOAT;
 
 	/**
 	 * The PHP type of the column.
 	 *
 	 * @var string
 	 */
-	protected string $php_type = self::PHP_TYPE_FLOAT;
+	protected string $php_type = PHP_Types::FLOAT;
 
 	/**
 	 * Get the precision of the column.
@@ -136,7 +138,7 @@ class Float_Column extends Column implements Lengthable, Signable, Precisionable
 	 * @return string[] The supported column types.
 	 */
 	protected function get_supported_column_types(): array {
-		return self::SUPPORTED_FLOAT_COLUMN_TYPES;
+		return Column_Types::SUPPORTED_FLOAT;
 	}
 
 	/**
@@ -146,7 +148,7 @@ class Float_Column extends Column implements Lengthable, Signable, Precisionable
 	 */
 	protected function get_supported_php_types(): array {
 		return [
-			self::PHP_TYPE_FLOAT,
+			PHP_Types::FLOAT,
 		];
 	}
 }

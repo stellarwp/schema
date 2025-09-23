@@ -12,6 +12,8 @@ declare( strict_types=1 );
 namespace StellarWP\Schema\Columns\Contracts;
 
 use StellarWP\Schema\Traits\Indexable as Indexable_Trait;
+use StellarWP\Schema\Columns\PHP_Types;
+use StellarWP\Schema\Columns\Column_Types;
 use InvalidArgumentException;
 
 /**
@@ -279,7 +281,7 @@ abstract class Column implements Column_Interface, Indexable {
 
 		if ( $this->get_default() ) {
 			$default = $this->get_default();
-			$sql .= ' DEFAULT ' . ( in_array( $default, self::SQL_RESERVED_DEFAULTS, true ) || in_array( $this->get_type(), [ self::PHP_TYPE_INT, self::PHP_TYPE_BOOL, self::PHP_TYPE_FLOAT ], true ) ? $default : "'{$default}'" );
+			$sql .= ' DEFAULT ' . ( in_array( $default, self::SQL_RESERVED_DEFAULTS, true ) || in_array( $this->get_type(), [ PHP_Types::INT, PHP_Types::BOOL, PHP_Types::FLOAT ], true ) ? $default : "'{$default}'" );
 		}
 
 		if ( $this->get_on_update() ) {
@@ -308,7 +310,7 @@ abstract class Column implements Column_Interface, Indexable {
 	 * @return string[] The supported column types.
 	 */
 	protected function get_supported_column_types(): array {
-		return self::SUPPORTED_COLUMN_TYPES;
+		return Column_Types::SUPPORTED;
 	}
 
 	/**
@@ -317,6 +319,6 @@ abstract class Column implements Column_Interface, Indexable {
 	 * @return string[] The supported PHP types.
 	 */
 	protected function get_supported_php_types(): array {
-		return self::SUPPORTED_PHP_TYPES;
+		return PHP_Types::SUPPORTED;
 	}
 }

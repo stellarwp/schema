@@ -12,6 +12,8 @@ declare( strict_types=1 );
 namespace StellarWP\Schema\Columns;
 
 use StellarWP\Schema\Columns\Contracts\Column;
+use StellarWP\Schema\Columns\PHP_Types;
+use StellarWP\Schema\Columns\Column_Types;
 use InvalidArgumentException;
 
 /**
@@ -27,14 +29,14 @@ class Text_Column extends Column {
 	 *
 	 * @var string
 	 */
-	protected string $type = self::COLUMN_TYPE_TEXT;
+	protected string $type = Column_Types::TEXT;
 
 	/**
 	 * The PHP type of the column.
 	 *
 	 * @var string
 	 */
-	protected string $php_type = self::PHP_TYPE_STRING;
+	protected string $php_type = PHP_Types::STRING;
 
 	/**
 	 * Set the default value of the column.
@@ -62,7 +64,7 @@ class Text_Column extends Column {
 	 * @return string[] The supported column types.
 	 */
 	protected function get_supported_column_types(): array {
-		return self::SUPPORTED_TEXT_COLUMN_TYPES;
+		return Column_Types::SUPPORTED_TEXT;
 	}
 
 	/**
@@ -71,6 +73,9 @@ class Text_Column extends Column {
 	 * @return string[] The supported PHP types.
 	 */
 	protected function get_supported_php_types(): array {
-		return [self::PHP_TYPE_STRING, self::PHP_TYPE_JSON];
+		return [
+			PHP_Types::STRING,
+			PHP_Types::JSON,
+		];
 	}
 }

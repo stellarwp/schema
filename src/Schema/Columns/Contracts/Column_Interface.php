@@ -20,7 +20,7 @@ use InvalidArgumentException;
  *
  * @package StellarWP\Schema\Columns\Contracts
  */
-interface Column_Interface extends PHP_Types, Column_Types {
+interface Column_Interface {
 	/**
 	 * Get the type of the column.
 	 *

@@ -1,26 +1,26 @@
 <?php
 /**
- * The interface for the PHP types.
+ * The class for the PHP types.
  *
  * @since TBD
  *
- * @package StellarWP\Schema\Columns\Contracts
+ * @package StellarWP\Schema\Columns
  */
 
 declare( strict_types=1 );
 
-namespace StellarWP\Schema\Columns\Contracts;
+namespace StellarWP\Schema\Columns;
 
 use DateTimeInterface;
 
 /**
- * Interface PHP_Types
+ * Class PHP_Types
  *
  * @since TBD
  *
- * @package StellarWP\Schema\Columns\Contracts
+ * @package StellarWP\Schema\Columns
  */
-interface PHP_Types {
+final class PHP_Types {
 	/**
 	 * The PHP type for an integer.
 	 *
@@ -28,7 +28,7 @@ interface PHP_Types {
 	 *
 	 * @var string
 	 */
-	public const PHP_TYPE_INT = 'int';
+	public const INT = 'int';
 
 	/**
 	 * The PHP type for a string.
@@ -37,7 +37,7 @@ interface PHP_Types {
 	 *
 	 * @var string
 	 */
-	public const PHP_TYPE_STRING = 'string';
+	public const STRING = 'string';
 
 	/**
 	 * The PHP type for a json.
@@ -46,7 +46,7 @@ interface PHP_Types {
 	 *
 	 * @var string
 	 */
-	public const PHP_TYPE_JSON = 'json';
+	public const JSON = 'json';
 
 	/**
 	 * The PHP type for a float.
@@ -55,7 +55,7 @@ interface PHP_Types {
 	 *
 	 * @var string
 	 */
-	public const PHP_TYPE_FLOAT = 'float';
+	public const FLOAT = 'float';
 
 	/**
 	 * The PHP type for a boolean.
@@ -64,7 +64,7 @@ interface PHP_Types {
 	 *
 	 * @var string
 	 */
-	public const PHP_TYPE_BOOL = 'bool';
+	public const BOOL = 'bool';
 
 	/**
 	 * The PHP type for a datetime.
@@ -73,7 +73,7 @@ interface PHP_Types {
 	 *
 	 * @var string
 	 */
-	public const PHP_TYPE_DATETIME = DateTimeInterface::class;
+	public const DATETIME = DateTimeInterface::class;
 
 	/**
 	 * The PHP type for a datetime.
@@ -82,12 +82,12 @@ interface PHP_Types {
 	 *
 	 * @var string[]
 	 */
-	public const SUPPORTED_PHP_TYPES = [
-		self::PHP_TYPE_INT,
-		self::PHP_TYPE_STRING,
-		self::PHP_TYPE_JSON,
-		self::PHP_TYPE_FLOAT,
-		self::PHP_TYPE_BOOL,
-		self::PHP_TYPE_DATETIME,
+	public const SUPPORTED = [
+		self::INT,
+		self::STRING,
+		self::JSON,
+		self::FLOAT,
+		self::BOOL,
+		self::DATETIME,
 	];
 }

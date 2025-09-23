@@ -17,6 +17,7 @@ use Exception;
 use Generator;
 use InvalidArgumentException;
 use StellarWP\Schema\Columns\Contracts\Column;
+use StellarWP\Schema\Columns\PHP_Types;
 use StellarWP\Schema\Config;
 
 /**
@@ -244,7 +245,7 @@ trait Custom_Table_Query_Methods {
 					}
 
 					switch ( $column->get_php_type() ) {
-						case Column::PHP_TYPE_JSON:
+						case PHP_Types::JSON:
 							$entry[ $column->get_name() ] = wp_json_encode( $entry[ $column->get_name() ] );
 							break;
 						default:
@@ -720,19 +721,19 @@ trait Custom_Table_Query_Methods {
 		$column_type = $column->get_php_type();
 
 		switch ( $column->get_php_type() ) {
-			case Column::PHP_TYPE_INT:
-			case Column::PHP_TYPE_BOOL:
+			case PHP_Types::INT:
+			case PHP_Types::BOOL:
 				$value       = is_array( $value ) ? array_map( fn( $v ) => (int) $v, $value ) : (int) $value;
 				$placeholder = '%d';
 				break;
-			case Column::PHP_TYPE_STRING:
-			case Column::PHP_TYPE_DATETIME:
+			case PHP_Types::STRING:
+			case PHP_Types::DATETIME:
 				$value       = is_array( $value ) ?
 					array_map( fn( $v ) => $v instanceof DateTimeInterface ? $v->format( 'Y-m-d H:i:s' ) : (string) $v, $value ) :
 					( $value instanceof DateTimeInterface ? $value->format( 'Y-m-d H:i:s' ) : (string) $value );
 				$placeholder = '%s';
 				break;
-			case Column::PHP_TYPE_FLOAT:
+			case PHP_Types::FLOAT:
 				$value       = is_array( $value ) ? array_map( fn( $v ) => (float) $v, $value ) : (float) $value;
 				$placeholder = '%f';
 				break;
@@ -822,17 +823,17 @@ trait Custom_Table_Query_Methods {
 	 */
 	public static function cast_value_based_on_type( string $type, $value ) {
 		switch ( $type ) {
-			case Column::PHP_TYPE_INT:
+			case PHP_Types::INT:
 				return (int) $value;
-			case Column::PHP_TYPE_STRING:
+			case PHP_Types::STRING:
 				return (string) $value;
-			case Column::PHP_TYPE_FLOAT:
+			case PHP_Types::FLOAT:
 				return (float) $value;
-			case Column::PHP_TYPE_BOOL:
+			case PHP_Types::BOOL:
 				return (bool) $value;
-			case Column::PHP_TYPE_JSON:
+			case PHP_Types::JSON:
 				return is_string( $value ) ? (array) json_decode( $value, true ) : (array) $value;
-			case Column::PHP_TYPE_DATETIME:
+			case PHP_Types::DATETIME:
 				if ( $value instanceof DateTimeInterface ) {
 					return $value;
 				}

@@ -16,6 +16,8 @@ use StellarWP\Schema\Columns\Contracts\Lengthable;
 use StellarWP\Schema\Columns\Contracts\Signable;
 use StellarWP\Schema\Columns\Contracts\Auto_Incrementable;
 use StellarWP\Schema\Columns\Contracts\Uniquable;
+use StellarWP\Schema\Columns\PHP_Types;
+use StellarWP\Schema\Columns\Column_Types;
 
 /**
  * Class Integer_Column
@@ -58,14 +60,14 @@ class Integer_Column extends Column implements Lengthable, Signable, Auto_Increm
 	 *
 	 * @var string
 	 */
-	protected string $type = self::COLUMN_TYPE_BIGINT;
+	protected string $type = Column_Types::BIGINT;
 
 	/**
 	 * The PHP type of the column.
 	 *
 	 * @var string
 	 */
-	protected string $php_type = self::PHP_TYPE_INT;
+	protected string $php_type = PHP_Types::INT;
 
 	/**
 	 * Get the auto increment of the column.
@@ -137,7 +139,7 @@ class Integer_Column extends Column implements Lengthable, Signable, Auto_Increm
 	 * @return string[] The supported column types.
 	 */
 	protected function get_supported_column_types(): array {
-		return self::SUPPORTED_INTEGER_COLUMN_TYPES;
+		return Column_Types::SUPPORTED_INTEGER;
 	}
 
 	/**
@@ -147,8 +149,8 @@ class Integer_Column extends Column implements Lengthable, Signable, Auto_Increm
 	 */
 	protected function get_supported_php_types(): array {
 		return [
-			self::PHP_TYPE_INT,
-			self::PHP_TYPE_BOOL,
+			PHP_Types::INT,
+			PHP_Types::BOOL,
 		];
 	}
 }

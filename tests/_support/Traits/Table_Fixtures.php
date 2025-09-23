@@ -12,6 +12,7 @@ use StellarWP\Schema\Columns\Contracts\Column;
 use StellarWP\Schema\Columns\String_Column;
 use StellarWP\Schema\Collections\Column_Collection;
 use StellarWP\Schema\Columns\Integer_Column;
+use StellarWP\Schema\Columns\Column_Types;
 
 trait Table_Fixtures {
 	private function assert_custom_tables_exist() {
@@ -65,7 +66,7 @@ trait Table_Fixtures {
 				$callable = function() use ( $table_name ) {
 					$columns = new Column_Collection();
 
-					$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
+					$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column_Types::INT );
 					$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
 					$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 )->set_is_index( true );
 					$columns[] = ( new String_Column( 'something' ) )->set_length( 25 )->set_is_index( true );
@@ -102,7 +103,7 @@ trait Table_Fixtures {
 				$callable = function() use ( $table_name ) {
 					$columns = new Column_Collection();
 
-					$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
+					$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column_Types::INT );
 					$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
 					$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 )->set_is_index( true );
 					return new Table_Schema( $table_name, $columns );
@@ -137,7 +138,7 @@ trait Table_Fixtures {
 				$callable = function() use ( $table_name ) {
 					$columns = new Column_Collection();
 
-					$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column::COLUMN_TYPE_INT );
+					$columns[] = ( new ID( 'id' ) )->set_length( 11 )->set_type( Column_Types::INT );
 					$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
 					$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 )->set_is_index( true );
 					return new Table_Schema( $table_name, $columns );
@@ -170,7 +171,7 @@ trait Table_Fixtures {
 				$callable = function() use ( $table_name ) {
 					$columns = new Column_Collection();
 
-					$columns[] = ( new Integer_Column( 'id' ) )->set_length( 11 )->set_signed( false )->set_type( Column::COLUMN_TYPE_INT );
+					$columns[] = ( new Integer_Column( 'id' ) )->set_length( 11 )->set_signed( false )->set_type( Column_Types::INT );
 					$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
 					$columns[] = ( new String_Column( 'slug' ) )->set_length( 25 );
 					return new Table_Schema( $table_name, $columns );
@@ -202,9 +203,9 @@ trait Table_Fixtures {
 				$callable = function() use ( $table_name ) {
 					$columns = new Column_Collection();
 
-					$columns[] = ( new Integer_Column( 'id' ) )->set_length( 11 )->set_signed( false )->set_type( Column::COLUMN_TYPE_INT );
+					$columns[] = ( new Integer_Column( 'id' ) )->set_length( 11 )->set_signed( false )->set_type( Column_Types::INT );
 					$columns[] = ( new String_Column( 'name' ) )->set_length( 25 );
-					$columns[] = ( new Integer_Column( 'simple_id' ) )->set_length( 11 )->set_signed( false )->set_type( Column::COLUMN_TYPE_INT );
+					$columns[] = ( new Integer_Column( 'simple_id' ) )->set_length( 11 )->set_signed( false )->set_type( Column_Types::INT );
 					return new Table_Schema( $table_name, $columns );
 				};
 

@@ -14,6 +14,8 @@ namespace StellarWP\Schema\Columns;
 use StellarWP\Schema\Columns\Contracts\Column;
 use StellarWP\Schema\Columns\Contracts\Lengthable;
 use StellarWP\Schema\Columns\Contracts\Uniquable;
+use StellarWP\Schema\Columns\PHP_Types;
+use StellarWP\Schema\Columns\Column_Types;
 
 /**
  * Class String_Column
@@ -42,14 +44,14 @@ class String_Column extends Column implements Lengthable, Uniquable {
 	 *
 	 * @var string
 	 */
-	protected string $type = self::COLUMN_TYPE_VARCHAR;
+	protected string $type = Column_Types::VARCHAR;
 
 	/**
 	 * The PHP type of the column.
 	 *
 	 * @var string
 	 */
-	protected string $php_type = self::PHP_TYPE_STRING;
+	protected string $php_type = PHP_Types::STRING;
 
 	/**
 	 * Get the length of the column.
@@ -78,7 +80,7 @@ class String_Column extends Column implements Lengthable, Uniquable {
 	 * @return string[] The supported column types.
 	 */
 	protected function get_supported_column_types(): array {
-		return self::SUPPORTED_STRING_COLUMN_TYPES;
+		return Column_Types::SUPPORTED_STRING;
 	}
 
 	/**
@@ -88,8 +90,8 @@ class String_Column extends Column implements Lengthable, Uniquable {
 	 */
 	protected function get_supported_php_types(): array {
 		return [
-			self::PHP_TYPE_STRING,
-			self::PHP_TYPE_JSON,
+			PHP_Types::STRING,
+			PHP_Types::JSON,
 		];
 	}
 }

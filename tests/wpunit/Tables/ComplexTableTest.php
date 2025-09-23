@@ -21,6 +21,7 @@ use StellarWP\Schema\Columns\Contracts\Column;
 use StellarWP\Schema\Indexes\Classic_Index;
 use StellarWP\Schema\Indexes\Unique_Key;
 use DateTime;
+use StellarWP\Schema\Columns\Column_Types;
 
 class ComplexTableTest extends SchemaTestCase {
 	/**
@@ -52,107 +53,107 @@ class ComplexTableTest extends SchemaTestCase {
 					// Primary key with auto increment
 					$columns[] = ( new ID( 'id' ) )
 						->set_length( 11 )
-						->set_type( Column::COLUMN_TYPE_BIGINT )
+						->set_type( Column_Types::BIGINT )
 						->set_auto_increment( true );
 
 					// Integer types
 					$columns[] = ( new Integer_Column( 'tinyint_col' ) )
-						->set_type( Column::COLUMN_TYPE_TINYINT )
+						->set_type( Column_Types::TINYINT )
 						->set_length( 3 )
 						->set_signed( false )
 						->set_default( 0 );
 
 					$columns[] = ( new Integer_Column( 'smallint_col' ) )
-						->set_type( Column::COLUMN_TYPE_SMALLINT )
+						->set_type( Column_Types::SMALLINT )
 						->set_length( 5 )
 						->set_signed( true )
 						->set_nullable( true );
 
 					$columns[] = ( new Integer_Column( 'mediumint_col' ) )
-						->set_type( Column::COLUMN_TYPE_MEDIUMINT )
+						->set_type( Column_Types::MEDIUMINT )
 						->set_length( 8 )
 						->set_default( 100 );
 
 					$columns[] = ( new Integer_Column( 'int_col' ) )
-						->set_type( Column::COLUMN_TYPE_INT )
+						->set_type( Column_Types::INT )
 						->set_length( 11 )
 						->set_signed( true )
 						->set_is_index( true );
 
 					$columns[] = ( new Integer_Column( 'bigint_col' ) )
-						->set_type( Column::COLUMN_TYPE_BIGINT )
+						->set_type( Column_Types::BIGINT )
 						->set_length( 20 )
 						->set_signed( false );
 
 					// Float types
 					// For FLOAT(10,2) - 10 total digits, 2 decimal places
 					$columns[] = ( new Float_Column( 'float_col' ) )
-						->set_type( Column::COLUMN_TYPE_FLOAT )
+						->set_type( Column_Types::FLOAT )
 						->set_length( 10 )
 						->set_precision( 2 )
 						->set_default( 0.0 );
 
 					// For DECIMAL(15,4) - 15 total digits, 4 decimal places
 					$columns[] = ( new Float_Column( 'decimal_col' ) )
-						->set_type( Column::COLUMN_TYPE_DECIMAL )
+						->set_type( Column_Types::DECIMAL )
 						->set_length( 15 )
 						->set_precision( 4 )
 						->set_nullable( true );
 
 					// For DOUBLE(22,8) - 22 total digits, 8 decimal places
 					$columns[] = ( new Float_Column( 'double_col' ) )
-						->set_type( Column::COLUMN_TYPE_DOUBLE )
+						->set_type( Column_Types::DOUBLE )
 						->set_length( 22 )
 						->set_precision( 8 );
 
 					// String types
 					$columns[] = ( new String_Column( 'char_col' ) )
-						->set_type( Column::COLUMN_TYPE_CHAR )
+						->set_type( Column_Types::CHAR )
 						->set_length( 10 )
 						->set_default( 'DEFAULT' );
 
 					$columns[] = ( new String_Column( 'varchar_col' ) )
-						->set_type( Column::COLUMN_TYPE_VARCHAR )
+						->set_type( Column_Types::VARCHAR )
 						->set_length( 255 )
 						->set_searchable( true )
 						->set_is_unique( true );
 
 					// Text types
 					$columns[] = ( new Text_Column( 'tinytext_col' ) )
-						->set_type( Column::COLUMN_TYPE_TINYTEXT );
+						->set_type( Column_Types::TINYTEXT );
 
 					$columns[] = ( new Text_Column( 'text_col' ) )
-						->set_type( Column::COLUMN_TYPE_TEXT )
+						->set_type( Column_Types::TEXT )
 						->set_nullable( true );
 
 					$columns[] = ( new Text_Column( 'mediumtext_col' ) )
-						->set_type( Column::COLUMN_TYPE_MEDIUMTEXT );
+						->set_type( Column_Types::MEDIUMTEXT );
 
 					$columns[] = ( new Text_Column( 'longtext_col' ) )
-						->set_type( Column::COLUMN_TYPE_LONGTEXT );
+						->set_type( Column_Types::LONGTEXT );
 
 					// Datetime types
 					$columns[] = ( new Datetime_Column( 'date_col' ) )
-						->set_type( Column::COLUMN_TYPE_DATE )
+						->set_type( Column_Types::DATE )
 						->set_nullable( true );
 
 					$columns[] = ( new Datetime_Column( 'datetime_col' ) )
-						->set_type( Column::COLUMN_TYPE_DATETIME )
+						->set_type( Column_Types::DATETIME )
 						->set_default( '0000-00-00 00:00:00' );
 
 					$columns[] = new Last_Changed( 'last_changed' );
 
 					// Boolean column
 					$columns[] = ( new Integer_Column( 'is_active' ) )
-						->set_type( Column::COLUMN_TYPE_TINYINT )
+						->set_type( Column_Types::TINYINT )
 						->set_length( 1 )
 						->set_default( 1 )
-						->set_php_type( Column::PHP_TYPE_BOOL );
+						->set_php_type( PHP_Types::BOOL );
 
 					// JSON column (stored as text)
 					$columns[] = ( new Text_Column( 'json_data' ) )
-						->set_type( Column::COLUMN_TYPE_TEXT )
-						->set_php_type( Column::PHP_TYPE_JSON );
+						->set_type( Column_Types::TEXT )
+						->set_php_type( PHP_Types::JSON );
 
 					return new Table_Schema( $table_name, $columns );
 				};
@@ -186,7 +187,7 @@ class ComplexTableTest extends SchemaTestCase {
 					// Primary key
 					$columns[] = ( new ID( 'id' ) )
 						->set_length( 11 )
-						->set_type( Column::COLUMN_TYPE_INT )
+						->set_type( Column_Types::INT )
 						->set_auto_increment( true );
 
 					// Columns for various indexes
@@ -199,7 +200,7 @@ class ComplexTableTest extends SchemaTestCase {
 						->set_is_index( true );
 
 					$columns[] = ( new Integer_Column( 'user_id' ) )
-						->set_type( Column::COLUMN_TYPE_INT )
+						->set_type( Column_Types::INT )
 						->set_length( 11 )
 						->set_is_index( true );
 
@@ -210,21 +211,21 @@ class ComplexTableTest extends SchemaTestCase {
 						->set_length( 100 );
 
 					$columns[] = ( new Text_Column( 'searchable_content' ) )
-						->set_type( Column::COLUMN_TYPE_TEXT );
+						->set_type( Column_Types::TEXT );
 
 					$columns[] = ( new String_Column( 'title' ) )
 						->set_length( 255 );
 
 					$columns[] = ( new Text_Column( 'description' ) )
-						->set_type( Column::COLUMN_TYPE_TEXT );
+						->set_type( Column_Types::TEXT );
 
 					$columns[] = ( new Integer_Column( 'status' ) )
-						->set_type( Column::COLUMN_TYPE_TINYINT )
+						->set_type( Column_Types::TINYINT )
 						->set_length( 1 )
 						->set_default( 1 );
 
 					$columns[] = ( new Datetime_Column( 'published_at' ) )
-						->set_type( Column::COLUMN_TYPE_DATETIME );
+						->set_type( Column_Types::DATETIME );
 
 					// Define additional indexes
 					$indexes = new Index_Collection();
@@ -272,22 +273,22 @@ class ComplexTableTest extends SchemaTestCase {
 
 					$columns[] = ( new ID( 'id' ) )
 						->set_length( 11 )
-						->set_type( Column::COLUMN_TYPE_INT );
+						->set_type( Column_Types::INT );
 
 					$columns[] = ( new String_Column( 'title' ) )
 						->set_length( 255 );
 
 					$columns[] = ( new Datetime_Column( 'timestamp_col' ) )
-						->set_type( Column::COLUMN_TYPE_TIMESTAMP )
+						->set_type( Column_Types::TIMESTAMP )
 						->set_default( 'CURRENT_TIMESTAMP' )
 						->set_on_update( 'CURRENT_TIMESTAMP' );
 
 					$columns[] = ( new Datetime_Column( 'created_date' ) )
-						->set_type( Column::COLUMN_TYPE_DATETIME )
+						->set_type( Column_Types::DATETIME )
 						->set_default( '0000-00-00 00:00:00' );
 
 					$columns[] = ( new Datetime_Column( 'updated_date' ) )
-						->set_type( Column::COLUMN_TYPE_DATETIME )
+						->set_type( Column_Types::DATETIME )
 						->set_nullable( true )
 						->set_default( 'NULL' );
 					return new Table_Schema( $table_name, $columns );
@@ -321,7 +322,7 @@ class ComplexTableTest extends SchemaTestCase {
 
 						$columns[] = ( new ID( 'id' ) )
 							->set_length( 11 )
-							->set_type( Column::COLUMN_TYPE_INT )
+							->set_type( Column_Types::INT )
 							->set_auto_increment( true );
 
 						$columns[] = ( new String_Column( 'name' ) )
@@ -332,7 +333,7 @@ class ComplexTableTest extends SchemaTestCase {
 
 						// Regular datetime for comparison
 						$columns[] = ( new Datetime_Column( 'other_date' ) )
-							->set_type( Column::COLUMN_TYPE_DATETIME )
+							->set_type( Column_Types::DATETIME )
 							->set_nullable( true );
 
 						return new Table_Schema( $table_name, $columns );
@@ -366,7 +367,7 @@ class ComplexTableTest extends SchemaTestCase {
 
 					$columns[] = ( new ID( 'id' ) )
 						->set_length( 11 )
-						->set_type( Column::COLUMN_TYPE_INT );
+						->set_type( Column_Types::INT );
 
 					$columns[] = ( new String_Column( 'content' ) )
 						->set_length( 255 );
