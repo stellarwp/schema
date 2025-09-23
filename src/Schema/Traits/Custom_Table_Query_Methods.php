@@ -169,7 +169,7 @@ trait Custom_Table_Query_Methods {
 	 * @return bool Whether the delete was successful.
 	 */
 	public static function delete( int $uid, string $column = '' ): bool {
-		return static::delete_many( [ $uid ], $column );
+		return (bool) static::delete_many( [ $uid ], $column );
 	}
 
 	/**
