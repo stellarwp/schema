@@ -2,7 +2,7 @@
 /**
  * Provides query methods common to all custom tables.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Traits;
  */
@@ -23,7 +23,7 @@ use StellarWP\Schema\Config;
 /**
  * Trait Custom_Table_Query_Methods.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Traits;
  */
@@ -76,7 +76,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Fetches all the rows from the table using a batched query.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @param int    $batch_size   The number of rows to fetch per batch.
 	 * @param string $where_clause The optional WHERE clause to use.
@@ -348,7 +348,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Updates multiple rows into the table.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @param array<mixed> $entries The entries to update.
 	 *
@@ -403,7 +403,7 @@ trait Custom_Table_Query_Methods {
 	 *
 	 * Also supports joining another table.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @param array  $args                      The query arguments.
 	 * @param int    $per_page                  The number of items to display per page.
@@ -453,7 +453,7 @@ trait Custom_Table_Query_Methods {
 		/**
 		 * Fires before the results of the query are fetched.
 		 *
-		 * @since TBD
+		 * @since 3.0.0
 		 *
 		 * @param array<string,mixed> $args  The query arguments.
 		 * @param class-string        $class The class name.
@@ -477,7 +477,7 @@ trait Custom_Table_Query_Methods {
 		/**
 		 * Fires after the results of the query are fetched.
 		 *
-		 * @since TBD
+		 * @since 3.0.0
 		 *
 		 * @param array<mixed>       $results The results of the query.
 		 * @param array<string,mixed> $args  The query arguments.
@@ -488,7 +488,7 @@ trait Custom_Table_Query_Methods {
 		/**
 		 * Filters the results of the query.
 		 *
-		 * @since TBD
+		 * @since 3.0.0
 		 *
 		 * @param array<mixed>       $results The results of the query.
 		 * @param array<string,mixed> $args  The query arguments.
@@ -500,7 +500,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Builds a WHERE clause from the provided arguments.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @param array<string,mixed> $args   The query arguments.
 	 *
@@ -584,7 +584,7 @@ trait Custom_Table_Query_Methods {
 		/**
 		 * Filters the WHERE clause.
 		 *
-		 * @since TBD
+		 * @since 3.0.0
 		 *
 		 * @param array<string>       $where The WHERE clause parts.
 		 * @param array<string,mixed> $args  The query arguments.
@@ -602,7 +602,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Gets the JOIN parts of the query.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @param string $join_table                The table to join.
 	 * @param string $join_condition            The condition to join on.
@@ -651,7 +651,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Gets all models by a column.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @param string $column   The column to get the models by.
 	 * @param mixed  $value    The value to get the models by.
@@ -683,7 +683,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Gets the first model by a column.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @param string $column The column to get the model by.
 	 * @param mixed  $value  The value to get the model by.
@@ -708,7 +708,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Prepares a value for a query.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @param string $column   The column to prepare the value for.
 	 * @param mixed  $value    The value to prepare.
@@ -760,7 +760,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Gets a model by its ID.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @param int|string $id The ID.
 	 *
@@ -773,7 +773,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Gets the operators supported by the table.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @return array<string, string> The operators supported by the table.
 	 */
@@ -793,7 +793,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Amends the value types of the data.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @param array<string, mixed> $data The data.
 	 *
@@ -827,7 +827,7 @@ trait Custom_Table_Query_Methods {
 	/**
 	 * Casts a value based on the type.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @param string $type The type to cast the value to.
 	 * @param mixed  $value The value to cast.

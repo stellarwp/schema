@@ -2,7 +2,7 @@
 /**
  * The interface for the column collection.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Collections
  */
@@ -17,7 +17,7 @@ use StellarWP\Schema\Columns\Contracts\Indexable;
 /**
  * Class Column_Collection
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Collections
  */
@@ -96,7 +96,7 @@ class Column_Collection extends Collection {
 	/**
 	 * Gets the names from the collection.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @return array<string>
 	 */
@@ -112,7 +112,7 @@ class Column_Collection extends Collection {
 	/**
 	 * Gets the indexes from the collection.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @return array<Column>
 	 */

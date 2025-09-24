@@ -2,7 +2,7 @@
 /**
  * The class for the PHP types.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns
  */
@@ -16,7 +16,7 @@ use DateTimeInterface;
 /**
  * Class PHP_Types
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns
  */
@@ -24,7 +24,7 @@ final class PHP_Types {
 	/**
 	 * The PHP type for an integer.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -33,7 +33,7 @@ final class PHP_Types {
 	/**
 	 * The PHP type for a string.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -42,7 +42,7 @@ final class PHP_Types {
 	/**
 	 * The PHP type for a json.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -51,7 +51,7 @@ final class PHP_Types {
 	/**
 	 * The PHP type for a float.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -60,7 +60,7 @@ final class PHP_Types {
 	/**
 	 * The PHP type for a boolean.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -69,7 +69,7 @@ final class PHP_Types {
 	/**
 	 * The PHP type for a datetime.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -78,7 +78,7 @@ final class PHP_Types {
 	/**
 	 * The PHP type for a datetime.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string[]
 	 */

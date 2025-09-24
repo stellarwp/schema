@@ -2,7 +2,7 @@
 /**
  * The interface for the primarable column.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns\Contracts
  */
@@ -14,7 +14,7 @@ namespace StellarWP\Schema\Columns\Contracts;
 /**
  * Interface Primarable
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns\Contracts
  */

@@ -2,7 +2,7 @@
 /**
  * The interface for the column.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns\Contracts
  */
@@ -16,7 +16,7 @@ use InvalidArgumentException;
 /**
  * Interface Column_Interface
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns\Contracts
  */

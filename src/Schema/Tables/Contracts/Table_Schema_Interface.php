@@ -2,7 +2,7 @@
 /**
  * The interface for the table schema.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Tables\Contracts
  */
@@ -18,7 +18,7 @@ use StellarWP\Schema\Indexes\Primary_Key;
 /**
  * Interface Table_Schema_Interface
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Tables\Contracts
  */

@@ -2,7 +2,7 @@
 /**
  * The class for the unique key.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Indexes
  */
@@ -16,7 +16,7 @@ use StellarWP\Schema\Indexes\Contracts\Abstract_Index;
 /**
  * Class Unique_Key
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Indexes
  */

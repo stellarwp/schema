@@ -2,7 +2,7 @@
 /**
  * The trait for the indexable column.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Traits
  */
@@ -17,7 +17,7 @@ use InvalidArgumentException;
 /**
  * Trait Indexable
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Traits
  */

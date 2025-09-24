@@ -2,7 +2,7 @@
 /**
  * The interface for the created at column.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns
  */
@@ -16,7 +16,7 @@ use StellarWP\Schema\Columns\Datetime_Column;
 /**
  * Class Created_At
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns
  */

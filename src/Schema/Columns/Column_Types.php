@@ -2,7 +2,7 @@
 /**
  * The class for the column types.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns
  */
@@ -14,7 +14,7 @@ namespace StellarWP\Schema\Columns;
 /**
  * Class Column_Types
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns
  */
@@ -22,7 +22,7 @@ final class Column_Types {
 	/**
 	 * The column type for a string.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -31,7 +31,7 @@ final class Column_Types {
 	/**
 	 * The column type for a smallint.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -40,7 +40,7 @@ final class Column_Types {
 	/**
 	 * The column type for a integer.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -49,7 +49,7 @@ final class Column_Types {
 	/**
 	 * The column type for a mediumint.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -58,7 +58,7 @@ final class Column_Types {
 	/**
 	 * The column type for a bigint.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -67,7 +67,7 @@ final class Column_Types {
 	/**
 	 * The column type for a decimal.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -76,7 +76,7 @@ final class Column_Types {
 	/**
 	 * The column type for a float.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -85,7 +85,7 @@ final class Column_Types {
 	/**
 	 * The column type for a double.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -94,7 +94,7 @@ final class Column_Types {
 	/**
 	 * The column type for a real.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -103,7 +103,7 @@ final class Column_Types {
 	/**
 	 * The column type for a bit.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -112,7 +112,7 @@ final class Column_Types {
 	/**
 	 * The column type for a boolean.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -121,7 +121,7 @@ final class Column_Types {
 	/**
 	 * The column type for a serial.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -130,7 +130,7 @@ final class Column_Types {
 	/**
 	 * The column type for a date.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -139,7 +139,7 @@ final class Column_Types {
 	/**
 	 * The column type for a datetime.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -148,7 +148,7 @@ final class Column_Types {
 	/**
 	 * The column type for a timestamp.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -157,7 +157,7 @@ final class Column_Types {
 	/**
 	 * The column type for a time.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -166,7 +166,7 @@ final class Column_Types {
 	/**
 	 * The column type for a year.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -175,7 +175,7 @@ final class Column_Types {
 	/**
 	 * The column type for a char.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -184,7 +184,7 @@ final class Column_Types {
 	/**
 	 * The column type for a varchar.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -193,7 +193,7 @@ final class Column_Types {
 	/**
 	 * The column type for a tiny text.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -202,7 +202,7 @@ final class Column_Types {
 	/**
 	 * The column type for a text.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -211,7 +211,7 @@ final class Column_Types {
 	/**
 	 * The column type for a medium text.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -220,7 +220,7 @@ final class Column_Types {
 	/**
 	 * The column type for a longtext.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -229,7 +229,7 @@ final class Column_Types {
 	/**
 	 * The column type for a binary.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -238,7 +238,7 @@ final class Column_Types {
 	/**
 	 * The column type for a varbinary.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -247,7 +247,7 @@ final class Column_Types {
 	/**
 	 * The column type for a tiny blob.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -256,7 +256,7 @@ final class Column_Types {
 	/**
 	 * The column type for a blob.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -265,7 +265,7 @@ final class Column_Types {
 	/**
 	 * The column type for a medium blob.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -274,7 +274,7 @@ final class Column_Types {
 	/**
 	 * The column type for a long blob.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -283,7 +283,7 @@ final class Column_Types {
 	/**
 	 * The column type for a ENUM.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -292,7 +292,7 @@ final class Column_Types {
 	/**
 	 * The column type for a set.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -301,7 +301,7 @@ final class Column_Types {
 	/**
 	 * The column type for a JSON.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string
 	 */
@@ -310,7 +310,7 @@ final class Column_Types {
 	/**
 	 * The column types that are supported.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string[]
 	 */
@@ -354,7 +354,7 @@ final class Column_Types {
 	/**
 	 * The column types that are supported for integer columns.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string[]
 	 */
@@ -369,7 +369,7 @@ final class Column_Types {
 	/**
 	 * The column types that are supported for float columns.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string[]
 	 */
@@ -383,7 +383,7 @@ final class Column_Types {
 	/**
 	 * The column types that are supported for boolean columns.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string[]
 	 */
@@ -395,7 +395,7 @@ final class Column_Types {
 	/**
 	 * The column types that are supported for datetime columns.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string[]
 	 */
@@ -408,7 +408,7 @@ final class Column_Types {
 	/**
 	 * The column types that are supported for string columns.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string[]
 	 */
@@ -420,7 +420,7 @@ final class Column_Types {
 	/**
 	 * The column types that are supported for text columns.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string[]
 	 */
@@ -434,7 +434,7 @@ final class Column_Types {
 	/**
 	 * The column types that are supported for binary columns.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string[]
 	 */
@@ -450,7 +450,7 @@ final class Column_Types {
 	/**
 	 * The column types that are supported for enum columns.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string[]
 	 */
@@ -462,7 +462,7 @@ final class Column_Types {
 	/**
 	 * The column types that are supported for json columns.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string[]
 	 */

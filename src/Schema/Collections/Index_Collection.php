@@ -2,7 +2,7 @@
 /**
  * The interface for the column collection.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Collections
  */
@@ -16,7 +16,7 @@ use StellarWP\Schema\Indexes\Contracts\Index;
 /**
  * Class Column_Collection
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Collections
  */

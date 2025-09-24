@@ -5,7 +5,7 @@ namespace StellarWP\Schema;
 use StellarWP\Schema\Config;
 
 class Schema {
-	const VERSION = '1.1.0';
+	const VERSION = '3.0.0';
 
 	/**
 	 * Container object.

@@ -2,7 +2,7 @@
 /**
  * The interface for the indexable column.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns\Contracts
  */
@@ -14,7 +14,7 @@ namespace StellarWP\Schema\Columns\Contracts;
 /**
  * Interface Indexable
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns\Contracts
  */

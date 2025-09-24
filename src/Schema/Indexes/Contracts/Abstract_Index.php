@@ -2,7 +2,7 @@
 /**
  * The abstract class for the index.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Indexes\Contracts
  */
@@ -16,7 +16,7 @@ use InvalidArgumentException;
 /**
  * Class Abstract_Index
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Indexes\Contracts
  */

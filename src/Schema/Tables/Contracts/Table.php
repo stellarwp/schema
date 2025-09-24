@@ -2,7 +2,7 @@
 /**
  * The interface for the table.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Tables\Contracts;
  */
@@ -22,7 +22,7 @@ use RuntimeException;
 /**
  * Class Table
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Tables\Contracts;
  *
@@ -563,7 +563,7 @@ abstract class Table implements Table_Interface {
 	/**
 	 * Gets the primary columns for the table.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @return array<string> The primary columns for the table.
 	 */

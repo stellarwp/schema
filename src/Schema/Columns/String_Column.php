@@ -2,7 +2,7 @@
 /**
  * The interface for the string column.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns
  */
@@ -20,7 +20,7 @@ use StellarWP\Schema\Columns\Column_Types;
 /**
  * Class String_Column
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns
  */

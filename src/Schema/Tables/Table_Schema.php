@@ -2,7 +2,7 @@
 /**
  * The table schema.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Tables\Contracts;
  */
@@ -21,7 +21,7 @@ use RuntimeException;
 /**
  * Class Table_Schema
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Tables\Contracts;
  */

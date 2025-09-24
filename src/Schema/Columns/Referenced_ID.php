@@ -2,7 +2,7 @@
 /**
  * The interface for the Referenced_ID column.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns
  */
@@ -14,7 +14,7 @@ namespace StellarWP\Schema\Columns;
 /**
  * Class Referenced_ID
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns
  */

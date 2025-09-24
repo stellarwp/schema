@@ -2,7 +2,7 @@
 /**
  * The interface for the column.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns\Contracts
  */
@@ -19,7 +19,7 @@ use InvalidArgumentException;
 /**
  * Class Column
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns\Contracts
  */
@@ -29,7 +29,7 @@ abstract class Column implements Column_Interface, Indexable {
 	/**
 	 * The reserved defaults for the SQL.
 	 *
-	 * @since TBD
+	 * @since 3.0.0
 	 *
 	 * @var string[]
 	 */

@@ -2,7 +2,7 @@
 /**
  * The interface for the text column.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns
  */
@@ -19,7 +19,7 @@ use InvalidArgumentException;
 /**
  * Class Text_Column
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Columns
  */

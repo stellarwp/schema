@@ -2,7 +2,7 @@
 /**
  * The class for the fulltext index.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Indexes
  */
@@ -20,7 +20,7 @@ use StellarWP\Schema\Indexes\Contracts\Abstract_Index;
  *
  * They should be avoided for projects that are usable by the whole WP community for now.
  *
- * @since TBD
+ * @since 3.0.0
  *
  * @package StellarWP\Schema\Indexes
  */
