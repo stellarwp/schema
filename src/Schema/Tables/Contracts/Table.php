@@ -679,4 +679,11 @@ abstract class Table implements Table_Interface {
 
 		return $count >= 1;
 	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public static function transform_from_array( array $result_array ) {
+		return $result_array;
+	}
 }
