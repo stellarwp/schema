@@ -17,6 +17,7 @@ use StellarWP\Schema\Collections\Column_Collection;
 use StellarWP\Schema\Columns\Contracts\Column;
 use StellarWP\Schema\Indexes\Contracts\Index;
 use Exception;
+use Generator;
 use RuntimeException;
 
 /**
@@ -35,7 +36,7 @@ use RuntimeException;
  * @method static bool|int delete_many( array $ids, string $column = '', string $more_where = '' )
  * @method static int get_total_items( array $args = [] )
  * @method static bool update_many( array $entries )
- * @method static array paginate( array $args, int $per_page = 20, int $page = 1, array $columns = [ '*' ], string $join_table = '', string $join_condition = '', array $selectable_joined_columns = [], string $output = OBJECT )
+ * @method static array paginate( array $args, int $per_page = 20, int $page = 1, array $columns = [ '*' ], string $join_table = '', string $join_condition = '', array $selectable_joined_columns = [], string $output = 'OBJECT' )
  * @method static mixed[] get_all_by( string $column, $value, string $operator = '=', int $limit = 50 )
  * @method static ?mixed get_first_by( string $column, $value )
  * @method static ?mixed get_by_id( $id )
