@@ -1,4 +1,13 @@
 <?php
+/**
+ * The interface for the table.
+ *
+ * @since TBD
+ *
+ * @package StellarWP\Schema\Tables\Contracts;
+ */
+
+declare( strict_types=1 );
 
 namespace StellarWP\Schema\Tables\Contracts;
 
@@ -7,12 +16,32 @@ use StellarWP\Schema\Traits\Custom_Table_Query_Methods;
 use StellarWP\Schema\Collections\Column_Collection;
 use StellarWP\Schema\Columns\Contracts\Column;
 use StellarWP\Schema\Indexes\Contracts\Index;
-use StellarWP\Schema\Indexes\Primary_Key;
-use StellarWP\Schema\Indexes\Unique_Key;
-use StellarWP\Schema\Indexes\Classic_Index;
 use Exception;
 use RuntimeException;
 
+/**
+ * Class Table
+ *
+ * @since TBD
+ *
+ * @package StellarWP\Schema\Tables\Contracts;
+ *
+ * @method static Generator<array<string, mixed>> get_all( int $batch_size = 50, string $where_clause = '', string $order_by = '' )
+ * @method static bool|int insert( array $entry )
+ * @method static bool update_single( array $entry )
+ * @method static bool upsert( array $entry )
+ * @method static bool|int insert_many( array $entries )
+ * @method static bool delete( int $uid, string $column = '' )
+ * @method static bool|int delete_many( array $ids, string $column = '', string $more_where = '' )
+ * @method static int get_total_items( array $args = [] )
+ * @method static bool update_many( array $entries )
+ * @method static array paginate( array $args, int $per_page = 20, int $page = 1, array $columns = [ '*' ], string $join_table = '', string $join_condition = '', array $selectable_joined_columns = [], string $output = OBJECT )
+ * @method static mixed[] get_all_by( string $column, $value, string $operator = '=', int $limit = 50 )
+ * @method static ?mixed get_first_by( string $column, $value )
+ * @method static ?mixed get_by_id( $id )
+ * @method static array operators()
+ * @method static mixed cast_value_based_on_type( string $type, $value )
+ */
 abstract class Table implements Table_Interface {
 	use Custom_Table_Query_Methods;
 
