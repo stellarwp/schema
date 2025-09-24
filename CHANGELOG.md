@@ -2,7 +2,11 @@
 
 All notable changes to this project will be documented in this file. This project adhere to the [Semantic Versioning](http://semver.org/) standard.
 
-## [unreleased] Unreleased
+## [3.0.0] 2025-09-24
+
+* Feature - Introduces stricter column and indexes definitions. This is NOT a backwards compatible change. Read the migration guide in docs/migrating-from-v2-to-v3.md.
+
+[3.0.0]: https://github.com/stellarwp/schema/releases/tag/3.0.0
 
 ## [2.0.1] 2025-07-18
 
@@ -15,7 +19,6 @@ Feature - Bump di52 to 4.0.1 and all other deps.
 ## [1.1.9] 2025-02-26
 
 * Tweak - Add @throws tags from the [stellarwp/db](https://github.com/stellarwp/db) library and better generics.
-
 
 ## [1.1.8] 2025-01-10
 
