@@ -1,12 +1,51 @@
 <?php
+/**
+ * The interface for the table.
+ *
+ * @since 3.0.0
+ *
+ * @package StellarWP\Schema\Tables\Contracts;
+ */
+
+declare( strict_types=1 );
 
 namespace StellarWP\Schema\Tables\Contracts;
 
 use StellarWP\Schema\Config;
-use StellarWP\Schema\Fields;
-use StellarWP\Schema\Fields\Contracts\Schema_Interface as Field_Schema_Interface;
+use StellarWP\Schema\Traits\Custom_Table_Query_Methods;
+use StellarWP\Schema\Collections\Column_Collection;
+use StellarWP\Schema\Columns\Contracts\Column;
+use StellarWP\Schema\Indexes\Contracts\Index;
+use Exception;
+use Generator;
+use RuntimeException;
 
-abstract class Table implements Schema_Interface {
+/**
+ * Class Table
+ *
+ * @since 3.0.0
+ *
+ * @package StellarWP\Schema\Tables\Contracts;
+ *
+ * @method static Generator<array<string, mixed>> get_all( int $batch_size = 50, string $where_clause = '', string $order_by = '' )
+ * @method static bool|int insert( array $entry )
+ * @method static bool update_single( array $entry )
+ * @method static bool upsert( array $entry )
+ * @method static bool|int insert_many( array $entries )
+ * @method static bool delete( int $uid, string $column = '' )
+ * @method static bool|int delete_many( array $ids, string $column = '', string $more_where = '' )
+ * @method static int get_total_items( array $args = [] )
+ * @method static bool update_many( array $entries )
+ * @method static array paginate( array $args, int $per_page = 20, int $page = 1, array $columns = [ '*' ], string $join_table = '', string $join_condition = '', array $selectable_joined_columns = [], string $output = 'OBJECT' )
+ * @method static mixed[] get_all_by( string $column, $value, string $operator = '=', int $limit = 50 )
+ * @method static ?mixed get_first_by( string $column, $value )
+ * @method static ?mixed get_by_id( $id )
+ * @method static array operators()
+ * @method static mixed cast_value_based_on_type( string $type, $value )
+ */
+abstract class Table implements Table_Interface {
+	use Custom_Table_Query_Methods;
+
 	/**
 	 * @var string|null The version number for this schema definition.
 	 */
@@ -28,11 +67,6 @@ abstract class Table implements Schema_Interface {
 	protected $container;
 
 	/**
-	 * @var \Iterator The filtered field collection that applies to this table.
-	 */
-	protected $field_schemas = null;
-
-	/**
 	 * @var string The organizational group this table belongs to.
 	 */
 	protected static $group = '';
@@ -43,11 +77,6 @@ abstract class Table implements Schema_Interface {
 	 * @var string|null The slug used to identify the custom table.
 	 */
 	protected static $schema_slug;
-
-	/**
-	 * @var string The field that uniquely identifies a row in the table.
-	 */
-	protected static $uid_column = '';
 
 	/**
 	 * Ordered collection of table update methods.
@@ -72,10 +101,9 @@ abstract class Table implements Schema_Interface {
 	}
 
 	/**
-	 * Allows extending classes that require it to run some methods
-	 * immediately after the table creation or update.
+	 * Add indexes after table creation.
 	 *
-	 * @since 1.0.0
+	 * @since 3.0.0
 	 *
 	 * @param array<string,string> $results A map of results in the format
 	 *                                      returned by the `dbDelta` function.
@@ -84,8 +112,85 @@ abstract class Table implements Schema_Interface {
 	 *                              the `dbDelta` function.
 	 */
 	protected function after_update( array $results ) {
-		// No-op by default.
+		$indexes = static::get_current_schema()->get_indexes();
+		if ( ! $indexes ) {
+			return $results;
+		}
+
+		foreach ( $indexes as $index ) {
+			$this->check_and_add_index( $index );
+		}
+
 		return $results;
+	}
+
+	/**
+	 * An array of all the columns in the table.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return Column_Collection The columns of the table.
+	 */
+	public static function get_columns(): Column_Collection {
+		return static::get_current_schema()->get_columns();
+	}
+
+	/**
+	 * An array of all the columns that are searchable.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return Column_Collection The searchable columns of the table.
+	 */
+	public static function get_searchable_columns(): Column_Collection {
+		/** @var Column_Collection */
+		return static::get_columns()->filter( fn ( Column $column ) => $column->is_searchable() );
+	}
+
+	/**
+	 * Gets the current schema for the table.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return Table_Schema_Interface The current schema for the table.
+	 *
+	 * @throws RuntimeException If the current schema version is not found in the schema history.
+	 */
+	public static function get_current_schema(): Table_Schema_Interface {
+		static $current_schema = null;
+
+		if ( null !== $current_schema ) {
+			return $current_schema;
+		}
+
+		$history = static::get_schema_history();
+
+		if ( empty( $history[ static::SCHEMA_VERSION ] ) ) {
+			throw new RuntimeException( 'The current schema version is not found in the schema history.' );
+		}
+
+		$current_schema = $history[ static::SCHEMA_VERSION ]();
+
+		return $current_schema;
+	}
+
+	/**
+	 * Helper method to check and add an index to a table.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param Index $index The index.
+	 *
+	 * @return void
+	 */
+	protected function check_and_add_index( Index $index ): void {
+		$index_name = esc_sql( $index->get_name() );
+
+		if ( $this->has_index( $index_name ) ) {
+			return;
+		}
+
+		$this->db::query( $index->get_alter_table_with_index_definition() );
 	}
 
 	/**
@@ -154,13 +259,13 @@ abstract class Table implements Schema_Interface {
 		$this_table      = static::table_name( true );
 
 		/**
-		 * Runs before the custom field is dropped.
+		 * Runs before the custom table is dropped.
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param string $base_table_name The base table name.
-		 * @param string $table_name The full table name.
-		 * @param Schema_Interface $table_schema The table schema to be dropped.
+		 * @param string          $base_table_name The base table name.
+		 * @param string          $table_name      The full table name.
+		 * @param Table_Interface $table_schema    The table schema to be dropped.
 		 */
 		do_action( 'stellarwp_pre_drop_table', $base_table_name, $this_table, $this );
 
@@ -183,9 +288,9 @@ abstract class Table implements Schema_Interface {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param string $base_table_name The base table name.
-		 * @param string $table_name The full table name.
-		 * @param Schema_Interface $table_schema The table schema to be dropped.
+		 * @param string          $base_table_name The base table name.
+		 * @param string          $table_name      The full table name.
+		 * @param Table_Interface $table_schema    The table schema to be dropped.
 		 */
 		do_action( 'stellarwp_post_drop_table', $base_table_name, $this_table, $this );
 
@@ -200,9 +305,9 @@ abstract class Table implements Schema_Interface {
 		 *
 		 * @since 1.0.0
 		 *
-		 * @param string $base_table_name The base table name.
-		 * @param string $table_name The full table name.
-		 * @param Schema_Interface $table_schema The table schema to be dropped.
+		 * @param string          $base_table_name The base table name.
+		 * @param string          $table_name      The full table name.
+		 * @param Table_Interface $table_schema    The table schema to be dropped.
 		 */
 		do_action( 'stellarwp_post_drop_table_wpdb_update', $base_table_name, $this_table, $this );
 
@@ -273,23 +378,6 @@ abstract class Table implements Schema_Interface {
 	}
 
 	/**
-	 * Gets the defined fields schemas for the table.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param bool $force Force a refresh of the field collection.
-	 *
-	 * @return \Iterator
-	 */
-	public function get_field_schemas( bool $force = false ) {
-		if ( $this->field_schemas === null || $force ) {
-			$this->field_schemas = $this->container->get( Fields\Collection::class )->get_by_table( static::base_table_name() );
-		}
-
-		return $this->field_schemas;
-	}
-
-	/**
 	 * {@inheritdoc}
 	 */
 	public static function get_schema_slug() {
@@ -322,15 +410,7 @@ abstract class Table implements Schema_Interface {
 	 * {@inheritdoc}
 	 */
 	public function get_sql() {
-		$sql = $this->get_definition();
-
-		$field_schemas = $this->get_field_schemas();
-
-		foreach ( $field_schemas as $field_schema ) {
-			$sql = $this->inject_field_schema( $field_schema, $sql );
-		}
-
-		return $sql;
+		return $this->get_definition();
 	}
 
 	/**
@@ -359,25 +439,45 @@ abstract class Table implements Schema_Interface {
 	 * Returns the table creation SQL in the format supported
 	 * by the `dbDelta` function.
 	 *
-	 * @since 1.0.0
+	 * @since 3.0.0
 	 *
 	 * @return string The table creation SQL, in the format supported
 	 *                by the `dbDelta` function.
 	 */
-	abstract protected function get_definition();
+	public function get_definition(): string {
+		global $wpdb;
+		$table_name      = static::table_name( true );
+		$charset_collate = $wpdb->get_charset_collate();
+
+		$columns = static::get_columns();
+
+		$columns_definitions = [];
+		$indexes_definitions = [];
+		foreach ( $columns as $column ) {
+			[ $column_definition, $index_definition ] = $column->get_definition();
+			$columns_definitions[] = $column_definition;
+			$indexes_definitions[] = $index_definition;
+		}
+
+		$indexes_definitions = array_filter( $indexes_definitions );
+
+		$indexes_sql = ! empty( $indexes_definitions ) ? implode( ',' . PHP_EOL, $indexes_definitions ) : '';
+		$columns_sql = implode( ',' . PHP_EOL, $columns_definitions );
+
+		$columns_sql = $indexes_sql ? $columns_sql . ',' . PHP_EOL : $columns_sql;
+
+		return "
+			CREATE TABLE `{$table_name}` (
+				{$columns_sql}{$indexes_sql}
+			) {$charset_collate};
+		";
+	}
 
 	/**
 	 * {@inheritdoc}
 	 */
 	public function get_version(): string {
-		$field_versions = [];
-		$schema_fields  = $this->get_field_schemas( true );
-
-		foreach ( $schema_fields as $field ) {
-			$field_versions[] = $field->get_version();
-		}
-
-		return static::SCHEMA_VERSION . ( $field_versions ? '-' . md5( implode( ':', $field_versions ) ) : '' );
+		return static::SCHEMA_VERSION ;
 	}
 
 	/**
@@ -403,6 +503,8 @@ abstract class Table implements Schema_Interface {
 	public function has_index( $index, $table_name = null ) {
 		$table_name = $table_name ?: static::table_name( true );
 
+		$index = $index ?: 'PRIMARY';
+
 		$count = $this->db::table( $this->db::raw( 'information_schema.statistics' ) )
 			->whereRaw( 'WHERE TABLE_SCHEMA = DATABASE()' )
 			->where( 'TABLE_NAME', $table_name )
@@ -410,58 +512,6 @@ abstract class Table implements Schema_Interface {
 			->count();
 
 		return $count >= 1;
-	}
-
-	/**
-	 * Inject field schema definitions into the CREATE TABLE SQL.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @param Field_Schema_Interface $field_schema The field schema to inject.
-	 * @param string $sql The CREATE TABLE SQL to inject into.
-	 *
-	 * @return string
-	 */
-	protected function inject_field_schema( Field_Schema_Interface $field_schema, $sql ): string {
-		$fields = trim( $field_schema->get_sql() );
-
-		// Inject any extra fields into the table's definition.
-		// phpcs:disable Squiz.Strings.ConcatenationSpacing.PaddingFound -- don't remove regex indentation
-		$find_first_index_regex =
-			'/'
-			.   '(,'            // 1) Final comma before indexes.
-			.       '(\s*)'     // 2) Capture whitespace before indexes.
-			.       '(?='       // Followed by the indexes.
-			.           '(?:'
-			.               'PRIMARY\s+KEY|(?:UNIQUE|FULLTEXT|SPACIAL)\s+(?:KEY|INDEX)|KEY|INDEX'
-			.           ')'
-			.       ')'
-			.       '[^\n]+'   // Followed by indice columns and names.
-			.       '(?!'      // Not followed by another index.
-			.           '(?:'
-			.               'PRIMARY\s+KEY|(?:UNIQUE|FULLTEXT|SPACIAL)\s+(?:KEY|INDEX)|KEY|INDEX'
-			.           ')'
-			.       ')'
-			.   ')'
-			.'/im';            // Case insensitive and multi-line.
-
-		if ( preg_match( $find_first_index_regex, $sql ) ) {
-			// Inject additional fields before the indexes.
-			$sql = preg_replace(
-				$find_first_index_regex,
-				",$2{$fields}$1", // $2 is the captured whitespace. $1 is the whitespace PLUS the first index after the last field.
-				$sql
-			);
-		} else {
-			// Inject additional fields before the closing parenthesis of the CREATE TABLE statement.
-			$sql = preg_replace(
-				'/(?<!,)((\s+)\).+(?!\)))/im', // Match the last closing parenthesis and everything after it.
-				",$2{$fields}$1",              // $2 is the captured whitespace. $1 is the whitespace PLUS the rest of the statement.
-				$sql
-			);
-		}
-
-		return $sql;
 	}
 
 	/**
@@ -506,8 +556,20 @@ abstract class Table implements Schema_Interface {
 	/**
 	 * {@inheritdoc}
 	 */
-	public static function uid_column() {
-		return static::$uid_column;
+	public static function uid_column(): string {
+		$primary_columns = static::primary_columns();
+		return array_values( $primary_columns )[0];
+	}
+
+	/**
+	 * Gets the primary columns for the table.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array<string> The primary columns for the table.
+	 */
+	public static function primary_columns(): array {
+		return static::get_current_schema()->get_primary_key()->get_columns();
 	}
 
 	/**
@@ -517,52 +579,82 @@ abstract class Table implements Schema_Interface {
 		// @phpstan-ignore-next-line
 		require_once ABSPATH . 'wp-admin/includes/upgrade.php';
 
-		$sql           = $this->get_sql();
-		$field_schemas = $this->get_field_schemas();
+		$sql = $this->get_sql();
 
-		/**
-		 * Hookable action before the table schema has updated.
-		 *
-		 * @since 1.1.0
-		 *
-		 * @param string $table_name The prefix-less table name.
-		 * @param Table $table The table object.
-		 * @param \Iterator $field_schemas An iterable collection of field schemas associated with this table.
-		 */
-		do_action( 'stellarwp_schema_table_before_updete', static::table_name(), $this, $field_schemas );
+		$results = [];
 
-		$results = (array) $this->db::delta( $sql );
-		$this->archive_previous_version();
-		$this->sync_stored_version();
-		$results = $this->after_update( $results );
+		try {
+			/**
+			 * Hookable action before the table schema has updated.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param string $table_name The prefix-less table name.
+			 * @param Table $table The table object.
+			 */
+			do_action( 'stellarwp_schema_table_before_update_' . static::get_schema_slug(), static::table_name(), $this );
 
-		/**
-		 * Hookable action before the field schemas have updated.
-		 *
-		 * @since 1.1.0
-		 *
-		 * @param string $table_name The prefix-less table name.
-		 * @param array $results The results of the schema update.
-		 * @param Table $table The table object.
-		 * @param \Iterator $field_schemas An iterable collection of field schemas associated with this table.
-		 */
-		do_action( 'stellarwp_schema_table_before_field_schema_updete', static::table_name(), $results, $this, $field_schemas );
+			/**
+			 * Hookable action before the table schema has updated.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param string $table_name The prefix-less table name.
+			 * @param Table $table The table object.
+			 */
+			do_action( 'stellarwp_schema_table_before_update', static::table_name(), $this );
 
-		foreach ( $field_schemas as $field_schema ) {
-			$results[] = $field_schema->after_update( $results );
+			$results = (array) $this->db::delta( $sql );
+			$this->archive_previous_version();
+			$this->sync_stored_version();
+			$results = $this->after_update( $results );
+
+			/**
+			 * Hookable action after the table schema has updated.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param string $table_name The prefix-less table name.
+			 * @param array $results The results of the table schema updates.
+			 * @param Table $table The table object.
+			 */
+			do_action( 'stellarwp_schema_table_after_update_' . static::get_schema_slug(), static::table_name(), $results, $this );
+
+			/**
+			 * Hookable action after the table schema has updated.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param string $table_name The prefix-less table name.
+			 * @param array $results The results of the table schema updates.
+			 * @param Table $table The table object.
+			 */
+			do_action( 'stellarwp_schema_table_after_update', static::table_name(), $results, $this );
+		} catch ( Exception $e ) {
+			if ( ! has_action( 'stellarwp_schema_table_update_error_' . static::get_schema_slug() ) && ! has_action( 'stellarwp_schema_table_update_error' ) ) {
+				throw $e;
+			}
+
+			/**
+			 * Hookable action after the table schema has failed to update.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param Exception $e     The exception.
+			 * @param Table     $table The table object.
+			 */
+			do_action( 'stellarwp_schema_table_update_error_' . static::get_schema_slug(), $e, $this );
+
+			/**
+			 * Hookable action after the table schema has failed to update.
+			 *
+			 * @since 3.0.0
+			 *
+			 * @param Exception $e The exception.
+			 * @param Table $table The table object.
+			 */
+			do_action( 'stellarwp_schema_table_update_error', $e, $this );
 		}
-
-		/**
-		 * Hookable action after the table schema has updated.
-		 *
-		 * @since 1.1.0
-		 *
-		 * @param string $table_name The prefix-less table name.
-		 * @param array $results The results of the table and field schema updates.
-		 * @param Table $table The table object.
-		 * @param \Iterator $field_schemas An iterable collection of field schemas associated with this table.
-		 */
-		do_action( 'stellarwp_schema_table_after_updete', static::table_name(), $results, $this, $field_schemas );
 
 		return $results;
 	}
@@ -587,5 +679,12 @@ abstract class Table implements Schema_Interface {
 			->count();
 
 		return $count >= 1;
+	}
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public static function transform_from_array( array $result_array ) {
+		return $result_array;
 	}
 }

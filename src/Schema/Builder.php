@@ -3,10 +3,8 @@
 namespace StellarWP\Schema;
 
 use StellarWP\Schema\Config;
-use StellarWP\Schema\Fields;
-use StellarWP\Schema\Fields\Contracts\Schema_Interface as Field_Schema_Interface;
 use StellarWP\Schema\Tables;
-use StellarWP\Schema\Tables\Contracts\Schema_Interface as Table_Schema_Interface;
+use StellarWP\Schema\Tables\Contracts\Table_Interface as Table_Schema_Interface;
 use StellarWP\Schema\Tables\Filters\Group_FilterIterator;
 use WP_CLI;
 
@@ -37,7 +35,7 @@ class Builder {
 	}
 
 	/**
-	 * Whether all the custom tables exist or not. Does not check custom fields.
+	 * Whether all the custom tables exist or not.
 	 *
 	 * Note: the method will return `false` if even one table is missing.
 	 *
@@ -47,7 +45,7 @@ class Builder {
 	 *
 	 * @param string|null $group An optional group name to restrict the check to.
 	 *
-	 * @return bool Whether all custom tables exist or not. Does not check custom fields.
+	 * @return bool Whether all custom tables exist or not.
 	 */
 	public function all_tables_exist( $group = null ) {
 		$table_schemas = $this->get_registered_table_schemas();
@@ -64,7 +62,6 @@ class Builder {
 		$result = $this->db::get_col( 'SHOW TABLES' );
 		foreach ( $table_schemas as $table_schema ) {
 			if ( ! in_array( $table_schema::table_name(), $result, true ) ) {
-
 				return false;
 			}
 		}
@@ -108,35 +105,6 @@ class Builder {
 		 * @since 1.0.0
 		 */
 		do_action( 'stellarwp_post_drop_tables' );
-
-		/**
-		 * Runs before the custom fields are dropped.
-		 *
-		 * @since 1.0.0
-		 */
-		do_action( 'stellarwp_pre_drop_fields' );
-
-		$field_schemas = $this->get_registered_field_schemas();
-
-		/**
-		 * Filters the fields to be dropped.
-		 *
-		 * @since 1.0.0
-		 *
-		 * @param \Iterator $field_classes A list of Field_Schema_Interface objects that will have their fields dropped.
-		 */
-		$field_schemas = apply_filters( 'stellarwp_fields_to_drop', $field_schemas );
-
-		foreach ( $field_schemas as $field_schema ) {
-			$field_schema->drop();
-		}
-
-		/**
-		 * Runs after the custom tables have been dropped by The Events Calendar.
-		 *
-		 * @since 1.0.0
-		 */
-		do_action( 'stellarwp_post_drop_fields' );
 	}
 
 	/**
@@ -151,17 +119,6 @@ class Builder {
 			WP_CLI::debug( 'Emptying table ' . $custom_table::table_name(), 'StellarWP' );
 			$custom_table->empty_table();
 		}
-	}
-
-	/**
-	 * Get the registered field handlers.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return Fields\Collection
-	 */
-	public function get_registered_field_schemas(): Fields\Collection {
-		return $this->container->get( Fields\Collection::class );
 	}
 
 	/**

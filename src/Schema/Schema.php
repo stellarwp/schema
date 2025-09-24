@@ -5,7 +5,7 @@ namespace StellarWP\Schema;
 use StellarWP\Schema\Config;
 
 class Schema {
-	const VERSION = '1.1.0';
+	const VERSION = '3.0.0';
 
 	/**
 	 * Container object.
@@ -25,19 +25,6 @@ class Schema {
 		static::init();
 
 		return Config::get_container()->get( Builder::class );
-	}
-
-	/**
-	 * Gets the field collection.
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return Fields\Collection
-	 */
-	public static function fields() {
-		static::init();
-
-		return Config::get_container()->get( Fields\Collection::class );
 	}
 
 	/**
@@ -81,7 +68,6 @@ class Schema {
 	public function register() {
 		$this->container->singleton( static::class, $this );
 		$this->container->singleton( Builder::class );
-		$this->container->singleton( Fields\Collection::class );
 		$this->container->singleton( Tables\Collection::class );
 
 		/**

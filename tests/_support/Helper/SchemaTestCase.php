@@ -10,10 +10,10 @@ use StellarWP\Schema\Schema;
 class SchemaTestCase extends Unit {
 	protected $backupGlobals = false;
 
-	protected function setUp() {
-		// before
-		parent::setUp();
-
+	/**
+	 * @before
+	 */
+	protected function set_Up() {
 		Config::set_container( new Container() );
 		Config::set_db( DB::class );
 

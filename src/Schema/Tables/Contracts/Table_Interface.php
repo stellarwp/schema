@@ -8,6 +8,8 @@
  */
 
 namespace StellarWP\Schema\Tables\Contracts;
+use StellarWP\Schema\Collections\Column_Collection;
+use ReturnTypeWillChange;
 
 /**
  * Interface Schema_Interface
@@ -16,7 +18,7 @@ namespace StellarWP\Schema\Tables\Contracts;
  *
  * @package StellarWP\Schema\Tables\Contracts
  */
-interface Schema_Interface {
+interface Table_Interface {
 	/**
 	 * Returns the custom table name.
 	 *
@@ -25,6 +27,63 @@ interface Schema_Interface {
 	 * @return string The base custom table name.
 	 */
 	public static function base_table_name();
+
+	/**
+	 * Gets the definition of the table.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return string The definition of the table.
+	 */
+	public function get_definition(): string;
+
+	/**
+	 * Gets the columns of the table.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return Column_Collection The columns of the table.
+	 */
+	public static function get_columns(): Column_Collection;
+
+	/**
+	 * Gets the searchable columns of the table.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return Column_Collection The searchable columns of the table.
+	 */
+	public static function get_searchable_columns(): Column_Collection;
+
+	/**
+	 * Gets the schema history for the table.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return array<string, callable> The schema history for the table. The key is the version and the value is a callable that returns a Table_Schema_Interface object.
+	 */
+	public static function get_schema_history(): array;
+
+	/**
+	 * Gets the schema of the table.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @return Table_Schema_Interface The schema of the table.
+	 */
+	public static function get_current_schema(): Table_Schema_Interface;
+
+	/**
+	 * Transforms a result array into a model.
+	 *
+	 * @since 3.0.0
+	 *
+	 * @param array<string, mixed> $result_array The result array.
+	 *
+	 * @return mixed The model.
+	 */
+	#[ReturnTypeWillChange]
+	public static function transform_from_array( array $result_array );
 
 	/**
 	 * Drop the custom table.
