@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. This project adhere to the [Semantic Versioning](http://semver.org/) standard.
 
+## [3.1.0] 2025-09-30
+
+* Feature - Introduce new column types: `Blob_Column`, `Binary_Column`, and `Boolean_Column`.
+* Feature - Introduce new PHP type: Blob. Blob will be stored as a base64 encoded string.
+* Tweak - Update string based columns to have the ability to become primary keys. Those columns include: char, varchar, binary and varbinary.
+
+[3.1.0]: https://github.com/stellarwp/schema/releases/tag/3.1.0
+
 ## [3.0.0] 2025-09-24
 
 * Feature - Introduces stricter column and indexes definitions. This is NOT a backwards compatible change. Read the migration guide in docs/migrating-from-v2-to-v3.md.

@@ -1,6 +1,105 @@
 # Example table schema class
 
-Here is an example table schema:
+## Version 3.0+ (Recommended)
+
+Here is an example table schema using the new Column and Index system:
+
+```php
+<?php
+namespace Boom\Shakalaka\Tables;
+
+use Boom\Shakalaka\StellarWP\Schema\Tables\Contracts\Table;
+use Boom\Shakalaka\StellarWP\Schema\Tables\Table_Schema;
+use Boom\Shakalaka\StellarWP\Schema\Collections\Column_Collection;
+use Boom\Shakalaka\StellarWP\Schema\Collections\Index_Collection;
+use Boom\Shakalaka\StellarWP\Schema\Columns\ID;
+use Boom\Shakalaka\StellarWP\Schema\Columns\String_Column;
+use Boom\Shakalaka\StellarWP\Schema\Columns\Text_Column;
+use Boom\Shakalaka\StellarWP\Schema\Columns\Integer_Column;
+use Boom\Shakalaka\StellarWP\Schema\Columns\Created_At;
+use Boom\Shakalaka\StellarWP\Schema\Columns\Updated_At;
+use Boom\Shakalaka\StellarWP\Schema\Columns\Column_Types;
+use Boom\Shakalaka\StellarWP\Schema\Indexes\Classic_Index;
+use Boom\Shakalaka\StellarWP\Schema\Indexes\Unique_Key;
+
+class Sandwiches extends Table {
+	/**
+	 * {@inheritdoc}
+	 */
+	const SCHEMA_VERSION = '1.0.0';
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected static $base_table_name = 'sandwiches';
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected static $group = 'food';
+
+	/**
+	 * {@inheritdoc}
+	 */
+	protected static $schema_slug = 'food-sandwiches';
+
+	/**
+	 * {@inheritdoc}
+	 */
+	public static function get_schema_history(): array {
+		$table_name = static::table_name( true );
+
+		return [
+			'1.0.0' => function() use ( $table_name ) {
+				$columns = new Column_Collection();
+
+				// Auto-incrementing primary key.
+				$columns[] = ( new ID( 'id' ) )
+					->set_length( 11 )
+					->set_type( Column_Types::BIGINT )
+					->set_auto_increment( true );
+
+				// String columns.
+				$columns[] = ( new String_Column( 'name' ) )
+					->set_type( Column_Types::VARCHAR )
+					->set_length( 100 )
+					->set_searchable( true );
+
+				$columns[] = ( new String_Column( 'type' ) )
+					->set_type( Column_Types::VARCHAR )
+					->set_length( 50 )
+					->set_default( 'classic' );
+
+				// Text column for description.
+				$columns[] = ( new Text_Column( 'description' ) )
+					->set_type( Column_Types::TEXT )
+					->set_nullable( true );
+
+				// Integer for price (in cents).
+				$columns[] = ( new Integer_Column( 'price_cents' ) )
+					->set_type( Column_Types::INT )
+					->set_length( 11 )
+					->set_default( 0 );
+
+				// Timestamp columns.
+				$columns[] = new Created_At( 'created_at' );
+				$columns[] = new Updated_At( 'updated_at' );
+
+				// Define indexes.
+				$indexes = new Index_Collection();
+				$indexes[] = new Classic_Index( [ 'type' ] );
+				$indexes[] = new Unique_Key( [ 'name' ] );
+
+				return new Table_Schema( $table_name, $columns, $indexes );
+			},
+		];
+	}
+}
+```
+
+## Version 2.x (Legacy)
+
+For backwards compatibility, you can still use the `get_definition()` method as long as you switch the visibility to `public` and still implement the `get_schema_history()` method:
 
 ```php
 <?php
@@ -37,7 +136,7 @@ class Sandwiches extends Table {
 	/**
 	 * {@inheritdoc}
 	 */
-	protected function get_definition() {
+	public function get_definition(): string {
 		global $wpdb;
 		$table_name = self::table_name( true );
 		$charset_collate = $wpdb->get_charset_collate();
@@ -106,7 +205,7 @@ This is the slug of this table schema and is used to generate the `wp_options` k
 
 This is the name of the column that is used to uniquely identify rows within the table.
 
-### `protected function get_definition()`
+### `public function get_definition(): string`
 
 This is the base definition of the table.
 

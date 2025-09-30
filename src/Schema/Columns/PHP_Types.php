@@ -76,9 +76,19 @@ final class PHP_Types {
 	public const DATETIME = DateTimeInterface::class;
 
 	/**
+	 * The PHP type for a blob.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @var string
+	 */
+	public const BLOB = 'blob';
+
+	/**
 	 * The PHP type for a datetime.
 	 *
 	 * @since 3.0.0
+	 * @since 3.1.0 Added the BLOB type.
 	 *
 	 * @var string[]
 	 */
@@ -89,5 +99,6 @@ final class PHP_Types {
 		self::FLOAT,
 		self::BOOL,
 		self::DATETIME,
+		self::BLOB,
 	];
 }

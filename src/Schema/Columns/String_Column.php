@@ -14,6 +14,7 @@ namespace StellarWP\Schema\Columns;
 use StellarWP\Schema\Columns\Contracts\Column;
 use StellarWP\Schema\Columns\Contracts\Lengthable;
 use StellarWP\Schema\Columns\Contracts\Uniquable;
+use StellarWP\Schema\Columns\Contracts\Primarable;
 use StellarWP\Schema\Columns\PHP_Types;
 use StellarWP\Schema\Columns\Column_Types;
 
@@ -21,10 +22,11 @@ use StellarWP\Schema\Columns\Column_Types;
  * Class String_Column
  *
  * @since 3.0.0
+ * @since 3.1.0 Added the ability to become a primary key.
  *
  * @package StellarWP\Schema\Columns
  */
-class String_Column extends Column implements Lengthable, Uniquable {
+class String_Column extends Column implements Lengthable, Uniquable, Primarable {
 	/**
 	 * The length of the column.
 	 *
@@ -56,10 +58,12 @@ class String_Column extends Column implements Lengthable, Uniquable {
 	/**
 	 * Get the length of the column.
 	 *
+	 * @since 3.1.0 Allowed for up to 1024 characters.
+	 *
 	 * @return int The length of the column.
 	 */
 	public function get_length(): int {
-		return max( min( $this->length, ! $this->is_index() ? 255 : 191 ), 1 );
+		return max( min( $this->length, ! $this->is_index() ? 1024 : 191 ), 1 );
 	}
 
 	/**

@@ -432,19 +432,29 @@ final class Column_Types {
 	];
 
 	/**
+	 * The column types that are supported for blob columns.
+	 *
+	 * @since 3.1.0
+	 *
+	 * @var string[]
+	 */
+	public const SUPPORTED_BLOB = [
+		self::TINYBLOB,
+		self::BLOB,
+		self::MEDIUMBLOB,
+		self::LONGBLOB,
+	];
+
+	/**
 	 * The column types that are supported for binary columns.
 	 *
-	 * @since 3.0.0
+	 * @since 3.1.0
 	 *
 	 * @var string[]
 	 */
 	public const SUPPORTED_BINARY = [
 		self::BINARY,
 		self::VARBINARY,
-		self::TINYBLOB,
-		self::BLOB,
-		self::MEDIUMBLOB,
-		self::LONGBLOB,
 	];
 
 	/**

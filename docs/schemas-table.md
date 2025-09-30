@@ -1,6 +1,17 @@
 # Table schemas
 
-Table schema classes hold all of the building blocks for getting a custom table to be defined and managed by this library. Table schemas should have their base definition declared in the `::get_definition()` method, however, it is important to note that the final definition SQL (fetched via `::get_sql()`) can be influenced by registered Field Schemas.
+Table schema classes hold all of the building blocks for getting a custom table to be defined and managed by this library.
+
+**As of version 3.0.0**, there are two ways to define table schemas:
+
+1. **Recommended (v3.0+)**: Use `get_schema_history()` to return type-safe `Table_Schema` objects with Column and Index collections
+2. **Legacy (v2.x compatible)**: Use `get_definition()` to return raw SQL (still supported for backwards compatibility)
+
+The new Column and Index system provides:
+- Type safety with strongly-typed column classes
+- Automatic type casting between PHP and MySQL
+- Built-in query methods for CRUD operations
+- Better schema version management
 
 Check out an [example table schema](schemas-table-example.md) and get a look at the minimally required properties and methods.
 
@@ -145,6 +156,71 @@ foreach ( $table_schemas as $table_schema ) {
 ```
 
 ## Publicly accessible methods
+
+### New in v3.0.0
+
+## `::get_schema_history()`
+
+Returns an array of callables keyed by version number. Each callable should return a `Table_Schema` object that defines the table structure for that version.
+
+```php
+public static function get_schema_history(): array {
+	$table_name = static::table_name( true );
+
+	return [
+		'1.0.0' => function() use ( $table_name ) {
+			$columns = new Column_Collection();
+
+			$columns[] = ( new ID( 'id' ) )
+				->set_length( 11 )
+				->set_auto_increment( true );
+
+			$columns[] = ( new String_Column( 'name' ) )
+				->set_type( Column_Types::VARCHAR )
+				->set_length( 50 );
+
+			return new Table_Schema( $table_name, $columns );
+		},
+	];
+}
+```
+
+## `::get_columns()`
+
+Returns a `Column_Collection` containing all columns defined for the table. Columns can be accessed by name:
+
+```php
+$columns = MyTable::get_columns();
+$id_column = $columns->get('id');
+```
+
+## `::primary_columns()`
+
+Returns an array of column names that make up the primary key(s) for the table.
+
+## `::get_searchable_columns()`
+
+Returns a `Column_Collection` of columns marked as searchable (via `set_searchable(true)`).
+
+### Built-in Query Methods (v3.0+)
+
+When using the new Column system, tables automatically get access to CRUD methods via the `Custom_Table_Query_Methods` trait:
+
+- `::insert(array $entry)` - Insert a single row
+- `::insert_many(array $entries)` - Insert multiple rows
+- `::update_single(array $entry)` - Update a single row
+- `::update_many(array $entries)` - Update multiple rows
+- `::upsert(array $entry)` - Insert or update a row
+- `::delete(int $uid)` - Delete a single row
+- `::delete_many(array $ids)` - Delete multiple rows
+- `::get_by_id($id)` - Fetch a single row by ID
+- `::get_first_by(string $column, $value)` - Fetch first row matching a column value
+- `::get_all_by(string $column, $value, string $operator = '=', int $limit = 50)` - Fetch all rows matching a column value
+- `::get_all(int $batch_size = 50)` - Generator that yields all rows
+- `::paginate(array $args, int $per_page = 20, int $page = 1)` - Paginated query with filtering
+- `::get_total_items(array $args = [])` - Count total rows
+
+### Legacy Methods
 
 ## `::after_update()`
 

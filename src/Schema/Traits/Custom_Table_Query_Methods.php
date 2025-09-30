@@ -17,6 +17,7 @@ use Exception;
 use Generator;
 use InvalidArgumentException;
 use StellarWP\Schema\Columns\Contracts\Column;
+use StellarWP\Schema\Columns\Contracts\Auto_Incrementable;
 use StellarWP\Schema\Columns\PHP_Types;
 use StellarWP\Schema\Config;
 
@@ -226,9 +227,15 @@ trait Custom_Table_Query_Methods {
 	 * @return array<string> The prepared statements and values.
 	 */
 	protected static function prepare_statements_values( array $entries ): array {
-		$uid_column = static::uid_column();
-		$entries    = array_map(
-			function ( $entry ) use ( $uid_column ) {
+		$uid_column    = static::uid_column();
+		$column_object = static::get_columns()->get( $uid_column );
+
+		$entries = array_map(
+			function ( $entry ) use ( $uid_column, $column_object ) {
+				if ( ! ( $column_object instanceof Auto_Incrementable && $column_object->get_auto_increment() ) ) {
+					return $entry;
+				}
+
 				unset( $entry[ $uid_column ] );
 				return $entry;
 			},
@@ -236,26 +243,6 @@ trait Custom_Table_Query_Methods {
 		);
 
 		$columns = static::get_columns();
-
-		$entries = array_map(
-			function ( $entry ) use ( $columns ) {
-				foreach ( $columns as $column ) {
-					if ( ! isset( $entry[ $column->get_name() ] ) ) {
-						continue;
-					}
-
-					switch ( $column->get_php_type() ) {
-						case PHP_Types::JSON:
-							$entry[ $column->get_name() ] = wp_json_encode( $entry[ $column->get_name() ] );
-							break;
-						default:
-							break;
-					}
-				}
-				return $entry;
-			},
-			$entries
-		);
 
 		$database = Config::get_db();
 		$columns          = array_keys( $entries[0] );
@@ -272,7 +259,7 @@ trait Custom_Table_Query_Methods {
 			$prepared_values[ $row_index ] = [];
 			foreach ( $entry as $column => $value ) {
 				[ $prepared_value, $placeholder ] = self::prepare_value_for_query( $column, $value );
-				$prepared_values[ $row_index ][] = $database::prepare( $placeholder, $prepared_value );
+				$prepared_values[ $row_index ][] = 'NULL' === $placeholder ? $placeholder : $database::prepare( $placeholder, $prepared_value );
 			}
 		}
 
@@ -383,7 +370,9 @@ trait Custom_Table_Query_Methods {
 					$value = $value->format( 'Y-m-d H:i:s' );
 				}
 
-				$set_statement[] = $database::prepare( "`{$column}` = %s", $value );
+				[ $value, $placeholder ] = self::prepare_value_for_query( $column, $value );
+
+				$set_statement[] = $database::prepare( "%i = {$placeholder}", ...array_filter( [ $column, $value ], static fn( $v ) => null !== $v ) );
 			}
 
 			$set_statement = implode( ', ', $set_statement );
@@ -395,7 +384,23 @@ trait Custom_Table_Query_Methods {
 			);
 		}
 
-		return (bool) $database::query( implode( '', $queries ) );
+		$database::beginTransaction();
+
+		$results = [];
+
+		foreach ( $queries as $query ) {
+			$results[] = $database::query( $query );
+		}
+
+		$all_good = count( array_filter( $results ) ) === count( $results );
+
+		if ( ! $all_good ) {
+			$database::rollBack();
+			return false;
+		}
+
+		$database::commit();
+		return true;
 	}
 
 	/**
@@ -412,14 +417,13 @@ trait Custom_Table_Query_Methods {
 	 * @param string $join_table                The table to join.
 	 * @param string $join_condition            The condition to join on.
 	 * @param array  $selectable_joined_columns The columns from the joined table to select.
-	 * @param string $output                    The output type of the query, one of OBJECT, ARRAY_A, or ARRAY_N.
 	 *
 	 * @return array The items.
 	 * @throws InvalidArgumentException If the table to join is the same as the current table.
 	 *                                  If the join condition does not contain an equal sign.
 	 *                                  If the join condition does not contain valid columns.
 	 */
-	public static function paginate( array $args, int $per_page = 20, int $page = 1, array $columns = [ '*' ], string $join_table = '', string $join_condition = '', array $selectable_joined_columns = [], string $output = OBJECT ): array {
+	public static function paginate( array $args, int $per_page = 20, int $page = 1, array $columns = [ '*' ], string $join_table = '', string $join_condition = '', array $selectable_joined_columns = [] ): array {
 		$is_join = (bool) $join_table;
 
 		if ( $is_join && static::table_name( true ) === $join_table::table_name( true ) ) {
@@ -436,7 +440,9 @@ trait Custom_Table_Query_Methods {
 		$orderby = $args['orderby'] ?? static::uid_column();
 		$order   = strtoupper( $args['order'] ?? 'ASC' );
 
-		if ( ! in_array( $orderby, static::get_columns()->get_names(), true ) ) {
+		$column_names = static::get_columns()->get_names();
+
+		if ( ! in_array( $orderby, $column_names, true ) ) {
 			$orderby = static::uid_column();
 		}
 
@@ -448,7 +454,10 @@ trait Custom_Table_Query_Methods {
 
 		[ $join, $secondary_columns ] = $is_join ? static::get_join_parts( $join_table, $join_condition, $selectable_joined_columns ) : [ '', '' ];
 
-		$columns = implode( ', ', array_map( fn( $column ) => "a.{$column}", $columns ) );
+		sort( $columns );
+		sort( $column_names );
+
+		$formatted_columns = implode( ', ', array_map( fn( $column ) => "a.{$column}", $columns ) );
 
 		/**
 		 * Fires before the results of the query are fetched.
@@ -464,15 +473,20 @@ trait Custom_Table_Query_Methods {
 
 		$results = $database::get_results(
 			$database::prepare(
-				"SELECT {$columns}{$secondary_columns} FROM %i a {$join} {$where} ORDER BY a.{$orderby} {$order} LIMIT %d, %d",
+				"SELECT {$formatted_columns}{$secondary_columns} FROM %i a {$join} {$where} ORDER BY a.{$orderby} {$order} LIMIT %d, %d",
 				static::table_name( true ),
 				$offset,
 				$per_page
 			),
-			$output
+			ARRAY_A
 		);
 
-		$results = array_map( fn( $result ) => static::transform_from_array( self::amend_value_types( $result ) ), $results );
+		$results = array_map( fn( $result ) => self::amend_value_types( $result ), $results );
+
+		if ( [ '*' ] === $columns || $columns === $column_names ) {
+			// If we are querying for a full row, let's transform the results.
+			$results = array_map( fn( $result ) => static::transform_from_array( $result ), $results );
+		}
 
 		/**
 		 * Fires after the results of the query are fetched.
@@ -550,7 +564,7 @@ trait Custom_Table_Query_Methods {
 				continue;
 			}
 
-			if ( empty( $arg['value'] ) ) {
+			if ( ! isset( $arg['value'] ) ) {
 				// We check that the column has any value then.
 				$arg['value']    = '';
 				$arg['operator'] = '!=';
@@ -560,7 +574,7 @@ trait Custom_Table_Query_Methods {
 				$arg['operator'] = '=';
 			}
 
-			// For anything else, you should build your own query!
+			// For anything else, you should build your own query.
 			if ( ! in_array( strtoupper( $arg['operator'] ), array_values( static::operators() ), true ) ) {
 				$arg['operator'] = '=';
 			}
@@ -575,6 +589,11 @@ trait Custom_Table_Query_Methods {
 
 			if ( is_array( $value ) ) {
 				$where[] = $database::prepare( $query, ...$value );
+				continue;
+			}
+
+			if ( 'NULL' === $placeholder ) {
+				$where[] = $query;
 				continue;
 			}
 
@@ -669,7 +688,7 @@ trait Custom_Table_Query_Methods {
 
 		$database = Config::get_db();
 		$results  = [];
-		foreach ( static::fetch_all_where( $database::prepare( "WHERE {$column} {$operator} {$placeholder}", $value ), $limit, ARRAY_A ) as $task_array ) {
+		foreach ( static::fetch_all_where( $database::prepare( "WHERE %i {$operator} {$placeholder}", ...array_filter( [ $column, $value ], static fn( $v ) => null !== $v ) ), $limit, ARRAY_A ) as $task_array ) {
 			if ( empty( $task_array[ static::uid_column() ] ) ) {
 				continue;
 			}
@@ -696,7 +715,7 @@ trait Custom_Table_Query_Methods {
 		[ $value, $placeholder ] = self::prepare_value_for_query( $column, $value );
 
 		$database   = Config::get_db();
-		$task_array = static::fetch_first_where( $database::prepare( "WHERE {$column} = {$placeholder}", $value ), ARRAY_A );
+		$task_array = static::fetch_first_where( $database::prepare( "WHERE %i = {$placeholder}", ...array_filter( [ $column, $value ], static fn( $v ) => null !== $v ) ), ARRAY_A );
 
 		if ( empty( $task_array[ static::uid_column() ] ) ) {
 			return null;
@@ -729,10 +748,17 @@ trait Custom_Table_Query_Methods {
 
 		$column_type = $column->get_php_type();
 
+		if ( null === $value && $column->get_nullable() ) {
+			return [ null, 'NULL' ];
+		}
+
 		switch ( $column->get_php_type() ) {
 			case PHP_Types::INT:
-			case PHP_Types::BOOL:
 				$value       = is_array( $value ) ? array_map( fn( $v ) => (int) $v, $value ) : (int) $value;
+				$placeholder = '%d';
+				break;
+			case PHP_Types::BOOL:
+				$value       = is_array( $value ) ? array_map( fn( $v ) => (int) (bool) $v, $value ) : (int) (bool) $value;
 				$placeholder = '%d';
 				break;
 			case PHP_Types::STRING:
@@ -750,10 +776,20 @@ trait Custom_Table_Query_Methods {
 				$value       = is_array( $value ) ? array_map( fn( $v ) => (float) $v, $value ) : (float) $value;
 				$placeholder = '%f';
 				break;
+			case PHP_Types::BLOB:
+				// For blob, we store as base64 encoded string.
+				if ( is_array( $value ) ) {
+					$value = array_map( fn( $v ) => is_string( $v ) ? $v : base64_encode( (string) $v ), $value );
+				} else {
+					$value = is_string( $value ) ? base64_encode( (string) $value ) : $value;
+				}
+				$placeholder = '%s';
+				break;
 			default:
 				throw new InvalidArgumentException( "Unsupported column type: $column_type." );
 		}
 
+		// @phpstan-ignore-next-line
 		return [ $value, is_array( $value ) ? '(' . implode( ',', array_fill( 0, count( $value ), $placeholder ) ) . ')' : $placeholder ];
 	}
 
@@ -870,6 +906,12 @@ trait Custom_Table_Query_Methods {
 				}
 
 				return $new_value;
+			case PHP_Types::BLOB:
+				// Decode base64 encoded blob data.
+				if ( is_string( $value ) ) {
+					return base64_decode( $value );
+				}
+				return (string) $value;
 			default:
 				throw new InvalidArgumentException( "Unsupported column type: {$type}." );
 		}
