@@ -17,6 +17,7 @@ use Exception;
 use Generator;
 use InvalidArgumentException;
 use StellarWP\Schema\Columns\Contracts\Column;
+use StellarWP\Schema\Columns\Contracts\Auto_Incrementable;
 use StellarWP\Schema\Columns\PHP_Types;
 use StellarWP\Schema\Config;
 
@@ -231,7 +232,7 @@ trait Custom_Table_Query_Methods {
 
 		$entries = array_map(
 			function ( $entry ) use ( $uid_column, $column_object ) {
-				if ( ! ( PHP_Types::INT === $column_object->get_php_type() && $column_object->get_auto_increment() ) ) {
+				if ( ! ( $column_object instanceof Auto_Incrementable && $column_object->get_auto_increment() ) ) {
 					return $entry;
 				}
 
@@ -384,6 +385,8 @@ trait Custom_Table_Query_Methods {
 		}
 
 		$database::beginTransaction();
+
+		$results = [];
 
 		foreach ( $queries as $query ) {
 			$results[] = $database::query( $query );
