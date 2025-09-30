@@ -25,7 +25,6 @@ use StellarWP\Schema\Columns\Column_Types;
 class Boolean_Column extends Column {
 	/**
 	 * The type of the column.
-	 * Boolean is typically stored as TINYINT(1) in MySQL.
 	 *
 	 * @var string
 	 */
