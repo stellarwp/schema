@@ -37,13 +37,13 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 				$callable = function() use ( $table_name ) {
 					$columns = new Column_Collection();
 
-					// Primary key
+					// Primary key.
 					$columns[] = ( new ID( 'id' ) )
 						->set_length( 11 )
 						->set_type( Column_Types::INT )
 						->set_auto_increment( true );
 
-					// Boolean columns
+					// Boolean columns.
 					$columns[] = ( new Integer_Column( 'is_active' ) )
 						->set_type( Column_Types::TINYINT )
 						->set_length( 1 )
@@ -62,7 +62,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 						->set_nullable( true )
 						->set_php_type( PHP_Types::BOOL );
 
-					// Blob columns
+					// Blob columns.
 					$columns[] = ( new Blob_Column( 'small_blob' ) )
 						->set_type( Column_Types::TINYBLOB )
 						->set_php_type( PHP_Types::BLOB );
@@ -80,7 +80,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 						->set_type( Column_Types::LONGBLOB )
 						->set_php_type( PHP_Types::BLOB );
 
-					// Regular columns for reference
+					// Regular columns for reference.
 					$columns[] = ( new String_Column( 'title' ) )
 						->set_length( 255 );
 
@@ -122,7 +122,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 		$table = $this->get_boolean_blob_table();
 		Register::table( $table );
 
-		// Test various boolean representations
+		// Test various boolean representations.
 		$test_cases = [
 			[
 				'input' => [
@@ -183,7 +183,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 
 			$this->assertNotNull( $retrieved );
 
-			// Verify boolean values are properly cast
+			// Verify boolean values are properly cast.
 			foreach ( $test_case['expected'] as $column => $expected_value ) {
 				if ( $expected_value === null ) {
 					$this->assertNull( $retrieved[ $column ] );
@@ -206,7 +206,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 		$table = $this->get_boolean_blob_table();
 		Register::table( $table );
 
-		// Test data including binary content
+		// Test data including binary content.
 		$binary_data = "\x00\x01\x02\x03\x04\x05\xFF";
 		$image_data = base64_decode( 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==' ); // 1x1 PNG
 		$text_data = 'Regular text data';
@@ -230,7 +230,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 
 		$this->assertNotNull( $retrieved );
 
-		// Verify blob data is properly stored and retrieved
+		// Verify blob data is properly stored and retrieved.
 		$this->assertEquals( $binary_data, $retrieved['small_blob'] );
 		$this->assertEquals( $image_data, $retrieved['regular_blob'] );
 		$this->assertEquals( $text_data, $retrieved['medium_blob'] );
@@ -277,7 +277,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 		$table = $this->get_boolean_blob_table();
 		Register::table( $table );
 
-		// Insert test data
+		// Insert test data.
 		$active_items = [
 			[ 'title' => 'Active 1', 'is_active' => 1, 'is_published' => 1, 'small_blob' => 'a', 'medium_blob' => 'a', 'large_blob' => 'a' ],
 			[ 'title' => 'Active 2', 'is_active' => true, 'is_published' => 0, 'small_blob' => 'b', 'medium_blob' => 'b', 'large_blob' => 'b' ],
@@ -297,7 +297,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 			$table::insert( $item );
 		}
 
-		// Query for active items
+		// Query for active items.
 		$active_results = $table::get_all_by( 'is_active', true );
 		$this->assertCount( 3, $active_results );
 
@@ -305,7 +305,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 			$this->assertTrue( $result['is_active'] );
 		}
 
-		// Query for inactive items
+		// Query for inactive items.
 		$inactive_results = $table::get_all_by( 'is_active', false );
 		$this->assertCount( 2, $inactive_results );
 
@@ -313,7 +313,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 			$this->assertFalse( $result['is_active'] );
 		}
 
-		// Query for published items
+		// Query for published items.
 		$published_results = $table::get_all_by( 'is_published', 1 );
 		$this->assertCount( 3, $published_results );
 	}
@@ -329,7 +329,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 		$table = $this->get_boolean_blob_table();
 		Register::table( $table );
 
-		// Insert initial data
+		// Insert initial data.
 		$initial_data = [
 			'title' => 'Initial',
 			'is_active' => true,
@@ -344,7 +344,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 		$table::insert( $initial_data );
 		$insert_id = $wpdb->insert_id;
 
-		// Update with new values
+		// Update with new values.
 		$update_data = [
 			'id' => $insert_id,
 			'is_active' => false,
@@ -358,7 +358,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 		$result = $table::update_single( $update_data );
 		$this->assertTrue( $result );
 
-		// Retrieve and verify
+		// Retrieve and verify.
 		$updated = $table::get_by_id( $insert_id );
 
 		$this->assertFalse( $updated['is_active'] );
@@ -379,7 +379,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 		$table = $this->get_boolean_blob_table();
 		Register::table( $table );
 
-		// Insert test data
+		// Insert test data.
 		for ( $i = 1; $i <= 10; $i++ ) {
 			$table::insert( [
 				'title' => "Item $i",
@@ -392,7 +392,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 			] );
 		}
 
-		// Test pagination with boolean filter
+		// Test pagination with boolean filter.
 		$args = [
 			[
 				'column' => 'is_active',
@@ -408,7 +408,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 			$this->assertTrue( $result['is_active'] );
 		}
 
-		// Test with multiple boolean conditions
+		// Test with multiple boolean conditions.
 		$args = [
 			[
 				'column' => 'is_active',
@@ -430,7 +430,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 			$filtered_count++;
 		}
 
-		// Items 2 and 4 should match (even and <= 5)
+		// Items 2 and 4 should match (even and <= 5).
 		$this->assertEquals( 2, $filtered_count );
 	}
 
@@ -445,7 +445,7 @@ class BooleanBlobColumnTest extends SchemaTestCase {
 		$table = $this->get_boolean_blob_table();
 		Register::table( $table );
 
-		// Create a large binary data (1MB)
+		// Create a large binary data (1MB).
 		$large_data = str_repeat( 'A', 100 );
 
 		$data = [

@@ -50,7 +50,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 				$callable = function() use ( $table_name ) {
 					$columns = new Column_Collection();
 
-					// String as primary key
+					// String as primary key.
 					$columns[] = ( new String_Column( 'username' ) )
 						->set_type( Column_Types::VARCHAR )
 						->set_length( 50 )
@@ -169,12 +169,12 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 					$columns = new Column_Collection();
 					$indexes = new Index_Collection();
 
-					// String part of composite primary key
+					// String part of composite primary key.
 					$columns[] = ( new String_Column( 'tenant_id' ) )
 						->set_type( Column_Types::VARCHAR )
 						->set_length( 36 ); // UUID as string
 
-					// Binary part of composite primary key
+					// Binary part of composite primary key.
 					$columns[] = ( new Binary_Column( 'resource_hash' ) )
 						->set_type( Column_Types::BINARY )
 						->set_length( 20 ); // SHA1 hash
@@ -196,7 +196,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 						->set_type( Column_Types::DATETIME )
 						->set_nullable( true );
 
-					// Define composite primary key
+					// Define composite primary key.
 					$indexes[] = ( new Primary_Key() )
 						->set_columns( 'tenant_id', 'resource_hash' );
 
@@ -231,7 +231,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 				$callable = function() use ( $table_name ) {
 					$columns = new Column_Collection();
 
-					// UUID as string primary key
+					// UUID as string primary key.
 					$columns[] = ( new String_Column( 'uuid' ) )
 						->set_type( Column_Types::CHAR )
 						->set_length( 36 ) // Standard UUID format with hyphens
@@ -281,7 +281,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 				$callable = function() use ( $table_name ) {
 					$columns = new Column_Collection();
 
-					// Email as primary key
+					// Email as primary key.
 					$columns[] = ( new String_Column( 'email' ) )
 						->set_type( Column_Types::VARCHAR )
 						->set_length( 255 )
@@ -329,13 +329,13 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 
 		$this->assertTrue( $table->exists() );
 
-		// Verify primary key column
+		// Verify primary key column.
 		$columns = $table::get_columns();
 		$username_column = $columns->get( 'username' );
 		$this->assertNotNull( $username_column );
 		$this->assertTrue( $username_column->is_primary_key() );
 
-		// Verify primary key configuration
+		// Verify primary key configuration.
 		$this->assertEquals( 'username', $table::uid_column() );
 		$this->assertEquals( [ 'username' ], $table::primary_columns() );
 	}
@@ -352,13 +352,13 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 
 		$this->assertTrue( $table->exists() );
 
-		// Verify primary key column
+		// Verify primary key column.
 		$columns = $table::get_columns();
 		$binary_id_column = $columns->get( 'binary_id' );
 		$this->assertNotNull( $binary_id_column );
 		$this->assertTrue( $binary_id_column->is_primary_key() );
 
-		// Verify primary key configuration
+		// Verify primary key configuration.
 		$this->assertEquals( 'binary_id', $table::uid_column() );
 		$this->assertEquals( [ 'binary_id' ], $table::primary_columns() );
 	}
@@ -372,7 +372,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$table = $this->get_string_primary_key_table();
 		Register::table( $table );
 
-		// Insert
+		// Insert.
 		$data = [
 			'username' => 'john_doe',
 			'email' => 'john@example.com',
@@ -386,7 +386,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$result = $table::insert( $data );
 		$this->assertNotFalse( $result );
 
-		// Read by primary key
+		// Read by primary key.
 		$retrieved = $table::get_by_id( 'john_doe' );
 		$this->assertNotNull( $retrieved );
 		$this->assertEquals( 'john_doe', $retrieved['username'] );
@@ -395,7 +395,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$this->assertTrue( $retrieved['is_active'] );
 		$this->assertEquals( 5, $retrieved['login_count'] );
 
-		// Update
+		// Update.
 		$update_data = [
 			'username' => 'john_doe', // Primary key
 			'login_count' => 6,
@@ -409,7 +409,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$this->assertEquals( 6, $updated['login_count'] );
 		$this->assertEquals( '2024-01-16 11:00:00', $updated['last_login']->format( 'Y-m-d H:i:s' ) );
 
-		// Delete
+		// Delete.
 		$result = $table::delete_many( [ 'john_doe' ], 'username' );
 		$this->assertNotFalse( $result );
 
@@ -426,12 +426,12 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$table = $this->get_binary_primary_key_table();
 		Register::table( $table );
 
-		// Generate UUID and convert to binary
+		// Generate UUID and convert to binary.
 		$uuid = 'f47ac10b-58cc-4372-a567-0e02b2c3d479';
 		$binary_uuid = hex2bin( str_replace( '-', '', $uuid ) );
 		$hash_key = hash( 'sha256', 'test_data', true );
 
-		// Insert
+		// Insert.
 		$data = [
 			'binary_id' => $binary_uuid,
 			'name' => 'Test Resource',
@@ -445,7 +445,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$result = $table::insert( $data );
 		$this->assertNotFalse( $result );
 
-		// Read by binary primary key
+		// Read by binary primary key.
 		$retrieved = $table::get_by_id( $binary_uuid );
 		$this->assertNotNull( $retrieved );
 		$this->assertEquals( $binary_uuid, $retrieved['binary_id'] );
@@ -453,7 +453,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$this->assertEquals( $hash_key, $retrieved['hash_key'] );
 		$this->assertEquals( 'document', $retrieved['type'] );
 
-		// Update using binary primary key
+		// Update using binary primary key.
 		$update_data = [
 			'binary_id' => $binary_uuid, // Primary key
 			'version' => 2,
@@ -467,12 +467,12 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$this->assertEquals( 2, $updated['version'] );
 		$this->assertEquals( 'Updated Resource', $updated['name'] );
 
-		// Query by binary column
+		// Query by binary column.
 		$results = $table::get_all_by( 'hash_key', $hash_key );
 		$this->assertCount( 1, $results );
 		$this->assertEquals( $binary_uuid, $results[0]['binary_id'] );
 
-		// Delete using binary primary key
+		// Delete using binary primary key.
 		$result = $table::delete_many( [ $binary_uuid ], 'binary_id' );
 		$this->assertNotFalse( $result );
 
@@ -491,11 +491,11 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 
 		$this->assertTrue( $table->exists() );
 
-		// Prepare composite key values
+		// Prepare composite key values.
 		$tenant_id = '550e8400-e29b-41d4-a716-446655440000'; // UUID
 		$resource_hash = sha1( 'resource_content', true ); // Binary SHA1
 
-		// Insert
+		// Insert.
 		$data = [
 			'tenant_id' => $tenant_id,
 			'resource_hash' => $resource_hash,
@@ -509,15 +509,15 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$result = $table::insert( $data );
 		$this->assertNotFalse( $result );
 
-		// Since this table has composite primary key, we need to query differently
-		// We'll query by one of the key columns
+		// Since this table has composite primary key, we need to query differently.
+		// We'll query by one of the key columns.
 		$results = $table::get_all_by( 'tenant_id', $tenant_id );
 		$this->assertCount( 1, $results );
 		$this->assertEquals( $tenant_id, $results[0]['tenant_id'] );
 		$this->assertEquals( $resource_hash, $results[0]['resource_hash'] );
 		$this->assertEquals( 'image', $results[0]['resource_type'] );
 
-		// Insert another resource for same tenant
+		// Insert another resource for same tenant.
 		$resource_hash2 = sha1( 'another_resource', true );
 		$data2 = [
 			'tenant_id' => $tenant_id,
@@ -531,11 +531,11 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$result = $table::insert( $data2 );
 		$this->assertNotFalse( $result );
 
-		// Query all resources for tenant
+		// Query all resources for tenant.
 		$results = $table::get_all_by( 'tenant_id', $tenant_id );
 		$this->assertCount( 2, $results );
 
-		// Test uniqueness of composite key - inserting duplicate should fail
+		// Test uniqueness of composite key - inserting duplicate should fail.
 		$duplicate_data = [
 			'tenant_id' => $tenant_id,
 			'resource_hash' => $resource_hash, // Same composite key
@@ -556,11 +556,11 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$table = $this->get_uuid_primary_key_table();
 		Register::table( $table );
 
-		// Generate UUIDs
+		// Generate UUIDs.
 		$uuid1 = '123e4567-e89b-12d3-a456-426614174000';
 		$uuid2 = '987fcdeb-51a2-43f1-b321-123456789abc';
 
-		// Insert first entity
+		// Insert first entity.
 		$data1 = [
 			'uuid' => $uuid1,
 			'entity_type' => 'user',
@@ -572,7 +572,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$result = $table::insert( $data1 );
 		$this->assertNotFalse( $result );
 
-		// Insert second entity
+		// Insert second entity.
 		$data2 = [
 			'uuid' => $uuid2,
 			'entity_type' => 'order',
@@ -584,7 +584,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$result = $table::insert( $data2 );
 		$this->assertNotFalse( $result );
 
-		// Read by UUID primary key
+		// Read by UUID primary key.
 		$entity1 = $table::get_by_id( $uuid1 );
 		$this->assertNotNull( $entity1 );
 		$this->assertEquals( $uuid1, $entity1['uuid'] );
@@ -598,7 +598,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$this->assertEquals( 'order', $entity2['entity_type'] );
 		$this->assertEquals( 99.99, $entity2['entity_data']['total'] );
 
-		// Update by UUID
+		// Update by UUID.
 		$update_data = [
 			'uuid' => $uuid1,
 			'is_processed' => true,
@@ -610,14 +610,14 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$updated = $table::get_by_id( $uuid1 );
 		$this->assertTrue( $updated['is_processed'] );
 
-		// Delete by UUID
+		// Delete by UUID.
 		$result = $table::delete_many( [ $uuid1 ], 'uuid' );
 		$this->assertNotFalse( $result );
 
 		$deleted = $table::get_by_id( $uuid1 );
 		$this->assertNull( $deleted );
 
-		// Verify second entity still exists
+		// Verify second entity still exists.
 		$entity2_check = $table::get_by_id( $uuid2 );
 		$this->assertNotNull( $entity2_check );
 	}
@@ -631,14 +631,14 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$table = $this->get_email_primary_key_table();
 		Register::table( $table );
 
-		// Test emails
+		// Test emails.
 		$emails = [
 			'alice@example.com',
 			'bob@test.org',
 			'charlie+tag@domain.co.uk',
 		];
 
-		// Insert subscribers
+		// Insert subscribers.
 		foreach ( $emails as $index => $email ) {
 			$data = [
 				'email' => $email,
@@ -653,7 +653,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 			$this->assertNotFalse( $result );
 		}
 
-		// Read by email primary key
+		// Read by email primary key.
 		$subscriber = $table::get_by_id( 'alice@example.com' );
 		$this->assertNotNull( $subscriber );
 		$this->assertEquals( 'alice@example.com', $subscriber['email'] );
@@ -664,7 +664,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$lowercase = $table::get_by_id( 'alice@example.com' );
 		$this->assertNotNull( $lowercase );
 
-		// Update subscription status
+		// Update subscription status.
 		$update_data = [
 			'email' => 'bob@test.org',
 			'is_subscribed' => false,
@@ -678,12 +678,12 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$this->assertFalse( $updated['is_subscribed'] );
 		$this->assertNull( $updated['subscription_type'] );
 
-		// Query by verification status
+		// Query by verification status.
 		$verified = $table::get_all_by( 'is_verified', true );
 		$this->assertCount( 1, $verified );
 		$this->assertEquals( 'alice@example.com', $verified[0]['email'] );
 
-		// Delete by email
+		// Delete by email.
 		$result = $table::delete_many( [ 'charlie+tag@domain.co.uk' ] );
 		$this->assertNotFalse( $result );
 
@@ -713,7 +713,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$table = $this->get_string_primary_key_table();
 		Register::table( $table );
 
-		// Insert test users
+		// Insert test users.
 		$users = [
 			[ 'username' => 'alice', 'email' => 'alice@test.com', 'full_name' => 'Alice Smith', 'is_active' => true, 'login_count' => 10 ],
 			[ 'username' => 'bob', 'email' => 'bob@test.com', 'full_name' => 'Bob Jones', 'is_active' => true, 'login_count' => 5 ],
@@ -726,7 +726,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 			$table::insert( $user );
 		}
 
-		// Paginate with ordering by string primary key
+		// Paginate with ordering by string primary key.
 		$page1 = $table::paginate( [], 2, 1, [ '*' ], '', '', [], ARRAY_A );
 		$this->assertCount( 2, $page1 );
 		$this->assertEquals( 'alice', $page1[0]['username'] ); // Alphabetically first
@@ -735,7 +735,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$this->assertCount( 2, $page2 );
 		$this->assertEquals( 'charlie', $page2[0]['username'] );
 
-		// Filter active users
+		// Filter active users.
 		$args = [
 			[
 				'column' => 'is_active',
@@ -747,7 +747,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$active_users = $table::paginate( $args, 10, 1, [ '*' ], '', '', [], ARRAY_A );
 		$this->assertCount( 4, $active_users ); // alice, bob, david, eve
 
-		// Order by login_count
+		// Order by login_count.
 		$args = [
 			'orderby' => 'login_count',
 			'order' => 'DESC',
@@ -767,7 +767,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$table = $this->get_string_primary_key_table();
 		Register::table( $table );
 
-		// Bulk insert
+		// Bulk insert.
 		$users = [
 			[ 'username' => 'user1', 'email' => 'user1@test.com', 'full_name' => 'User One', 'is_active' => true ],
 			[ 'username' => 'user2', 'email' => 'user2@test.com', 'full_name' => 'User Two', 'is_active' => true ],
@@ -777,7 +777,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$result = $table::insert_many( $users );
 		$this->assertNotFalse( $result );
 
-		// Verify all inserted
+		// Verify all inserted.
 		$all_users = $table::get_all();
 		$count = 0;
 		foreach ( $all_users as $user ) {
@@ -785,7 +785,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		}
 		$this->assertEquals( 3, $count );
 
-		// Bulk update
+		// Bulk update.
 		$updates = [
 			[ 'username' => 'user1', 'is_active' => false, 'login_count' => 1 ],
 			[ 'username' => 'user2', 'is_active' => false, 'login_count' => 2 ],
@@ -794,7 +794,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$result = $table::update_many( $updates );
 		$this->assertTrue( $result );
 
-		// Verify updates
+		// Verify updates.
 		$user1 = $table::get_by_id( 'user1' );
 		$this->assertFalse( $user1['is_active'] );
 		$this->assertEquals( 1, $user1['login_count'] );
@@ -803,11 +803,11 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$this->assertFalse( $user2['is_active'] );
 		$this->assertEquals( 2, $user2['login_count'] );
 
-		// Bulk delete
+		// Bulk delete.
 		$result = $table::delete_many( [ 'user1', 'user3' ], 'username' );
 		$this->assertEquals( 2, $result ); // 2 rows deleted
 
-		// Verify only user2 remains
+		// Verify only user2 remains.
 		$remaining = $table::get_all();
 		$count = 0;
 		$last_user = null;
@@ -844,7 +844,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$this->assertEquals( 'test@example.com', $user['email'] );
 		$this->assertEquals( 0, $user['login_count'] );
 
-		// Second upsert with same key (should update)
+		// Second upsert with same key (should update).
 		$data['login_count'] = 5;
 		$data['email'] = 'newemail@example.com';
 
@@ -856,7 +856,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$this->assertEquals( 'newemail@example.com', $user['email'] );
 		$this->assertEquals( 5, $user['login_count'] );
 
-		// Verify still only one row
+		// Verify still only one row.
 		$all = $table::get_all();
 		$count = 0;
 		foreach ( $all as $row ) {
@@ -874,7 +874,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$table = $this->get_binary_primary_key_table();
 		Register::table( $table );
 
-		// Test with null bytes in binary key
+		// Test with null bytes in binary key.
 		$binary_with_nulls = "\x00\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D\x0E\x0F";
 		$hash_key = hash( 'sha256', 'test', true );
 
@@ -890,13 +890,13 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$result = $table::insert( $data );
 		$this->assertNotFalse( $result );
 
-		// Retrieve and verify
+		// Retrieve and verify.
 		$retrieved = $table::get_by_id( $binary_with_nulls );
 		$this->assertNotNull( $retrieved );
 		$this->assertEquals( $binary_with_nulls, $retrieved['binary_id'] );
 		$this->assertEquals( 16, strlen( $retrieved['binary_id'] ) );
 
-		// Test with all zeros binary key
+		// Test with all zeros binary key.
 		$all_zeros = str_repeat( "\x00", 16 );
 		$data['binary_id'] = $all_zeros;
 		$data['name'] = 'All zeros binary';
@@ -909,7 +909,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$this->assertNotNull( $retrieved );
 		$this->assertEquals( $all_zeros, $retrieved['binary_id'] );
 
-		// Test with all ones (0xFF) binary key
+		// Test with all ones (0xFF) binary key.
 		$all_ones = str_repeat( "\xFF", 16 );
 		$data['binary_id'] = $all_ones;
 		$data['name'] = 'All ones binary';
@@ -922,7 +922,7 @@ class StringBinaryPrimaryKeyTest extends SchemaTestCase {
 		$this->assertNotNull( $retrieved );
 		$this->assertEquals( $all_ones, $retrieved['binary_id'] );
 
-		// Verify all three exist
+		// Verify all three exist.
 		$all = $table::get_all();
 		$count = 0;
 		foreach ( $all as $row ) {

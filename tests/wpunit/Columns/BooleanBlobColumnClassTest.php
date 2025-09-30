@@ -37,12 +37,12 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 				$callable = function() use ( $table_name ) {
 					$columns = new Column_Collection();
 
-					// Primary key
+					// Primary key.
 					$columns[] = ( new ID( 'id' ) )
 						->set_length( 11 )
 						->set_type( Column_Types::INT );
 
-					// Using Boolean_Column class
+					// Using Boolean_Column class.
 					$columns[] = ( new Boolean_Column( 'active_flag' ) )
 						->set_default( true );
 
@@ -52,13 +52,13 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 					$columns[] = ( new Boolean_Column( 'featured_flag' ) )
 						->set_nullable( true );
 
-					// Using different Boolean column types
+					// Using different Boolean column types.
 					$columns[] = ( new Boolean_Column( 'bit_flag' ) )
 						->set_type( Column_Types::BIT );
 
 					$columns[] = new Boolean_Column( 'boolean_flag' );
 
-					// Using Blob_Column class with different types
+					// Using Blob_Column class with different types.
 					$columns[] = ( new Blob_Column( 'tiny_data' ) )
 						->set_type( Column_Types::TINYBLOB );
 
@@ -71,7 +71,7 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 					$columns[] = ( new Blob_Column( 'long_data' ) )
 						->set_type( Column_Types::LONGBLOB );
 
-					// Blob column with JSON PHP type
+					// Blob column with JSON PHP type.
 					$columns[] = ( new Blob_Column( 'json_blob_data' ) )
 						->set_type( Column_Types::BLOB )
 						->set_php_type( PHP_Types::JSON );
@@ -80,7 +80,7 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 						->set_type( Column_Types::BLOB )
 						->set_php_type( PHP_Types::STRING );
 
-					// Regular column for reference
+					// Regular column for reference.
 					$columns[] = ( new String_Column( 'name' ) )
 						->set_length( 255 );
 
@@ -102,13 +102,13 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 	public function should_create_boolean_columns_with_proper_types() {
 		$column = new Boolean_Column( 'test_bool' );
 
-		// Test default type is BOOLEAN
+		// Test default type is BOOLEAN.
 		$this->assertEquals( Column_Types::BOOLEAN, $column->get_type() );
 
-		// Test PHP type is BOOL
+		// Test PHP type is BOOL.
 		$this->assertEquals( PHP_Types::BOOL, $column->get_php_type() );
 
-		// Test different boolean types
+		// Test different boolean types.
 		$column->set_type( Column_Types::BIT );
 		$this->assertEquals( Column_Types::BIT, $column->get_type() );
 	}
@@ -121,17 +121,17 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 	public function should_create_blob_columns_with_proper_types() {
 		$column = new Blob_Column( 'test_blob' );
 
-		// Test default type is BLOB
+		// Test default type is BLOB.
 		$this->assertEquals( Column_Types::BLOB, $column->get_type() );
 
-		// Test PHP type is BLOB
+		// Test PHP type is BLOB.
 		$this->assertEquals( PHP_Types::BLOB, $column->get_php_type() );
 
-		// Test different blob types
+		// Test different blob types.
 		$column->set_type( Column_Types::MEDIUMBLOB );
 		$this->assertEquals( Column_Types::MEDIUMBLOB, $column->get_type() );
 
-		// Test JSON PHP type
+		// Test JSON PHP type.
 		$column->set_php_type( PHP_Types::JSON );
 		$this->assertEquals( PHP_Types::JSON, $column->get_php_type() );
 	}
@@ -147,7 +147,7 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 
 		$this->assertTrue( $table->exists() );
 
-		// Verify columns exist
+		// Verify columns exist.
 		$columns = $table::get_columns();
 		$this->assertNotNull( $columns->get( 'active_flag' ) );
 		$this->assertNotNull( $columns->get( 'published_flag' ) );
@@ -170,7 +170,7 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 		$table = $this->get_column_types_test_table();
 		Register::table( $table );
 
-		// Insert with minimal data to test defaults
+		// Insert with minimal data to test defaults.
 		$data = [
 			'name' => 'Test Defaults',
 			'tiny_data' => 'tiny',
@@ -185,13 +185,13 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 		$insert_id = $wpdb->insert_id;
 		$retrieved = $table::get_by_id( $insert_id );
 
-		// active_flag default is true
+		// active_flag default is true.
 		$this->assertTrue( $retrieved['active_flag'] );
 
-		// published_flag default is false
+		// published_flag default is false.
 		$this->assertFalse( $retrieved['published_flag'] );
 
-		// featured_flag is nullable and should be null
+		// featured_flag is nullable and should be null.
 		$this->assertNull( $retrieved['featured_flag'] );
 	}
 
@@ -233,7 +233,7 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 		$insert_id = $wpdb->insert_id;
 		$retrieved = $table::get_by_id( $insert_id );
 
-		// json_blob_data should be decoded back to array
+		// json_blob_data should be decoded back to array.
 		$this->assertIsArray( $retrieved['json_blob_data'] );
 		$this->assertEquals( $complex_json['nested']['array'], $retrieved['json_blob_data']['nested']['array'] );
 		$this->assertEquals( $complex_json['special_chars'], $retrieved['json_blob_data']['special_chars'] );
@@ -250,7 +250,7 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 		$table = $this->get_column_types_test_table();
 		Register::table( $table );
 
-		// Insert test data
+		// Insert test data.
 		$test_data = [
 			[
 				'name' => 'All True',
@@ -294,7 +294,7 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 			$table::insert( $data );
 		}
 
-		// Query by different boolean columns
+		// Query by different boolean columns.
 		$active_results = $table::get_all_by( 'active_flag', true );
 		$this->assertCount( 2, $active_results ); // "All True" and "Mixed"
 
@@ -304,7 +304,7 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 		$boolean_false_results = $table::get_all_by( 'boolean_flag', false );
 		$this->assertCount( 2, $boolean_false_results ); // "All False" and "Mixed"
 
-		// Test nullable featured_flag
+		// Test nullable featured_flag.
 		$featured_true = $table::get_all_by( 'featured_flag', true );
 		$this->assertCount( 1, $featured_true );
 		$this->assertEquals( 'All True', $featured_true[0]['name'] );
@@ -321,7 +321,7 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 		$table = $this->get_column_types_test_table();
 		Register::table( $table );
 
-		// Insert initial data
+		// Insert initial data.
 		$initial = [
 			'name' => 'Update Test',
 			'active_flag' => true,
@@ -338,7 +338,7 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 		$table::insert( $initial );
 		$insert_id = $wpdb->insert_id;
 
-		// Update with new values
+		// Update with new values.
 		$update = [
 			'id' => $insert_id,
 			'active_flag' => false,
@@ -352,25 +352,25 @@ class BooleanBlobColumnClassTest extends SchemaTestCase {
 		$result = $table::update_single( $update );
 		$this->assertTrue( $result );
 
-		// Retrieve and verify
+		// Retrieve and verify.
 		$updated = $table::get_by_id( $insert_id );
 
-		// Check boolean updates
+		// Check boolean updates.
 		$this->assertFalse( $updated['active_flag'] );
 		$this->assertTrue( $updated['published_flag'] );
 		$this->assertFalse( $updated['bit_flag'] );
 		$this->assertFalse( $updated['boolean_flag'] );
 
-		// Check blob updates
+		// Check blob updates.
 		$this->assertStringContainsString( 'updated_blob_', $updated['blob_data'] );
 		$this->assertStringContainsString( str_repeat( 'X', 1000 ), $updated['blob_data'] );
 
-		// Check JSON blob update
+		// Check JSON blob update.
 		$json_data = $updated['json_blob_data'];
 		$this->assertEquals( 2, $json_data['version'] );
 		$this->assertTrue( $json_data['updated'] );
 
-		// Check unchanged values
+		// Check unchanged values.
 		$this->assertEquals( 'initial_tiny', $updated['tiny_data'] );
 		$this->assertEquals( 'initial_medium', $updated['medium_data'] );
 	}

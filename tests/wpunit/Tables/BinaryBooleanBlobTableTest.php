@@ -45,13 +45,13 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 				$callable = function() use ( $table_name ) {
 					$columns = new Column_Collection();
 
-					// Primary key
+					// Primary key.
 					$columns[] = ( new ID( 'id' ) )
 						->set_length( 11 )
 						->set_type( Column_Types::INT )
 						->set_auto_increment( true );
 
-					// Boolean columns with different configurations
+					// Boolean columns with different configurations.
 					$columns[] = ( new Boolean_Column( 'is_active' ) )
 						->set_default( true );
 
@@ -64,7 +64,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 					$columns[] = ( new Boolean_Column( 'has_thumbnail' ) )
 						->set_type( Column_Types::BIT );
 
-					// Binary columns with different types
+					// Binary columns with different types.
 					$columns[] = ( new Binary_Column( 'binary_hash' ) )
 						->set_type( Column_Types::BINARY )
 						->set_length( 32 ); // For MD5 hash
@@ -82,7 +82,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 						->set_length( 100 )
 						->set_nullable( true );
 
-					// Blob columns with different types
+					// Blob columns with different types.
 					$columns[] = ( new Blob_Column( 'tiny_blob_data' ) )
 						->set_type( Column_Types::TINYBLOB );
 
@@ -103,7 +103,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 						->set_type( Column_Types::BLOB )
 						->set_nullable( true );
 
-					// Regular columns for context
+					// Regular columns for context.
 					$columns[] = ( new String_Column( 'title' ) )
 						->set_length( 255 )
 						->set_searchable( true );
@@ -149,7 +149,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 						->set_type( Column_Types::INT )
 						->set_auto_increment( true );
 
-					// Fixed-length binary for various hash types
+					// Fixed-length binary for various hash types.
 					$columns[] = ( new Binary_Column( 'md5_hash' ) )
 						->set_type( Column_Types::BINARY )
 						->set_length( 16 ); // MD5 raw binary
@@ -162,7 +162,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 						->set_type( Column_Types::BINARY )
 						->set_length( 32 ); // SHA256 raw binary
 
-					// Variable binary for flexible data
+					// Variable binary for flexible data.
 					$columns[] = ( new Binary_Column( 'encrypted_data' ) )
 						->set_type( Column_Types::VARBINARY )
 						->set_length( 512 );
@@ -171,7 +171,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 						->set_type( Column_Types::VARBINARY )
 						->set_length( 16 ); // Can store IPv4 (4 bytes) or IPv6 (16 bytes)
 
-					// Blob with PHP type variations
+					// Blob with PHP type variations.
 					$columns[] = ( new Blob_Column( 'serialized_data' ) )
 						->set_type( Column_Types::BLOB )
 						->set_php_type( PHP_Types::STRING );
@@ -180,7 +180,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 						->set_type( Column_Types::MEDIUMBLOB )
 						->set_php_type( PHP_Types::JSON );
 
-					// Boolean flags for data state
+					// Boolean flags for data state.
 					$columns[] = ( new Boolean_Column( 'is_encrypted' ) )
 						->set_default( false );
 
@@ -224,7 +224,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 						->set_type( Column_Types::INT )
 						->set_auto_increment( true );
 
-					// Binary columns with indexes
+					// Binary columns with indexes.
 					$columns[] = ( new Binary_Column( 'unique_token' ) )
 						->set_type( Column_Types::BINARY )
 						->set_length( 20 )
@@ -235,14 +235,14 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 						->set_length( 64 )
 						->set_is_index( true );
 
-					// Boolean columns for composite indexes
+					// Boolean columns for composite indexes.
 					$columns[] = ( new Boolean_Column( 'is_active' ) )
 						->set_default( true );
 
 					$columns[] = ( new Boolean_Column( 'is_verified' ) )
 						->set_default( false );
 
-					// Regular columns for composite indexes
+					// Regular columns for composite indexes.
 					$columns[] = ( new String_Column( 'category' ) )
 						->set_length( 50 );
 
@@ -250,23 +250,23 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 						->set_type( Column_Types::TINYINT )
 						->set_default( 0 );
 
-					// Blob columns (typically not indexed directly)
+					// Blob columns (typically not indexed directly).
 					$columns[] = ( new Blob_Column( 'metadata' ) )
 						->set_type( Column_Types::BLOB )
 						->set_php_type( PHP_Types::JSON );
 
-					// Additional indexes
+					// Additional indexes.
 					$indexes = new Index_Collection();
 
-					// Composite index with boolean
+					// Composite index with boolean.
 					$indexes[] = ( new Classic_Index( 'idx_active_verified' ) )
 						->set_columns( 'is_active', 'is_verified' );
 
-					// Composite index with boolean and regular column
+					// Composite index with boolean and regular column.
 					$indexes[] = ( new Classic_Index( 'idx_category_active' ) )
 						->set_columns( 'category', 'is_active' );
 
-					// Index on priority and verification
+					// Index on priority and verification.
 					$indexes[] = ( new Classic_Index( 'idx_priority_verified' ) )
 						->set_columns( 'priority', 'is_verified' );
 
@@ -296,22 +296,22 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 
 		$this->assertTrue( $table->exists() );
 
-		// Verify column definitions
+		// Verify column definitions.
 		$columns = $table::get_columns();
 
-		// Check Boolean columns exist
+		// Check Boolean columns exist.
 		$this->assertNotNull( $columns->get( 'is_active' ) );
 		$this->assertNotNull( $columns->get( 'is_published' ) );
 		$this->assertNotNull( $columns->get( 'is_featured' ) );
 		$this->assertNotNull( $columns->get( 'has_thumbnail' ) );
 
-		// Check Binary columns exist
+		// Check Binary columns exist.
 		$this->assertNotNull( $columns->get( 'binary_hash' ) );
 		$this->assertNotNull( $columns->get( 'varbinary_data' ) );
 		$this->assertNotNull( $columns->get( 'uuid_binary' ) );
 		$this->assertNotNull( $columns->get( 'nullable_binary' ) );
 
-		// Check Blob columns exist
+		// Check Blob columns exist.
 		$this->assertNotNull( $columns->get( 'tiny_blob_data' ) );
 		$this->assertNotNull( $columns->get( 'blob_data' ) );
 		$this->assertNotNull( $columns->get( 'medium_blob_data' ) );
@@ -331,31 +331,31 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$table = $this->get_binary_boolean_blob_table();
 		Register::table( $table );
 
-		// Prepare test data
+		// Prepare test data.
 		$md5_binary = md5( 'test', true ); // 16 bytes binary
 		$uuid_binary = hex2bin( str_replace( '-', '', 'f47ac10b-58cc-4372-a567-0e02b2c3d479' ) ); // 16 bytes
 		$varbinary_data = pack( 'H*', '48656c6c6f20576f726c64' ); // "Hello World" in hex
 
 		$data = [
 			'title' => 'Test Entry',
-			// Boolean values
+			// Boolean values.
 			'is_active' => true,
 			'is_published' => false,
 			'is_featured' => true,
 			'has_thumbnail' => 1,
-			// Binary values
+			// Binary values.
 			'binary_hash' => str_pad( $md5_binary, 32, "\0" ), // Pad to 32 bytes for BINARY(32)
 			'varbinary_data' => $varbinary_data,
 			'uuid_binary' => $uuid_binary,
 			'nullable_binary' => null,
-			// Blob values
+			// Blob values.
 			'tiny_blob_data' => 'Small data',
 			'blob_data' => str_repeat( 'data ', 5 ),
 			'medium_blob_data' => str_repeat( 'medium data ', 15 ),
 			'long_blob_data' => str_repeat( 'long data ', 35 ),
 			'json_blob' => json_encode( [ 'key' => 'value', 'nested' => [ 'array' => [ 1, 2, 3 ] ] ] ),
 			'nullable_blob' => null,
-			// Other values
+			// Other values.
 			'view_count' => 42,
 			'created_at' => '2024-01-15 10:30:00',
 		];
@@ -368,7 +368,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 
 		$this->assertNotNull( $retrieved );
 
-		// Verify Boolean values
+		// Verify Boolean values.
 		$this->assertIsBool( $retrieved['is_active'] );
 		$this->assertTrue( $retrieved['is_active'] );
 		$this->assertIsBool( $retrieved['is_published'] );
@@ -377,7 +377,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$this->assertTrue( $retrieved['is_featured'] );
 		$this->assertTrue( $retrieved['has_thumbnail'] ); // BIT type
 
-		// Verify Binary values (should be returned as strings)
+		// Verify Binary values (should be returned as strings).
 		$this->assertIsString( $retrieved['binary_hash'] );
 		$this->assertEquals( 32, strlen( $retrieved['binary_hash'] ) ); // BINARY(32) is fixed length
 		$this->assertStringStartsWith( $md5_binary, $retrieved['binary_hash'] );
@@ -390,20 +390,20 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 
 		$this->assertNull( $retrieved['nullable_binary'] );
 
-		// Verify Blob values
+		// Verify Blob values.
 		$this->assertEquals( 'Small data', $retrieved['tiny_blob_data'] );
 		$this->assertStringContainsString( 'data', $retrieved['blob_data'] );
 		$this->assertStringContainsString( 'medium data', $retrieved['medium_blob_data'] );
 		$this->assertStringContainsString( 'long data', $retrieved['long_blob_data'] );
 
-		// Verify JSON blob
+		// Verify JSON blob.
 		$this->assertIsArray( $retrieved['json_blob'] );
 		$this->assertEquals( 'value', $retrieved['json_blob']['key'] );
 		$this->assertEquals( [ 1, 2, 3 ], $retrieved['json_blob']['nested']['array'] );
 
 		$this->assertNull( $retrieved['nullable_blob'] );
 
-		// Verify other values
+		// Verify other values.
 		$this->assertEquals( 42, $retrieved['view_count'] );
 		$this->assertInstanceOf( DateTime::class, $retrieved['created_at'] );
 		$this->assertEquals( '2024-01-15 10:30:00', $retrieved['created_at']->format( 'Y-m-d H:i:s' ) );
@@ -420,16 +420,16 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$table = $this->get_mixed_binary_table();
 		Register::table( $table );
 
-		// Generate various hashes
+		// Generate various hashes.
 		$test_string = 'Hello World!';
 		$md5_binary = md5( $test_string, true ); // 16 bytes
 		$sha1_binary = sha1( $test_string, true ); // 20 bytes
 		$sha256_binary = hash( 'sha256', $test_string, true ); // 32 bytes
 
-		// Prepare encrypted data (simulated)
+		// Prepare encrypted data (simulated).
 		$encrypted = base64_encode( openssl_random_pseudo_bytes( 256 ) );
 
-		// IP addresses in binary
+		// IP addresses in binary.
 		$ipv4_binary = inet_pton( '192.168.1.1' ); // 4 bytes
 		$ipv6_binary = inet_pton( '2001:db8::1' ); // 16 bytes
 
@@ -452,7 +452,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$insert_id = $wpdb->insert_id;
 		$retrieved = $table::get_by_id( $insert_id );
 
-		// Verify hash storage
+		// Verify hash storage.
 		$this->assertEquals( 16, strlen( $retrieved['md5_hash'] ) );
 		$this->assertEquals( $md5_binary, substr( $retrieved['md5_hash'], 0, 16 ) );
 
@@ -462,14 +462,14 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$this->assertEquals( 32, strlen( $retrieved['sha256_hash'] ) );
 		$this->assertEquals( $sha256_binary, $retrieved['sha256_hash'] );
 
-		// Verify encrypted data
+		// Verify encrypted data.
 		$this->assertEquals( $encrypted, $retrieved['encrypted_data'] );
 
-		// Verify IP address storage
+		// Verify IP address storage.
 		$this->assertEquals( $ipv4_binary, $retrieved['ip_address'] );
 		$this->assertEquals( '192.168.1.1', inet_ntop( $retrieved['ip_address'] ) );
 
-		// Test IPv6 storage
+		// Test IPv6 storage.
 		$data_ipv6 = $data;
 		$data_ipv6['ip_address'] = $ipv6_binary;
 		$data_ipv6['data_type'] = 'ipv6_test';
@@ -483,16 +483,16 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$this->assertEquals( $ipv6_binary, $retrieved_ipv6['ip_address'] );
 		$this->assertEquals( '2001:db8::1', inet_ntop( $retrieved_ipv6['ip_address'] ) );
 
-		// Verify serialized data
+		// Verify serialized data.
 		$unserialized = @unserialize( $retrieved['serialized_data'] );
 		$this->assertIsArray( $unserialized );
 		$this->assertEquals( 'data', $unserialized['test'] );
 
-		// Verify JSON settings
+		// Verify JSON settings.
 		$this->assertIsArray( $retrieved['json_settings'] );
 		$this->assertEquals( 'dark', $retrieved['json_settings']['theme'] );
 
-		// Verify boolean flags
+		// Verify boolean flags.
 		$this->assertTrue( $retrieved['is_encrypted'] );
 		$this->assertFalse( $retrieved['is_compressed'] );
 	}
@@ -509,7 +509,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 
 		$this->assertTrue( $table->exists() );
 
-		// Verify indexes exist
+		// Verify indexes exist.
 		$this->assertTrue( $table->has_index( 'unique_token' ) );
 		$this->assertTrue( $table->has_index( 'indexed_hash' ) );
 		$this->assertTrue( $table->has_index( 'idx_active_verified' ) );
@@ -526,7 +526,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$table = $this->get_indexed_binary_blob_table();
 		Register::table( $table );
 
-		// Insert test data with unique tokens
+		// Insert test data with unique tokens.
 		$tokens = [
 			'token1' => str_pad( 'unique_token_001', 20, "\0" ),
 			'token2' => str_pad( 'unique_token_002', 20, "\0" ),
@@ -548,19 +548,19 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 			$this->assertNotFalse( $result );
 		}
 
-		// Query by binary value
+		// Query by binary value.
 		$result = $table::get_first_by( 'unique_token', $tokens['token1'] );
 		$this->assertNotNull( $result );
 		$this->assertEquals( $tokens['token1'], $result['unique_token'] );
 
-		// Query by boolean values
+		// Query by boolean values.
 		$active_results = $table::get_all_by( 'is_active', true );
 		$this->assertCount( 2, $active_results ); // token1 and token3
 
 		$verified_results = $table::get_all_by( 'is_verified', true );
 		$this->assertCount( 1, $verified_results ); // only token1
 
-		// Query with pagination and filters
+		// Query with pagination and filters.
 		$args = [
 			[
 				'column' => 'is_active',
@@ -590,7 +590,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$table = $this->get_binary_boolean_blob_table();
 		Register::table( $table );
 
-		// Insert initial data
+		// Insert initial data.
 		$initial_data = [
 			'title' => 'Initial Title',
 			'is_active' => true,
@@ -611,7 +611,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$this->assertNotFalse( $result );
 		$insert_id = $wpdb->insert_id;
 
-		// Update with new values
+		// Update with new values.
 		$new_uuid = hex2bin( str_replace( '-', '', 'b1b2b3b4-c5c6-d7d8-e9e0-f1f2f3f4f5f6' ) );
 		$update_data = [
 			'id' => $insert_id,
@@ -628,7 +628,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$result = $table::update_single( $update_data );
 		$this->assertTrue( $result );
 
-		// Retrieve and verify
+		// Retrieve and verify.
 		$updated = $table::get_by_id( $insert_id );
 
 		$this->assertEquals( 'Updated Title', $updated['title'] );
@@ -638,14 +638,14 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$this->assertEquals( $new_uuid, $updated['uuid_binary'] );
 		$this->assertEquals( 'updated_blob_with_more_data', $updated['blob_data'] );
 
-		// Check JSON blob update
+		// Check JSON blob update.
 		$this->assertIsArray( $updated['json_blob'] );
 		$this->assertEquals( 2, $updated['json_blob']['version'] );
 		$this->assertTrue( $updated['json_blob']['updated'] );
 
 		$this->assertEquals( 100, $updated['view_count'] );
 
-		// Verify unchanged values
+		// Verify unchanged values.
 		$this->assertEquals( 'initial_binary', $updated['varbinary_data'] );
 		$this->assertEquals( 'initial_tiny', $updated['tiny_blob_data'] );
 		$this->assertEquals( 'initial_medium', $updated['medium_blob_data'] );
@@ -662,7 +662,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$table = $this->get_binary_boolean_blob_table();
 		Register::table( $table );
 
-		// Insert with minimal data
+		// Insert with minimal data.
 		$data = [
 			'title' => 'Default Test',
 			'binary_hash' => str_pad( 'hash', 32, "\0" ),
@@ -682,12 +682,12 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$insert_id = $wpdb->insert_id;
 		$retrieved = $table::get_by_id( $insert_id );
 
-		// Check boolean defaults
+		// Check boolean defaults.
 		$this->assertTrue( $retrieved['is_active'] ); // default true
 		$this->assertFalse( $retrieved['is_published'] ); // default false
 		$this->assertNull( $retrieved['is_featured'] ); // nullable, no default
 
-		// Check integer default
+		// Check integer default.
 		$this->assertEquals( 0, $retrieved['view_count'] ); // default 0
 	}
 
@@ -724,7 +724,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 
 		$insert_id = $wpdb->insert_id;
 
-		// Use raw query to verify NULL values
+		// Use raw query to verify NULL values.
 		$row = $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM {$table->table_name()} WHERE id = %d", $insert_id ),
 			ARRAY_A
@@ -734,7 +734,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$this->assertNull( $row['nullable_binary'] );
 		$this->assertNull( $row['nullable_blob'] );
 
-		// Verify through model
+		// Verify through model.
 		$retrieved = $table::get_by_id( $insert_id );
 		$this->assertNull( $retrieved['is_featured'] );
 		$this->assertNull( $retrieved['nullable_binary'] );
@@ -752,7 +752,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$table = $this->get_binary_boolean_blob_table();
 		Register::table( $table );
 
-		// Generate large data
+		// Generate large data.
 		$large_varbinary = str_repeat( "\xFF", 10 ); // Max for VARBINARY(255)
 		$large_blob = str_repeat( 'X', 50 ); // 64KB for BLOB
 		$large_medium = str_repeat( 'Y', 30 ); // 1MB for MEDIUMBLOB
@@ -778,7 +778,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$insert_id = $wpdb->insert_id;
 		$retrieved = $table::get_by_id( $insert_id );
 
-		// Verify data integrity
+		// Verify data integrity.
 		$this->assertEquals( 10, strlen( $retrieved['varbinary_data'] ) );
 		$this->assertEquals( $large_varbinary, $retrieved['varbinary_data'] );
 
@@ -791,7 +791,7 @@ class BinaryBooleanBlobTableTest extends SchemaTestCase {
 		$this->assertEquals( 100, strlen( $retrieved['long_blob_data'] ) );
 		$this->assertEquals( $large_long, $retrieved['long_blob_data'] );
 
-		// Verify JSON blob
+		// Verify JSON blob.
 		$json_data = $retrieved['json_blob'];
 		$this->assertIsArray( $json_data );
 		$this->assertCount( 1000, $json_data );

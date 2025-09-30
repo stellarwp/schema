@@ -50,13 +50,13 @@ class ComplexTableTest extends SchemaTestCase {
 				$callable = function() use ( $table_name ) {
 					$columns = new Column_Collection();
 
-					// Primary key with auto increment
+					// Primary key with auto increment.
 					$columns[] = ( new ID( 'id' ) )
 						->set_length( 11 )
 						->set_type( Column_Types::BIGINT )
 						->set_auto_increment( true );
 
-					// Integer types
+					// Integer types.
 					$columns[] = ( new Integer_Column( 'tinyint_col' ) )
 						->set_type( Column_Types::TINYINT )
 						->set_length( 3 )
@@ -85,28 +85,28 @@ class ComplexTableTest extends SchemaTestCase {
 						->set_length( 20 )
 						->set_signed( false );
 
-					// Float types
-					// For FLOAT(10,2) - 10 total digits, 2 decimal places
+					// Float types.
+					// For FLOAT(10,2) - 10 total digits, 2 decimal places.
 					$columns[] = ( new Float_Column( 'float_col' ) )
 						->set_type( Column_Types::FLOAT )
 						->set_length( 10 )
 						->set_precision( 2 )
 						->set_default( 0.0 );
 
-					// For DECIMAL(15,4) - 15 total digits, 4 decimal places
+					// For DECIMAL(15,4) - 15 total digits, 4 decimal places.
 					$columns[] = ( new Float_Column( 'decimal_col' ) )
 						->set_type( Column_Types::DECIMAL )
 						->set_length( 15 )
 						->set_precision( 4 )
 						->set_nullable( true );
 
-					// For DOUBLE(22,8) - 22 total digits, 8 decimal places
+					// For DOUBLE(22,8) - 22 total digits, 8 decimal places.
 					$columns[] = ( new Float_Column( 'double_col' ) )
 						->set_type( Column_Types::DOUBLE )
 						->set_length( 22 )
 						->set_precision( 8 );
 
-					// String types
+					// String types.
 					$columns[] = ( new String_Column( 'char_col' ) )
 						->set_type( Column_Types::CHAR )
 						->set_length( 10 )
@@ -118,7 +118,7 @@ class ComplexTableTest extends SchemaTestCase {
 						->set_searchable( true )
 						->set_is_unique( true );
 
-					// Text types
+					// Text types.
 					$columns[] = ( new Text_Column( 'tinytext_col' ) )
 						->set_type( Column_Types::TINYTEXT );
 
@@ -132,7 +132,7 @@ class ComplexTableTest extends SchemaTestCase {
 					$columns[] = ( new Text_Column( 'longtext_col' ) )
 						->set_type( Column_Types::LONGTEXT );
 
-					// Datetime types
+					// Datetime types.
 					$columns[] = ( new Datetime_Column( 'date_col' ) )
 						->set_type( Column_Types::DATE )
 						->set_nullable( true );
@@ -143,14 +143,14 @@ class ComplexTableTest extends SchemaTestCase {
 
 					$columns[] = new Last_Changed( 'last_changed' );
 
-					// Boolean column
+					// Boolean column.
 					$columns[] = ( new Integer_Column( 'is_active' ) )
 						->set_type( Column_Types::TINYINT )
 						->set_length( 1 )
 						->set_default( 1 )
 						->set_php_type( PHP_Types::BOOL );
 
-					// JSON column (stored as text)
+					// JSON column (stored as text).
 					$columns[] = ( new Text_Column( 'json_data' ) )
 						->set_type( Column_Types::TEXT )
 						->set_php_type( PHP_Types::JSON );
@@ -184,13 +184,13 @@ class ComplexTableTest extends SchemaTestCase {
 				$callable = function() use ( $table_name ) {
 					$columns = new Column_Collection();
 
-					// Primary key
+					// Primary key.
 					$columns[] = ( new ID( 'id' ) )
 						->set_length( 11 )
 						->set_type( Column_Types::INT )
 						->set_auto_increment( true );
 
-					// Columns for various indexes
+					// Columns for various indexes.
 					$columns[] = ( new String_Column( 'unique_email' ) )
 						->set_length( 255 )
 						->set_is_unique( true );
@@ -227,18 +227,18 @@ class ComplexTableTest extends SchemaTestCase {
 					$columns[] = ( new Datetime_Column( 'published_at' ) )
 						->set_type( Column_Types::DATETIME );
 
-					// Define additional indexes
+					// Define additional indexes.
 					$indexes = new Index_Collection();
 
-					// Composite index
+					// Composite index.
 					$indexes[] = ( new Classic_Index( 'idx_category_tag' ) )
 						->set_columns( 'category', 'tag' );
 
-					// Another composite with different order
+					// Another composite with different order.
 					$indexes[] = ( new Classic_Index( 'idx_status_published' ) )
 						->set_columns( 'status', 'published_at' );
 
-					// Unique composite key
+					// Unique composite key.
 					$indexes[] = ( new Unique_Key( 'uk_user_category' ) )
 						->set_columns( 'user_id', 'category' );
 
@@ -328,10 +328,10 @@ class ComplexTableTest extends SchemaTestCase {
 						$columns[] = ( new String_Column( 'name' ) )
 							->set_length( 100 );
 
-						// Created_At column
+						// Created_At column.
 						$columns[] = new Created_At( 'created_at' );
 
-						// Regular datetime for comparison
+						// Regular datetime for comparison.
 						$columns[] = ( new Datetime_Column( 'other_date' ) )
 							->set_type( Column_Types::DATETIME )
 							->set_nullable( true );
@@ -413,7 +413,7 @@ class ComplexTableTest extends SchemaTestCase {
 
 		$this->assertTrue( $table->exists() );
 
-		// Verify indexes exist
+		// Verify indexes exist.
 		$this->assertTrue( $table->has_index( 'indexed_slug' ) );
 		$this->assertTrue( $table->has_index( 'user_id' ) );
 		$this->assertTrue( $table->has_index( 'unique_email' ) );
@@ -435,7 +435,7 @@ class ComplexTableTest extends SchemaTestCase {
 
 		$table_name = $table->table_name();
 
-		// Insert test data
+		// Insert test data.
 		$data = [
 			'tinyint_col' => 127,
 			'smallint_col' => -1000,
@@ -463,12 +463,12 @@ class ComplexTableTest extends SchemaTestCase {
 		$insert_id = $wpdb->insert_id;
 		$this->assertGreaterThan( 0, $insert_id );
 
-		// Retrieve and verify data
+		// Retrieve and verify data.
 		$result = $table::get_by_id( $insert_id );
 
 		$this->assertNotNull( $result );
 
-		// Verify integer types
+		// Verify integer types.
 		$this->assertSame( $insert_id, (int) $result['id'] );
 		$this->assertSame( 127, (int) $result['tinyint_col'] );
 		$this->assertSame( -1000, (int) $result['smallint_col'] );
@@ -476,34 +476,34 @@ class ComplexTableTest extends SchemaTestCase {
 		$this->assertSame( 2147483647, (int) $result['int_col'] );
 		$this->assertEquals( '9223372036854775807', $result['bigint_col'] );
 
-		// Verify float types
+		// Verify float types.
 		$this->assertEqualsWithDelta( 123.45, (float) $result['float_col'], 0.01 );
 		$this->assertEqualsWithDelta( 1234.5678, (float) $result['decimal_col'], 0.0001 );
 		$this->assertEqualsWithDelta( 123456.78901234, (float) $result['double_col'], 0.00001 );
 
-		// Verify string types
+		// Verify string types.
 		$this->assertEquals( 'FIXED', trim( $result['char_col'] ) );
 		$this->assertEquals( 'Variable length string', $result['varchar_col'] );
 
-		// Verify text types
+		// Verify text types.
 		$this->assertEquals( 'Tiny text content', $result['tinytext_col'] );
 		$this->assertEquals( 'Regular text content with more data', $result['text_col'] );
 		$this->assertStringContainsString( 'Medium text', $result['mediumtext_col'] );
 		$this->assertStringContainsString( 'Long text content', $result['longtext_col'] );
 
-		// Verify datetime types
+		// Verify datetime types.
 		$this->assertEquals( '2024-01-15', $result['date_col']->format( 'Y-m-d' ) );
 		$this->assertEquals( '2024-01-15 14:30:00', $result['datetime_col']->format( 'Y-m-d H:i:s' ) );
 
-		// Verify special columns - only last_changed is in comprehensive table
+		// Verify special columns - only last_changed is in comprehensive table.
 		$this->assertNotNull( $result['last_changed'] );
 		$this->assertInstanceOf( DateTime::class, $result['last_changed'] );
 
-		// Verify boolean transformation
+		// Verify boolean transformation.
 		$this->assertIsBool( $result['is_active'] );
 		$this->assertTrue( $result['is_active'] );
 
-		// Verify JSON transformation
+		// Verify JSON transformation.
 		$this->assertIsArray( $result['json_data'] );
 		$this->assertEquals( 'value', $result['json_data']['key'] );
 		$this->assertTrue( $result['json_data']['nested']['data'] );
@@ -522,7 +522,7 @@ class ComplexTableTest extends SchemaTestCase {
 
 		$table_name = $table->table_name();
 
-		// Insert with NULL values
+		// Insert with NULL values.
 		$data = [
 			'smallint_col' => null,
 			'decimal_col' => null,
@@ -543,7 +543,7 @@ class ComplexTableTest extends SchemaTestCase {
 			ARRAY_A
 		);
 
-		// Verify NULL values
+		// Verify NULL values.
 		$this->assertNull( $result['smallint_col'] );
 		$this->assertNull( $result['decimal_col'] );
 		$this->assertNull( $result['text_col'] );
@@ -563,7 +563,7 @@ class ComplexTableTest extends SchemaTestCase {
 
 		$table_name = $table->table_name();
 
-		// Insert minimal data to test defaults
+		// Insert minimal data to test defaults.
 		$data = [
 			'varchar_col' => 'test_defaults_' . time(),
 			'json_data' => '{}',
@@ -579,7 +579,7 @@ class ComplexTableTest extends SchemaTestCase {
 			ARRAY_A
 		);
 
-		// Verify default values
+		// Verify default values.
 		$this->assertEquals( 0, (int) $result['tinyint_col'] );
 		$this->assertEquals( 100, (int) $result['mediumint_col'] );
 		$this->assertEquals( 0, (float) $result['float_col'] );
@@ -601,7 +601,7 @@ class ComplexTableTest extends SchemaTestCase {
 
 		$table_name = $table->table_name();
 
-		// Insert first record
+		// Insert first record.
 		$data1 = [
 			'unique_email' => 'test@example.com',
 			'indexed_slug' => 'test-slug',
@@ -616,7 +616,7 @@ class ComplexTableTest extends SchemaTestCase {
 		$inserted1 = $wpdb->insert( $table_name, $data1 );
 		$this->assertNotFalse( $inserted1 );
 
-		// Try to insert duplicate unique_email
+		// Try to insert duplicate unique_email.
 		$data2 = $data1;
 		$data2['indexed_slug'] = 'different-slug';
 
@@ -626,7 +626,7 @@ class ComplexTableTest extends SchemaTestCase {
 
 		$this->assertFalse( $inserted2 );
 
-		// Try to insert duplicate composite unique key
+		// Try to insert duplicate composite unique key.
 		$data3 = [
 			'unique_email' => 'another@example.com',
 			'indexed_slug' => 'another-slug',
@@ -658,7 +658,7 @@ class ComplexTableTest extends SchemaTestCase {
 
 		$table_name = $table->table_name();
 
-		// Insert test data
+		// Insert test data.
 		for ( $i = 1; $i <= 10; $i++ ) {
 			$data = [
 				'unique_email' => "user$i@example.com",
@@ -675,7 +675,7 @@ class ComplexTableTest extends SchemaTestCase {
 			$wpdb->insert( $table_name, $data );
 		}
 
-		// Query using composite index
+		// Query using composite index.
 		$query = $wpdb->prepare(
 			"SELECT * FROM $table_name WHERE category = %s AND tag = %s",
 			'category0',
@@ -685,7 +685,7 @@ class ComplexTableTest extends SchemaTestCase {
 		$results = $wpdb->get_results( $query, ARRAY_A );
 		$this->assertNotEmpty( $results );
 
-		// Query using another composite index
+		// Query using another composite index.
 		$query2 = $wpdb->prepare(
 			"SELECT * FROM $table_name WHERE status = %d AND published_at > %s",
 			1,
@@ -709,7 +709,7 @@ class ComplexTableTest extends SchemaTestCase {
 
 		$table_name = $table->table_name();
 
-		// Insert initial data
+		// Insert initial data.
 		$data = [
 			'title' => 'Test Title',
 			'created_date' => '2024-01-01 10:00:00',
@@ -718,7 +718,7 @@ class ComplexTableTest extends SchemaTestCase {
 		$wpdb->insert( $table_name, $data );
 		$insert_id = $wpdb->insert_id;
 
-		// Get initial timestamps
+		// Get initial timestamps.
 		$initial = $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $insert_id ),
 			ARRAY_A
@@ -726,23 +726,23 @@ class ComplexTableTest extends SchemaTestCase {
 
 		$initial_timestamp = $initial['timestamp_col'];
 
-		// Wait a moment
+		// Wait a moment.
 		sleep( 1 );
 
-		// Update the record
+		// Update the record.
 		$wpdb->update(
 			$table_name,
 			[ 'title' => 'Updated Title' ],
 			[ 'id' => $insert_id ]
 		);
 
-		// Get updated timestamps
+		// Get updated timestamps.
 		$updated = $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $insert_id ),
 			ARRAY_A
 		);
 
-		// Verify timestamp was updated
+		// Verify timestamp was updated.
 		$this->assertNotEquals( $initial_timestamp, $updated['timestamp_col'] );
 	}
 
@@ -759,7 +759,7 @@ class ComplexTableTest extends SchemaTestCase {
 
 		$table_name = $table->table_name();
 
-		// Insert data
+		// Insert data.
 		$data = [
 			'name' => 'Test Name',
 		];
@@ -767,19 +767,19 @@ class ComplexTableTest extends SchemaTestCase {
 		$wpdb->insert( $table_name, $data );
 		$insert_id = $wpdb->insert_id;
 
-		// Get the record
+		// Get the record.
 		$result = $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $insert_id ),
 			ARRAY_A
 		);
 
-		// Verify created_at was set
+		// Verify created_at was set.
 		$this->assertNotNull( $result['created_at'] );
 		$this->assertNotEquals( '0000-00-00 00:00:00', $result['created_at'] );
 
 		$created_at_initial = $result['created_at'];
 
-		// Wait and update
+		// Wait and update.
 		sleep( 1 );
 
 		$wpdb->update(
@@ -788,13 +788,13 @@ class ComplexTableTest extends SchemaTestCase {
 			[ 'id' => $insert_id ]
 		);
 
-		// Get updated record
+		// Get updated record.
 		$updated = $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $insert_id ),
 			ARRAY_A
 		);
 
-		// Created_at should not change on update
+		// Created_at should not change on update.
 		$this->assertEquals( $created_at_initial, $updated['created_at'] );
 	}
 
@@ -811,7 +811,7 @@ class ComplexTableTest extends SchemaTestCase {
 
 		$table_name = $table->table_name();
 
-		// Insert data
+		// Insert data.
 		$data = [
 			'content' => 'Initial Content',
 		];
@@ -819,13 +819,13 @@ class ComplexTableTest extends SchemaTestCase {
 		$wpdb->insert( $table_name, $data );
 		$insert_id = $wpdb->insert_id;
 
-		// Get the initial record
+		// Get the initial record.
 		$initial = $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $insert_id ),
 			ARRAY_A
 		);
 
-		// Both columns should have values
+		// Both columns should have values.
 		$this->assertNull( $initial['updated_at'] );
 
 		$initial_updated_at = $initial['updated_at'];
@@ -836,13 +836,13 @@ class ComplexTableTest extends SchemaTestCase {
 			[ 'id' => $insert_id ]
 		);
 
-		// Get updated record
+		// Get updated record.
 		$updated = $wpdb->get_row(
 			$wpdb->prepare( "SELECT * FROM $table_name WHERE id = %d", $insert_id ),
 			ARRAY_A
 		);
 
-		// Both should be updated
+		// Both should be updated.
 		$this->assertNotEquals( $initial_updated_at, $updated['updated_at'] );
 	}
 
@@ -876,7 +876,7 @@ class ComplexTableTest extends SchemaTestCase {
 		$table = $this->get_comprehensive_table();
 		Register::table( $table );
 
-		// Insert test data directly
+		// Insert test data directly.
 		$data = [
 			'tinyint_col' => 1,
 			'smallint_col' => 100,
@@ -901,13 +901,13 @@ class ComplexTableTest extends SchemaTestCase {
 		$wpdb->insert( $table::table_name(), $data );
 		$insert_id = $wpdb->insert_id;
 
-		// Test get_by_id method
+		// Test get_by_id method.
 		$result = $table::get_by_id( $insert_id );
 
 		$this->assertNotNull( $result );
 		$this->assertIsArray( $result );
 
-		// Verify integer types are properly cast
+		// Verify integer types are properly cast.
 		$this->assertIsInt( $result['id'] );
 		$this->assertIsInt( $result['tinyint_col'] );
 		$this->assertIsInt( $result['smallint_col'] );
@@ -915,27 +915,27 @@ class ComplexTableTest extends SchemaTestCase {
 		$this->assertIsInt( $result['int_col'] );
 		$this->assertEquals( 123456, $result['int_col'] );
 
-		// Bigint remains as string to avoid precision loss
+		// Bigint remains as string to avoid precision loss.
 		$this->assertEquals( '9876543210', $result['bigint_col'] );
 
-		// Verify float types
+		// Verify float types.
 		$this->assertIsFloat( $result['float_col'] );
 		$this->assertIsFloat( $result['decimal_col'] );
 		$this->assertIsFloat( $result['double_col'] );
 		$this->assertEqualsWithDelta( 99.99, $result['float_col'], 0.01 );
 		$this->assertEqualsWithDelta( 456.789, $result['decimal_col'], 0.001 );
 
-		// Verify string types
+		// Verify string types.
 		$this->assertIsString( $result['char_col'] );
 		$this->assertIsString( $result['varchar_col'] );
 		$this->assertIsString( $result['tinytext_col'] );
 		$this->assertIsString( $result['text_col'] );
 
-		// Verify boolean transformation
+		// Verify boolean transformation.
 		$this->assertIsBool( $result['is_active'] );
 		$this->assertTrue( $result['is_active'] );
 
-		// Verify JSON transformation
+		// Verify JSON transformation.
 		$this->assertIsArray( $result['json_data'] );
 		$this->assertTrue( $result['json_data']['api'] );
 		$this->assertEquals( 3, $result['json_data']['version'] );
@@ -953,7 +953,7 @@ class ComplexTableTest extends SchemaTestCase {
 		$table = $this->get_comprehensive_table();
 		Register::table( $table );
 
-		// Insert multiple records
+		// Insert multiple records.
 		$unique_varchar = 'first_by_test_' . time();
 		$data = [
 			'varchar_col' => $unique_varchar,
@@ -965,12 +965,12 @@ class ComplexTableTest extends SchemaTestCase {
 
 		$wpdb->insert( $table::table_name(), $data );
 
-		// Test get_first_by
+		// Test get_first_by.
 		$result = $table::get_first_by( 'varchar_col', $unique_varchar );
 
 		$this->assertNotNull( $result );
 
-		// Verify type transformations
+		// Verify type transformations.
 		$this->assertIsInt( $result['int_col'] );
 		$this->assertEquals( 42, $result['int_col'] );
 
@@ -996,7 +996,7 @@ class ComplexTableTest extends SchemaTestCase {
 		$table = $this->get_comprehensive_table();
 		Register::table( $table );
 
-		// Insert multiple records with same int_col value
+		// Insert multiple records with same int_col value.
 		$shared_int_value = 999;
 		for ( $i = 1; $i <= 3; $i++ ) {
 			$data = [
@@ -1009,14 +1009,14 @@ class ComplexTableTest extends SchemaTestCase {
 			$wpdb->insert( $table::table_name(), $data );
 		}
 
-		// Test get_all_by
+		// Test get_all_by.
 		$results = $table::get_all_by( 'int_col', $shared_int_value );
 
 		$this->assertIsArray( $results );
 		$this->assertGreaterThanOrEqual( 3, count( $results ) );
 
 		foreach ( $results as $index => $result ) {
-			// Verify each result has proper type transformations
+			// Verify each result has proper type transformations.
 			$this->assertIsInt( $result['int_col'] );
 			$this->assertEquals( $shared_int_value, $result['int_col'] );
 
@@ -1041,7 +1041,7 @@ class ComplexTableTest extends SchemaTestCase {
 		$table = $this->get_comprehensive_table();
 		Register::table( $table );
 
-		// Insert test records for pagination
+		// Insert test records for pagination.
 		$base_time = time();
 		for ( $i = 1; $i <= 5; $i++ ) {
 			$data = [
@@ -1054,7 +1054,7 @@ class ComplexTableTest extends SchemaTestCase {
 			$wpdb->insert( $table::table_name(), $data );
 		}
 
-		// Test paginate with search and filters
+		// Test paginate with search and filters.
 		$args = [
 			'term' => 'paginate_test',
 			[
@@ -1070,7 +1070,7 @@ class ComplexTableTest extends SchemaTestCase {
 		$this->assertNotEmpty( $results );
 
 		foreach ( $results as $result ) {
-			// Verify type transformations in paginated results
+			// Verify type transformations in paginated results.
 			$this->assertIsInt( $result['int_col'] );
 			$this->assertIsFloat( $result['float_col'] );
 			$this->assertIsBool( $result['is_active'] );
@@ -1093,7 +1093,7 @@ class ComplexTableTest extends SchemaTestCase {
 		$table = $this->get_comprehensive_table();
 		Register::table( $table );
 
-		// Insert a few test records
+		// Insert a few test records.
 		$base_time = time();
 		for ( $i = 1; $i <= 2; $i++ ) {
 			$data = [
@@ -1106,15 +1106,15 @@ class ComplexTableTest extends SchemaTestCase {
 			$wpdb->insert( $table::table_name(), $data );
 		}
 
-		// Test fetch_all_where
+		// Test fetch_all_where.
 		$count = 0;
 
 		foreach ( $table::get_all_by( 'varchar_col', 'fetch_all_test_%' . $base_time, 'LIKE' ) as $row ) {
-			// Note: fetch_all returns raw data without transformation
-			// We need to manually transform it
+			// Note: fetch_all returns raw data without transformation.
+			// We need to manually transform it.
 			$transformed = $table::transform_from_array( $row );
 
-			// Verify the transformation worked
+			// Verify the transformation worked.
 			$this->assertIsInt( $transformed['int_col'] );
 			$this->assertIsBool( $transformed['is_active'] );
 			$this->assertIsArray( $transformed['json_data'] );
@@ -1137,7 +1137,7 @@ class ComplexTableTest extends SchemaTestCase {
 		$table = $this->get_comprehensive_table();
 		Register::table( $table );
 
-		// Insert record with NULL values
+		// Insert record with NULL values.
 		$unique_varchar = 'null_test_' . time();
 		$data = [
 			'varchar_col' => $unique_varchar,
@@ -1150,18 +1150,18 @@ class ComplexTableTest extends SchemaTestCase {
 
 		$wpdb->insert( $table::table_name(), $data );
 
-		// Retrieve through API
+		// Retrieve through API.
 		$result = $table::get_first_by( 'varchar_col', $unique_varchar );
 
 		$this->assertNotNull( $result );
 
-		// Verify NULL values are preserved
+		// Verify NULL values are preserved.
 		$this->assertNull( $result['smallint_col'] );
 		$this->assertNull( $result['decimal_col'] );
 		$this->assertNull( $result['text_col'] );
 		$this->assertNull( $result['date_col'] );
 
-		// Non-nullable fields should have their defaults
+		// Non-nullable fields should have their defaults.
 		$this->assertIsInt( $result['tinyint_col'] );
 		$this->assertEquals( 0, $result['tinyint_col'] );
 	}
@@ -1177,22 +1177,22 @@ class ComplexTableTest extends SchemaTestCase {
 		$table = $this->get_updated_at_table();
 		Register::table( $table );
 
-		// Insert record
+		// Insert record.
 		$content = 'Special columns test ' . time();
 		$table::insert( [
 			'content' => $content,
 		] );
 
-		// Retrieve through API
+		// Retrieve through API.
 		$result = $table::get_first_by( 'content', $content );
 
 		$this->assertNotNull( $result );
 		$this->assertEquals( $content, $result['content'] );
 
-		// Updated_at should be null on insert
+		// Updated_at should be null on insert.
 		$this->assertNull( $result['updated_at'] );
 
-		// Update the record
+		// Update the record.
 		sleep( 1 );
 		$wpdb->update(
 			$table::table_name(),
@@ -1200,10 +1200,10 @@ class ComplexTableTest extends SchemaTestCase {
 			[ 'id' => $result['id'] ]
 		);
 
-		// Retrieve again
+		// Retrieve again.
 		$updated = $table::get_by_id( $result['id'] );
 
-		// Now updated_at should have a value
+		// Now updated_at should have a value.
 		$this->assertInstanceOf( DateTime::class, $updated['updated_at'] );
 	}
 }
