@@ -237,31 +237,6 @@ trait Custom_Table_Query_Methods {
 
 		$columns = static::get_columns();
 
-		$entries = array_map(
-			function ( $entry ) use ( $columns ) {
-				foreach ( $columns as $column ) {
-					if ( ! isset( $entry[ $column->get_name() ] ) ) {
-						continue;
-					}
-
-					switch ( $column->get_php_type() ) {
-						case PHP_Types::JSON:
-							$entry[ $column->get_name() ] = wp_json_encode( $entry[ $column->get_name() ] );
-							break;
-						case PHP_Types::BLOB:
-							$value = $entry[ $column->get_name() ];
-							// Only encode if not already base64 encoded.
-							$entry[ $column->get_name() ] = is_string( $value ) && base64_decode( $value, true ) !== false ? $value : base64_encode( (string) $value );
-							break;
-						default:
-							break;
-					}
-				}
-				return $entry;
-			},
-			$entries
-		);
-
 		$database = Config::get_db();
 		$columns          = array_keys( $entries[0] );
 		$prepared_columns = implode(
@@ -277,7 +252,7 @@ trait Custom_Table_Query_Methods {
 			$prepared_values[ $row_index ] = [];
 			foreach ( $entry as $column => $value ) {
 				[ $prepared_value, $placeholder ] = self::prepare_value_for_query( $column, $value );
-				$prepared_values[ $row_index ][] = $database::prepare( $placeholder, $prepared_value );
+				$prepared_values[ $row_index ][] = 'NULL' === $placeholder ? $placeholder : $database::prepare( $placeholder, $prepared_value );
 			}
 		}
 
@@ -390,7 +365,7 @@ trait Custom_Table_Query_Methods {
 
 				[ $value, $placeholder ] = self::prepare_value_for_query( $column, $value );
 
-				$set_statement[] = $database::prepare( "`{$column}` = {$placeholder}", $value );
+				$set_statement[] = $database::prepare( "%i = {$placeholder}", ...array_filter( [ $column, $value ], static fn( $v ) => null !== $v ) );
 			}
 
 			$set_statement = implode( ', ', $set_statement );
@@ -419,14 +394,13 @@ trait Custom_Table_Query_Methods {
 	 * @param string $join_table                The table to join.
 	 * @param string $join_condition            The condition to join on.
 	 * @param array  $selectable_joined_columns The columns from the joined table to select.
-	 * @param string $output                    The output type of the query, one of OBJECT, ARRAY_A, or ARRAY_N.
 	 *
 	 * @return array The items.
 	 * @throws InvalidArgumentException If the table to join is the same as the current table.
 	 *                                  If the join condition does not contain an equal sign.
 	 *                                  If the join condition does not contain valid columns.
 	 */
-	public static function paginate( array $args, int $per_page = 20, int $page = 1, array $columns = [ '*' ], string $join_table = '', string $join_condition = '', array $selectable_joined_columns = [], string $output = OBJECT ): array {
+	public static function paginate( array $args, int $per_page = 20, int $page = 1, array $columns = [ '*' ], string $join_table = '', string $join_condition = '', array $selectable_joined_columns = [] ): array {
 		$is_join = (bool) $join_table;
 
 		if ( $is_join && static::table_name( true ) === $join_table::table_name( true ) ) {
@@ -481,7 +455,7 @@ trait Custom_Table_Query_Methods {
 				$offset,
 				$per_page
 			),
-			$output
+			ARRAY_A
 		);
 
 		$results = array_map( fn( $result ) => self::amend_value_types( $result ), $results );
@@ -567,7 +541,7 @@ trait Custom_Table_Query_Methods {
 				continue;
 			}
 
-			if ( empty( $arg['value'] ) ) {
+			if ( ! isset( $arg['value'] ) ) {
 				// We check that the column has any value then.
 				$arg['value']    = '';
 				$arg['operator'] = '!=';
@@ -592,6 +566,11 @@ trait Custom_Table_Query_Methods {
 
 			if ( is_array( $value ) ) {
 				$where[] = $database::prepare( $query, ...$value );
+				continue;
+			}
+
+			if ( 'NULL' === $placeholder ) {
+				$where[] = $query;
 				continue;
 			}
 
@@ -686,7 +665,7 @@ trait Custom_Table_Query_Methods {
 
 		$database = Config::get_db();
 		$results  = [];
-		foreach ( static::fetch_all_where( $database::prepare( "WHERE {$column} {$operator} {$placeholder}", $value ), $limit, ARRAY_A ) as $task_array ) {
+		foreach ( static::fetch_all_where( $database::prepare( "WHERE %i {$operator} {$placeholder}", ...array_filter( [ $column, $value ], static fn( $v ) => null !== $v ) ), $limit, ARRAY_A ) as $task_array ) {
 			if ( empty( $task_array[ static::uid_column() ] ) ) {
 				continue;
 			}
@@ -713,7 +692,7 @@ trait Custom_Table_Query_Methods {
 		[ $value, $placeholder ] = self::prepare_value_for_query( $column, $value );
 
 		$database   = Config::get_db();
-		$task_array = static::fetch_first_where( $database::prepare( "WHERE {$column} = {$placeholder}", $value ), ARRAY_A );
+		$task_array = static::fetch_first_where( $database::prepare( "WHERE %i = {$placeholder}", ...array_filter( [ $column, $value ], static fn( $v ) => null !== $v ) ), ARRAY_A );
 
 		if ( empty( $task_array[ static::uid_column() ] ) ) {
 			return null;
@@ -746,6 +725,10 @@ trait Custom_Table_Query_Methods {
 
 		$column_type = $column->get_php_type();
 
+		if ( null === $value && $column->get_nullable() ) {
+			return [ null, 'NULL' ];
+		}
+
 		switch ( $column->get_php_type() ) {
 			case PHP_Types::INT:
 				$value       = is_array( $value ) ? array_map( fn( $v ) => (int) $v, $value ) : (int) $value;
@@ -775,7 +758,7 @@ trait Custom_Table_Query_Methods {
 				if ( is_array( $value ) ) {
 					$value = array_map( fn( $v ) => is_string( $v ) ? $v : base64_encode( (string) $v ), $value );
 				} else {
-					$value = is_string( $value ) && base64_decode( $value, true ) !== false ? $value : base64_encode( (string) $value );
+					$value = is_string( $value ) ? base64_encode( (string) $value ) : $value;
 				}
 				$placeholder = '%s';
 				break;
@@ -901,7 +884,7 @@ trait Custom_Table_Query_Methods {
 				return $new_value;
 			case PHP_Types::BLOB:
 				// Decode base64 encoded blob data.
-				if ( is_string( $value ) && base64_decode( $value, true ) !== false ) {
+				if ( is_string( $value ) ) {
 					return base64_decode( $value );
 				}
 				return (string) $value;

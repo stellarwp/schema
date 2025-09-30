@@ -60,7 +60,7 @@ class String_Column extends Column implements Lengthable, Uniquable, Primarable 
 	 * @return int The length of the column.
 	 */
 	public function get_length(): int {
-		return max( min( $this->length, ! $this->is_index() ? 255 : 191 ), 1 );
+		return max( min( $this->length, ! $this->is_index() ? 1024 : 191 ), 1 );
 	}
 
 	/**
