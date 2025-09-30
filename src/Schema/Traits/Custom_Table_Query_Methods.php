@@ -248,6 +248,11 @@ trait Custom_Table_Query_Methods {
 						case PHP_Types::JSON:
 							$entry[ $column->get_name() ] = wp_json_encode( $entry[ $column->get_name() ] );
 							break;
+						case PHP_Types::BLOB:
+							$value = $entry[ $column->get_name() ];
+							// Only encode if not already base64 encoded.
+							$entry[ $column->get_name() ] = is_string( $value ) && base64_decode( $value, true ) !== false ? $value : base64_encode( (string) $value );
+							break;
 						default:
 							break;
 					}
@@ -472,7 +477,11 @@ trait Custom_Table_Query_Methods {
 			$output
 		);
 
-		$results = array_map( fn( $result ) => static::transform_from_array( self::amend_value_types( $result ) ), $results );
+		$results = array_map( fn( $result ) => self::amend_value_types( $result ), $results );
+
+		if ( [ '*' === $columns ] ) {
+			$results = array_map( fn( $result ) => static::transform_from_array( $result ), $results );
+		}
 
 		/**
 		 * Fires after the results of the query are fetched.
@@ -731,8 +740,11 @@ trait Custom_Table_Query_Methods {
 
 		switch ( $column->get_php_type() ) {
 			case PHP_Types::INT:
-			case PHP_Types::BOOL:
 				$value       = is_array( $value ) ? array_map( fn( $v ) => (int) $v, $value ) : (int) $value;
+				$placeholder = '%d';
+				break;
+			case PHP_Types::BOOL:
+				$value       = is_array( $value ) ? array_map( fn( $v ) => (int) (bool) $v, $value ) : (int) (bool) $value;
 				$placeholder = '%d';
 				break;
 			case PHP_Types::STRING:
@@ -749,6 +761,15 @@ trait Custom_Table_Query_Methods {
 			case PHP_Types::FLOAT:
 				$value       = is_array( $value ) ? array_map( fn( $v ) => (float) $v, $value ) : (float) $value;
 				$placeholder = '%f';
+				break;
+			case PHP_Types::BLOB:
+				// For blob, we store as base64 encoded string.
+				if ( is_array( $value ) ) {
+					$value = array_map( fn( $v ) => is_string( $v ) ? $v : base64_encode( (string) $v ), $value );
+				} else {
+					$value = is_string( $value ) && base64_decode( $value, true ) !== false ? $value : base64_encode( (string) $value );
+				}
+				$placeholder = '%s';
 				break;
 			default:
 				throw new InvalidArgumentException( "Unsupported column type: $column_type." );
@@ -870,6 +891,12 @@ trait Custom_Table_Query_Methods {
 				}
 
 				return $new_value;
+			case PHP_Types::BLOB:
+				// Decode base64 encoded blob data.
+				if ( is_string( $value ) && base64_decode( $value, true ) !== false ) {
+					return base64_decode( $value );
+				}
+				return (string) $value;
 			default:
 				throw new InvalidArgumentException( "Unsupported column type: {$type}." );
 		}

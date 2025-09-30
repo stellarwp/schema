@@ -14,6 +14,7 @@ namespace StellarWP\Schema\Columns;
 use StellarWP\Schema\Columns\Contracts\Column;
 use StellarWP\Schema\Columns\Contracts\Lengthable;
 use StellarWP\Schema\Columns\Contracts\Uniquable;
+use StellarWP\Schema\Columns\Contracts\Primarable;
 use StellarWP\Schema\Columns\PHP_Types;
 use StellarWP\Schema\Columns\Column_Types;
 
@@ -24,7 +25,7 @@ use StellarWP\Schema\Columns\Column_Types;
  *
  * @package StellarWP\Schema\Columns
  */
-class String_Column extends Column implements Lengthable, Uniquable {
+class String_Column extends Column implements Lengthable, Uniquable, Primarable {
 	/**
 	 * The length of the column.
 	 *
