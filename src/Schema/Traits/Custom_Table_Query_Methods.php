@@ -388,7 +388,9 @@ trait Custom_Table_Query_Methods {
 					$value = $value->format( 'Y-m-d H:i:s' );
 				}
 
-				$set_statement[] = $database::prepare( "`{$column}` = %s", $value );
+				[ $value, $placeholder ] = self::prepare_value_for_query( $column, $value );
+
+				$set_statement[] = $database::prepare( "`{$column}` = {$placeholder}", $value );
 			}
 
 			$set_statement = implode( ', ', $set_statement );
