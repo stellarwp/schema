@@ -226,9 +226,15 @@ trait Custom_Table_Query_Methods {
 	 * @return array<string> The prepared statements and values.
 	 */
 	protected static function prepare_statements_values( array $entries ): array {
-		$uid_column = static::uid_column();
-		$entries    = array_map(
-			function ( $entry ) use ( $uid_column ) {
+		$uid_column    = static::uid_column();
+		$column_object = static::get_columns()->get( $uid_column );
+
+		$entries = array_map(
+			function ( $entry ) use ( $uid_column, $column_object ) {
+				if ( ! ( PHP_Types::INT === $column_object->get_php_type() && $column_object->get_auto_increment() ) ) {
+					return $entry;
+				}
+
 				unset( $entry[ $uid_column ] );
 				return $entry;
 			},
@@ -377,7 +383,21 @@ trait Custom_Table_Query_Methods {
 			);
 		}
 
-		return (bool) $database::query( implode( '', $queries ) );
+		$database::beginTransaction();
+
+		foreach ( $queries as $query ) {
+			$results[] = $database::query( $query );
+		}
+
+		$all_good = count( array_filter( $results ) ) === count( $results );
+
+		if ( ! $all_good ) {
+			$database::rollBack();
+			return false;
+		}
+
+		$database::commit();
+		return true;
 	}
 
 	/**
