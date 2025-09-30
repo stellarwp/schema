@@ -789,6 +789,7 @@ trait Custom_Table_Query_Methods {
 				throw new InvalidArgumentException( "Unsupported column type: $column_type." );
 		}
 
+		// @phpstan-ignore-next-line
 		return [ $value, is_array( $value ) ? '(' . implode( ',', array_fill( 0, count( $value ), $placeholder ) ) . ')' : $placeholder ];
 	}
 
