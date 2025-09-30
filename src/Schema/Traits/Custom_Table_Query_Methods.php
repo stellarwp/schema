@@ -441,7 +441,9 @@ trait Custom_Table_Query_Methods {
 		$orderby = $args['orderby'] ?? static::uid_column();
 		$order   = strtoupper( $args['order'] ?? 'ASC' );
 
-		if ( ! in_array( $orderby, static::get_columns()->get_names(), true ) ) {
+		$column_names = static::get_columns()->get_names();
+
+		if ( ! in_array( $orderby, $column_names, true ) ) {
 			$orderby = static::uid_column();
 		}
 
@@ -453,7 +455,10 @@ trait Custom_Table_Query_Methods {
 
 		[ $join, $secondary_columns ] = $is_join ? static::get_join_parts( $join_table, $join_condition, $selectable_joined_columns ) : [ '', '' ];
 
-		$columns = implode( ', ', array_map( fn( $column ) => "a.{$column}", $columns ) );
+		sort( $columns );
+		sort( $column_names );
+
+		$formatted_columns = implode( ', ', array_map( fn( $column ) => "a.{$column}", $columns ) );
 
 		/**
 		 * Fires before the results of the query are fetched.
@@ -469,7 +474,7 @@ trait Custom_Table_Query_Methods {
 
 		$results = $database::get_results(
 			$database::prepare(
-				"SELECT {$columns}{$secondary_columns} FROM %i a {$join} {$where} ORDER BY a.{$orderby} {$order} LIMIT %d, %d",
+				"SELECT {$formatted_columns}{$secondary_columns} FROM %i a {$join} {$where} ORDER BY a.{$orderby} {$order} LIMIT %d, %d",
 				static::table_name( true ),
 				$offset,
 				$per_page
@@ -479,7 +484,8 @@ trait Custom_Table_Query_Methods {
 
 		$results = array_map( fn( $result ) => self::amend_value_types( $result ), $results );
 
-		if ( [ '*' === $columns ] ) {
+		if ( [ '*' ] === $columns || $columns === $column_names ) {
+			// If we are querying for a full row, let's transform the results.
 			$results = array_map( fn( $result ) => static::transform_from_array( $result ), $results );
 		}
 
