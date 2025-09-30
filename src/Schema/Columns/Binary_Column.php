@@ -2,7 +2,7 @@
 /**
  * The interface for the binary column.
  *
- * @since 3.0.0
+ * @since 3.1.0
  *
  * @package StellarWP\Schema\Columns
  */
@@ -17,7 +17,7 @@ use StellarWP\Schema\Columns\Column_Types;
 /**
  * Class Binary_Column
  *
- * @since 3.0.0
+ * @since 3.1.0
  *
  * @package StellarWP\Schema\Columns
  */

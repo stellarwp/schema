@@ -22,6 +22,7 @@ use StellarWP\Schema\Columns\Column_Types;
  * Class String_Column
  *
  * @since 3.0.0
+ * @since 3.1.0 Added the ability to become a primary key.
  *
  * @package StellarWP\Schema\Columns
  */
@@ -56,6 +57,8 @@ class String_Column extends Column implements Lengthable, Uniquable, Primarable 
 
 	/**
 	 * Get the length of the column.
+	 *
+	 * @since 3.1.0 Allowed for up to 1024 characters.
 	 *
 	 * @return int The length of the column.
 	 */

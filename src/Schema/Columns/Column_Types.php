@@ -434,7 +434,7 @@ final class Column_Types {
 	/**
 	 * The column types that are supported for blob columns.
 	 *
-	 * @since 3.0.0
+	 * @since 3.1.0
 	 *
 	 * @var string[]
 	 */
@@ -448,7 +448,7 @@ final class Column_Types {
 	/**
 	 * The column types that are supported for binary columns.
 	 *
-	 * @since 3.0.0
+	 * @since 3.1.0
 	 *
 	 * @var string[]
 	 */

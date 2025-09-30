@@ -78,7 +78,7 @@ final class PHP_Types {
 	/**
 	 * The PHP type for a blob.
 	 *
-	 * @since 3.0.0
+	 * @since 3.1.0
 	 *
 	 * @var string
 	 */
@@ -88,6 +88,7 @@ final class PHP_Types {
 	 * The PHP type for a datetime.
 	 *
 	 * @since 3.0.0
+	 * @since 3.1.0 Added the BLOB type.
 	 *
 	 * @var string[]
 	 */
