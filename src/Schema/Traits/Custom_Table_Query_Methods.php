@@ -574,7 +574,7 @@ trait Custom_Table_Query_Methods {
 				$arg['operator'] = '=';
 			}
 
-			// For anything else, you should build your own query!
+			// For anything else, you should build your own query.
 			if ( ! in_array( strtoupper( $arg['operator'] ), array_values( static::operators() ), true ) ) {
 				$arg['operator'] = '=';
 			}

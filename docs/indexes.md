@@ -11,10 +11,10 @@ Defines the primary key for the table. Primary keys uniquely identify each row a
 ```php
 use StellarWP\Schema\Indexes\Primary_Key;
 
-// Single column primary key
+// Single column primary key.
 $indexes[] = new Primary_Key( [ 'id' ] );
 
-// Composite primary key
+// Composite primary key.
 $indexes[] = new Primary_Key( [ 'event_id', 'ticket_id' ] );
 ```
 
@@ -25,10 +25,10 @@ Ensures that all values in the indexed columns are unique across the table.
 ```php
 use StellarWP\Schema\Indexes\Unique_Key;
 
-// Single column unique constraint
+// Single column unique constraint.
 $indexes[] = new Unique_Key( [ 'email' ] );
 
-// Composite unique constraint
+// Composite unique constraint.
 $indexes[] = new Unique_Key( [ 'user_id', 'event_id' ] );
 ```
 
@@ -39,10 +39,10 @@ A standard index that speeds up lookups on the specified columns. Does not enfor
 ```php
 use StellarWP\Schema\Indexes\Classic_Index;
 
-// Single column index
+// Single column index.
 $indexes[] = new Classic_Index( [ 'status' ] );
 
-// Composite index
+// Composite index.
 $indexes[] = new Classic_Index( [ 'user_id', 'created_at' ] );
 ```
 
@@ -53,10 +53,10 @@ Enables full-text searching on text columns. Useful for content search functiona
 ```php
 use StellarWP\Schema\Indexes\Fulltext_Index;
 
-// Single column fulltext
+// Single column fulltext.
 $indexes[] = new Fulltext_Index( [ 'content' ] );
 
-// Multiple columns fulltext
+// Multiple columns fulltext.
 $indexes[] = new Fulltext_Index( [ 'title', 'content', 'excerpt' ] );
 ```
 
@@ -103,10 +103,10 @@ The library automatically generates index names based on the index type and colu
 All index types support multiple columns (composite indexes):
 
 ```php
-// Composite classic index
+// Composite classic index.
 $indexes[] = new Classic_Index( [ 'user_id', 'status', 'created_at' ] );
 
-// Composite unique key
+// Composite unique key.
 $indexes[] = new Unique_Key( [ 'external_id', 'source' ] );
 ```
 
@@ -145,22 +145,22 @@ public static function get_schema_history(): array {
 
 			$columns[] = new Created_At( 'created_at' );
 
-			// Indexes for common queries
+			// Indexes for common queries.
 			$indexes = new Index_Collection();
 
-			// Unique order numbers
+			// Unique order numbers.
 			$indexes[] = new Unique_Key( [ 'order_number' ] );
 
-			// Fast lookups by customer
+			// Fast lookups by customer.
 			$indexes[] = new Classic_Index( [ 'customer_id' ] );
 
-			// Fast lookups by status
+			// Fast lookups by status.
 			$indexes[] = new Classic_Index( [ 'status' ] );
 
-			// Efficient date range queries
+			// Efficient date range queries.
 			$indexes[] = new Classic_Index( [ 'created_at' ] );
 
-			// Composite index for customer orders by status
+			// Composite index for customer orders by status.
 			$indexes[] = new Classic_Index( [ 'customer_id', 'status' ] );
 
 			return new Table_Schema( $table_name, $columns, $indexes );
@@ -199,13 +199,13 @@ public static function get_schema_history(): array {
 
 			$indexes = new Index_Collection();
 
-			// Unique slugs for URL routing
+			// Unique slugs for URL routing.
 			$indexes[] = new Unique_Key( [ 'slug' ] );
 
-			// Full-text search on title and content
+			// Full-text search on title and content.
 			$indexes[] = new Fulltext_Index( [ 'title', 'content' ] );
 
-			// Fast filtering by status
+			// Fast filtering by status.
 			$indexes[] = new Classic_Index( [ 'status' ] );
 
 			return new Table_Schema( $table_name, $columns, $indexes );
@@ -224,7 +224,7 @@ public static function get_schema_history(): array {
 		'1.0.0' => function() use ( $table_name ) {
 			$columns = new Column_Collection();
 
-			// Using session_id as primary key (not auto-increment)
+			// Using session_id as primary key (not auto-increment).
 			$columns[] = ( new String_Column( 'session_id' ) )
 				->set_type( Column_Types::VARCHAR )
 				->set_length( 128 );
@@ -241,13 +241,13 @@ public static function get_schema_history(): array {
 
 			$indexes = new Index_Collection();
 
-			// String-based primary key
+			// String-based primary key.
 			$indexes[] = new Primary_Key( [ 'session_id' ] );
 
-			// Lookup sessions by user
+			// Lookup sessions by user.
 			$indexes[] = new Classic_Index( [ 'user_id' ] );
 
-			// Efficiently clean up expired sessions
+			// Efficiently clean up expired sessions.
 			$indexes[] = new Classic_Index( [ 'expires_at' ] );
 
 			return new Table_Schema( $table_name, $columns, $indexes );
@@ -276,10 +276,10 @@ public static function get_schema_history(): array {
 
 			$indexes = new Index_Collection();
 
-			// Composite primary key (no auto-increment needed)
+			// Composite primary key (no auto-increment needed).
 			$indexes[] = new Primary_Key( [ 'event_id', 'venue_id' ] );
 
-			// Fast reverse lookups
+			// Fast reverse lookups.
 			$indexes[] = new Classic_Index( [ 'venue_id' ] );
 
 			return new Table_Schema( $table_name, $columns, $indexes );
@@ -313,11 +313,11 @@ public static function get_schema_history(): array {
 3. **Cover common queries**: Design indexes around your most frequent query patterns
 
 ```php
-// Good: User queries often filter by status first, then date
+// Good: User queries often filter by status first, then date.
 $indexes[] = new Classic_Index( [ 'status', 'created_at' ] );
 
-// Also good: Allows queries on just 'status' OR 'status' + 'created_at'
-// MySQL can use the leftmost prefix
+// Also good: Allows queries on just 'status' OR 'status' + 'created_at'.
+// MySQL can use the leftmost prefix.
 ```
 
 ### Performance Considerations
@@ -336,7 +336,7 @@ public static function get_schema_history(): array {
 
 	return [
 		'1.0.0' => function() use ( $table_name ) {
-			// Original schema
+			// Original schema.
 			$columns = new Column_Collection();
 			$columns[] = ( new ID( 'id' ) )->set_auto_increment( true );
 			$columns[] = ( new String_Column( 'email' ) )
@@ -346,7 +346,7 @@ public static function get_schema_history(): array {
 			return new Table_Schema( $table_name, $columns );
 		},
 		'1.1.0' => function() use ( $table_name ) {
-			// Add unique constraint on email in version 1.1.0
+			// Add unique constraint on email in version 1.1.0.
 			$columns = new Column_Collection();
 			$columns[] = ( new ID( 'id' ) )->set_auto_increment( true );
 			$columns[] = ( new String_Column( 'email' ) )

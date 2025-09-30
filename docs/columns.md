@@ -77,67 +77,67 @@ All column classes support a fluent API with these methods:
 ### Required Methods
 
 ```php
-// Set the column name
+// Set the column name.
 $column = new Integer_Column( 'user_id' );
 ```
 
 ### Type Configuration
 
 ```php
-// Set the MySQL column type
+// Set the MySQL column type.
 ->set_type( Column_Types::INT )
 
-// Set the length/size
+// Set the length/size.
 ->set_length( 11 )
 
-// Set precision for float columns (decimal places)
-->set_precision( 2 )  // For DECIMAL(10,2)
+// Set precision for float columns (decimal places).
+->set_precision( 2 )  // For DECIMAL(10,2).
 ```
 
 ### Nullability and Defaults
 
 ```php
-// Allow NULL values (default is NOT NULL)
+// Allow NULL values (default is NOT NULL).
 ->set_nullable( true )
 
-// Set a default value
+// Set a default value.
 ->set_default( 0 )
 ->set_default( 'pending' )
-->set_default( 'CURRENT_TIMESTAMP' )  // MySQL function
+->set_default( 'CURRENT_TIMESTAMP' )  // MySQL function.
 ```
 
 ### Signing (Integer/Float only)
 
 ```php
-// Set signed/unsigned (default varies by type)
-->set_signed( false )  // UNSIGNED
-->set_signed( true )   // SIGNED
+// Set signed/unsigned (default varies by type).
+->set_signed( false )  // UNSIGNED.
+->set_signed( true )   // SIGNED.
 ```
 
 ### Auto Increment (Integer only)
 
 ```php
-// Enable auto-increment
+// Enable auto-increment.
 ->set_auto_increment( true )
 ```
 
 ### Indexes
 
 ```php
-// Mark column as indexed
+// Mark column as indexed.
 ->set_is_index( true )
 
-// Mark column as unique
+// Mark column as unique.
 ->set_is_unique( true )
 
-// Mark column as primary key
+// Mark column as primary key.
 ->set_is_primary( true )
 ```
 
 ### Searchability
 
 ```php
-// Mark column as searchable (used by query methods)
+// Mark column as searchable (used by query methods).
 ->set_searchable( true )
 ```
 
@@ -254,17 +254,17 @@ public static function get_schema_history(): array {
 		'1.0.0' => function() use ( $table_name ) {
 			$columns = new Column_Collection();
 
-			// Primary key
+			// Primary key.
 			$columns[] = ( new ID( 'id' ) )
 				->set_length( 11 )
 				->set_auto_increment( true );
 
-			// Foreign key
+			// Foreign key.
 			$columns[] = ( new Referenced_ID( 'user_id' ) )
 				->set_length( 11 )
 				->set_type( Column_Types::BIGINT );
 
-			// String fields
+			// String fields.
 			$columns[] = ( new String_Column( 'title' ) )
 				->set_type( Column_Types::VARCHAR )
 				->set_length( 255 )
@@ -276,12 +276,12 @@ public static function get_schema_history(): array {
 				->set_default( 'draft' )
 				->set_is_index( true );
 
-			// Text field
+			// Text field.
 			$columns[] = ( new Text_Column( 'content' ) )
 				->set_type( Column_Types::LONGTEXT )
 				->set_searchable( true );
 
-			// Numeric fields
+			// Numeric fields.
 			$columns[] = ( new Integer_Column( 'views' ) )
 				->set_type( Column_Types::INT )
 				->set_default( 0 );
@@ -292,11 +292,11 @@ public static function get_schema_history(): array {
 				->set_precision( 2 )
 				->set_default( 0.00 );
 
-			// Boolean
+			// Boolean.
 			$columns[] = ( new Boolean_Column( 'is_published' ) )
 				->set_default( false );
 
-			// Timestamps
+			// Timestamps.
 			$columns[] = new Created_At( 'created_at' );
 			$columns[] = new Updated_At( 'updated_at' );
 

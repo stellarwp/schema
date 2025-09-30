@@ -31,7 +31,7 @@ $result = Sandwiches::insert( [
 ] );
 
 if ( $result ) {
-	// Success - $result contains the insert ID for auto-increment columns
+	// Success - $result contains the insert ID for auto-increment columns.
 }
 ```
 
@@ -180,9 +180,9 @@ Fetch a single row by its primary key.
 $sandwich = Sandwiches::get_by_id( 42 );
 
 if ( $sandwich ) {
-	echo $sandwich['name'];  // Values are automatically type-cast
-	echo $sandwich['price_cents'];  // int
-	echo $sandwich['is_active'];  // bool
+	echo $sandwich['name'];  // Values are automatically type-cast.
+	echo $sandwich['price_cents'];  // int.
+	echo $sandwich['is_active'];  // bool.
 }
 ```
 
@@ -216,13 +216,13 @@ Fetch all rows matching a column value.
 
 **Example:**
 ```php
-// Get all classic sandwiches
+// Get all classic sandwiches.
 $classics = Sandwiches::get_all_by( 'type', 'classic' );
 
-// Get all sandwiches under $10
+// Get all sandwiches under $10.
 $affordable = Sandwiches::get_all_by( 'price_cents', 1000, '<' );
 
-// Get specific sandwiches
+// Get specific sandwiches.
 $selection = Sandwiches::get_all_by( 'id', [ 1, 5, 10 ], 'IN' );
 ```
 
@@ -239,13 +239,13 @@ Generator that yields all rows in batches. Memory efficient for large datasets.
 
 **Example:**
 ```php
-// Process all sandwiches without loading all into memory
+// Process all sandwiches without loading all into memory.
 foreach ( Sandwiches::get_all( 100 ) as $sandwich ) {
-	// Process each sandwich
+	// Process each sandwich.
 	process_sandwich( $sandwich );
 }
 
-// With conditions
+// With conditions.
 foreach ( Sandwiches::get_all( 50, 'WHERE is_active = 1', 'created_at DESC' ) as $sandwich ) {
 	echo $sandwich['name'] . "\n";
 }
@@ -267,17 +267,17 @@ Advanced paginated query with filtering, sorting, and optional joins.
 **Query Arguments:**
 ```php
 $args = [
-	'term' => 'search term',  // Search in searchable columns
-	'orderby' => 'created_at',  // Column to sort by
-	'order' => 'DESC',  // ASC or DESC
-	'offset' => 0,  // Starting offset
-	'query_operator' => 'AND',  // AND or OR
+	'term' => 'search term',  // Search in searchable columns.
+	'orderby' => 'created_at',  // Column to sort by.
+	'order' => 'DESC',  // ASC or DESC.
+	'offset' => 0,  // Starting offset.
+	'query_operator' => 'AND',  // AND or OR.
 
-	// Column filters
+	// Column filters.
 	[
 		'column' => 'status',
 		'value' => 'active',
-		'operator' => '=',  // =, !=, >, <, >=, <=, IN, NOT IN
+		'operator' => '=',  // =, !=, >, <, >=, <=, IN, NOT IN.
 	],
 	[
 		'column' => 'price_cents',
@@ -291,17 +291,17 @@ $args = [
 
 **Example:**
 ```php
-// Basic pagination
+// Basic pagination.
 $sandwiches = Sandwiches::paginate( [], 20, 1 );
 
-// With search
+// With search.
 $results = Sandwiches::paginate(
 	[ 'term' => 'turkey' ],
 	20,
 	1
 );
 
-// Complex filtering
+// Complex filtering.
 $results = Sandwiches::paginate(
 	[
 		'orderby' => 'price_cents',
@@ -321,15 +321,15 @@ $results = Sandwiches::paginate(
 	1
 );
 
-// With JOIN
+// With JOIN.
 $results = Sandwiches::paginate(
 	$args,
 	20,
 	1,
-	[ '*' ],  // Columns from main table
-	Ingredients::class,  // Join table
-	'sandwich_id = id',  // Join condition
-	[ 'name', 'quantity' ]  // Columns from joined table
+	[ '*' ],  // Columns from main table.
+	Ingredients::class,  // Join table.
+	'sandwich_id = id',  // Join condition.
+	[ 'name', 'quantity' ]  // Columns from joined table.
 );
 ```
 
@@ -360,33 +360,33 @@ $active_count = Sandwiches::get_total_items( [
 All query methods automatically handle type conversion:
 
 ```php
-// DateTime objects are converted to MySQL format
+// DateTime objects are converted to MySQL format.
 Sandwiches::insert( [
 	'name' => 'BLT',
-	'created_at' => new DateTime(),  // Becomes '2025-09-30 12:00:00'
+	'created_at' => new DateTime(),  // Becomes '2025-09-30 12:00:00'.
 ] );
 
-// Retrieved DateTimes are converted back
+// Retrieved DateTimes are converted back.
 $sandwich = Sandwiches::get_by_id( 1 );
-$sandwich['created_at'];  // DateTimeInterface object
+$sandwich['created_at'];  // DateTimeInterface object.
 
-// Booleans work seamlessly
+// Booleans work seamlessly.
 Sandwiches::insert( [
 	'name' => 'Club',
-	'is_active' => true,  // Stored as 1
+	'is_active' => true,  // Stored as 1.
 ] );
 
 $sandwich = Sandwiches::get_by_id( 1 );
-$sandwich['is_active'];  // true (bool)
+$sandwich['is_active'];  // true (bool).
 
-// JSON columns
+// JSON columns.
 Sandwiches::insert( [
 	'name' => 'Veggie',
-	'metadata' => [ 'calories' => 350, 'vegan' => true ],  // JSON encoded
+	'metadata' => [ 'calories' => 350, 'vegan' => true ],  // JSON encoded.
 ] );
 
 $sandwich = Sandwiches::get_by_id( 1 );
-$sandwich['metadata'];  // array
+$sandwich['metadata'];  // array.
 ```
 
 ## Complete Example
@@ -409,7 +409,7 @@ class Orders extends Table {
 	}
 }
 
-// Create an order
+// Create an order.
 $order_id = Orders::insert( [
 	'customer_id'  => 123,
 	'order_number' => 'ORD-2025-001',
@@ -418,20 +418,20 @@ $order_id = Orders::insert( [
 	'created_at'   => new DateTime(),
 ] );
 
-// Update order status
+// Update order status.
 Orders::update_single( [
 	'id'         => $order_id,
 	'status'     => 'processing',
 	'updated_at' => new DateTime(),
 ] );
 
-// Get order by ID
+// Get order by ID.
 $order = Orders::get_by_id( $order_id );
 
-// Get all pending orders
+// Get all pending orders.
 $pending = Orders::get_all_by( 'status', 'pending' );
 
-// Paginate orders with filtering
+// Paginate orders with filtering.
 $recent_orders = Orders::paginate(
 	[
 		'orderby' => 'created_at',
@@ -442,18 +442,18 @@ $recent_orders = Orders::paginate(
 			'operator' => 'IN',
 		],
 	],
-	25,  // per page
-	1    // page number
+	25,  // per page.
+	1    // page number.
 );
 
-// Search orders
+// Search orders.
 $search_results = Orders::paginate(
-	[ 'term' => 'john doe' ],  // Searches searchable columns
+	[ 'term' => 'john doe' ],  // Searches searchable columns.
 	25,
 	1
 );
 
-// Get total count
+// Get total count.
 $total_pending = Orders::get_total_items( [
 	[
 		'column' => 'status',
@@ -462,14 +462,14 @@ $total_pending = Orders::get_total_items( [
 	],
 ] );
 
-// Bulk update
+// Bulk update.
 Orders::update_many( [
 	[ 'id' => 1, 'status' => 'shipped' ],
 	[ 'id' => 2, 'status' => 'shipped' ],
 	[ 'id' => 3, 'status' => 'shipped' ],
 ] );
 
-// Delete old orders
+// Delete old orders.
 Orders::delete_many( [ 10, 11, 12 ] );
 ```
 
@@ -482,14 +482,14 @@ class Orders extends Table {
 	// ...
 
 	public static function transform_from_array( array $data ) {
-		// Return a custom object instead of array
+		// Return a custom object instead of array.
 		return new Order_Model( $data );
 	}
 }
 
-// Now query methods return Order_Model objects
-$order = Orders::get_by_id( 1 );  // Order_Model instance
-$orders = Orders::get_all_by( 'status', 'pending' );  // Array of Order_Model
+// Now query methods return Order_Model objects.
+$order = Orders::get_by_id( 1 );  // Order_Model instance.
+$orders = Orders::get_all_by( 'status', 'pending' );  // Array of Order_Model.
 ```
 
 ## Hooks and Filters
@@ -497,25 +497,25 @@ $orders = Orders::get_all_by( 'status', 'pending' );  // Array of Order_Model
 Query methods provide hooks for customization:
 
 ```php
-// Before query execution
+// Before query execution.
 add_action( 'tec_common_custom_table_query_pre_results', function( $args, $class ) {
 	// Modify args, log, etc.
 }, 10, 2 );
 
-// After query execution
+// After query execution.
 add_action( 'tec_common_custom_table_query_post_results', function( $results, $args, $class ) {
 	// Log, analyze, etc.
 }, 10, 3 );
 
-// Filter results
+// Filter results.
 add_filter( 'tec_common_custom_table_query_results', function( $results, $args, $class ) {
-	// Modify results
+	// Modify results.
 	return $results;
 }, 10, 3 );
 
-// Filter WHERE clause
+// Filter WHERE clause.
 add_filter( 'tec_common_custom_table_query_where', function( $where, $args, $class ) {
-	// Add custom WHERE conditions
+	// Add custom WHERE conditions.
 	return $where;
 }, 10, 3 );
 ```

@@ -53,13 +53,13 @@ class Sandwiches extends Table {
 			'1.0.0' => function() use ( $table_name ) {
 				$columns = new Column_Collection();
 
-				// Auto-incrementing primary key
+				// Auto-incrementing primary key.
 				$columns[] = ( new ID( 'id' ) )
 					->set_length( 11 )
 					->set_type( Column_Types::BIGINT )
 					->set_auto_increment( true );
 
-				// String columns
+				// String columns.
 				$columns[] = ( new String_Column( 'name' ) )
 					->set_type( Column_Types::VARCHAR )
 					->set_length( 100 )
@@ -70,22 +70,22 @@ class Sandwiches extends Table {
 					->set_length( 50 )
 					->set_default( 'classic' );
 
-				// Text column for description
+				// Text column for description.
 				$columns[] = ( new Text_Column( 'description' ) )
 					->set_type( Column_Types::TEXT )
 					->set_nullable( true );
 
-				// Integer for price (in cents)
+				// Integer for price (in cents).
 				$columns[] = ( new Integer_Column( 'price_cents' ) )
 					->set_type( Column_Types::INT )
 					->set_length( 11 )
 					->set_default( 0 );
 
-				// Timestamp columns
+				// Timestamp columns.
 				$columns[] = new Created_At( 'created_at' );
 				$columns[] = new Updated_At( 'updated_at' );
 
-				// Define indexes
+				// Define indexes.
 				$indexes = new Index_Collection();
 				$indexes[] = new Classic_Index( [ 'type' ] );
 				$indexes[] = new Unique_Key( [ 'name' ] );
