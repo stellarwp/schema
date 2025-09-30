@@ -11,7 +11,6 @@ declare( strict_types=1 );
 
 namespace StellarWP\Schema\Columns;
 
-use StellarWP\Schema\Columns\Contracts\Column;
 use StellarWP\Schema\Columns\PHP_Types;
 use StellarWP\Schema\Columns\Column_Types;
 
@@ -22,7 +21,7 @@ use StellarWP\Schema\Columns\Column_Types;
  *
  * @package StellarWP\Schema\Columns
  */
-class Blob_Column extends Column {
+class Blob_Column extends Text_Column {
 	/**
 	 * The type of the column.
 	 *
