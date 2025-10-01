@@ -392,7 +392,7 @@ trait Custom_Table_Query_Methods {
 			$results[] = $database::query( $query );
 		}
 
-		$all_good = count( array_filter( $results ) ) === count( $results );
+		$all_good = count( array_filter( $results, static fn( $result ) => $result !== false ) ) === count( $results );
 
 		if ( ! $all_good ) {
 			$database::rollBack();
