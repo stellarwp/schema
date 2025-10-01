@@ -37,7 +37,7 @@ use RuntimeException;
  * @method static int get_total_items( array $args = [] )
  * @method static bool update_many( array $entries )
  * @method static array paginate( array $args, int $per_page = 20, int $page = 1, array $columns = [ '*' ], string $join_table = '', string $join_condition = '', array $selectable_joined_columns = [], string $output = 'OBJECT' )
- * @method static mixed[] get_all_by( string $column, $value, string $operator = '=', int $limit = 50 )
+ * @method static mixed[] get_all_by( string $column, $value, string $operator = '=', int $limit = 50, string $order_by = '' )
  * @method static ?mixed get_first_by( string $column, $value )
  * @method static ?mixed get_by_id( $id )
  * @method static array operators()
