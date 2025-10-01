@@ -671,24 +671,26 @@ trait Custom_Table_Query_Methods {
 	 * Gets all models by a column.
 	 *
 	 * @since 3.0.0
+	 * @since 3.1.1 Added the $order_by parameter.
 	 *
 	 * @param string $column   The column to get the models by.
 	 * @param mixed  $value    The value to get the models by.
 	 * @param string $operator The operator to use.
 	 * @param int    $limit    The limit of models to return.
+	 * @param string $order_by The order by clause to use.
 	 *
 	 * @return mixed[] The models, or an empty array if no models are found.
 	 *
 	 * @throws InvalidArgumentException If the column does not exist.
 	 */
-	public static function get_all_by( string $column, $value, string $operator = '=', int $limit = 50 ): ?array{
+	public static function get_all_by( string $column, $value, string $operator = '=', int $limit = 50, string $order_by = '' ): ?array{
 		[ $value, $placeholder ] = self::prepare_value_for_query( $column, $value );
 
 		$operator = strtoupper( $operator );
 
 		$database = Config::get_db();
 		$results  = [];
-		foreach ( static::fetch_all_where( $database::prepare( "WHERE %i {$operator} {$placeholder}", ...array_filter( [ $column, $value ], static fn( $v ) => null !== $v ) ), $limit, ARRAY_A ) as $task_array ) {
+		foreach ( static::fetch_all_where( $database::prepare( "WHERE %i {$operator} {$placeholder}", ...array_filter( [ $column, $value ], static fn( $v ) => null !== $v ) ), $limit, ARRAY_A, $order_by ) as $task_array ) {
 			if ( empty( $task_array[ static::uid_column() ] ) ) {
 				continue;
 			}

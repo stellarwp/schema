@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. This project adhere to the [Semantic Versioning](http://semver.org/) standard.
 
+## [3.1.1] 2025-10-01
+
+* Tweak - Fix the `get_all_by` method to accept an order by clause.
+
+[3.1.1]: https://github.com/stellarwp/schema/releases/tag/3.1.1
+
 ## [3.1.0] 2025-09-30
 
 * Feature - Introduce new column types: `Blob_Column`, `Binary_Column`, and `Boolean_Column`.
