@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. This project adhere to the [Semantic Versioning](http://semver.org/) standard.
 
+## [3.1.2] 2025-10-02
+
+* Fix - Fix the `update_many` method to properly check if the transaction was successful.
+
+[3.1.2]: https://github.com/stellarwp/schema/releases/tag/3.1.2
+
 ## [3.1.1] 2025-10-01
 
 * Tweak - Fix the `get_all_by` method to accept an order by clause.
