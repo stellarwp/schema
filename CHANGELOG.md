@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file. This project adhere to the [Semantic Versioning](http://semver.org/) standard.
 
+## [3.1.3] 2025-10-08
+
+* Fix - Fix the `get_current_schema` method to cache the schema of each implementation.
+
+[3.1.3]: https://github.com/stellarwp/schema/releases/tag/3.1.3
+
 ## [3.1.2] 2025-10-02
 
 * Fix - Fix the `update_many` method to properly check if the transaction was successful.
