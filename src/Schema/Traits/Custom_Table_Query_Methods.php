@@ -692,12 +692,12 @@ trait Custom_Table_Query_Methods {
 
 		$database = Config::get_db();
 		$results  = [];
-		foreach ( static::fetch_all_where( $database::prepare( "WHERE %i {$operator} {$placeholder}", ...array_filter( [ $column, ...self::ensure_array( $value ) ], static fn( $v ) => null !== $v ) ), $limit, ARRAY_A, $order_by ) as $task_array ) {
-			if ( empty( $task_array[ static::uid_column() ] ) ) {
+		foreach ( static::fetch_all_where( $database::prepare( "WHERE %i {$operator} {$placeholder}", ...array_filter( [ $column, ...self::ensure_array( $value ) ], static fn( $v ) => null !== $v ) ), $limit, ARRAY_A, $order_by ) as $data_array ) {
+			if ( empty( $data_array[ static::uid_column() ] ) ) {
 				continue;
 			}
 
-			$results[] = static::transform_from_array( self::amend_value_types( $task_array ) );
+			$results[] = static::transform_from_array( self::amend_value_types( $data_array ) );
 		}
 
 		return $results;
@@ -720,13 +720,13 @@ trait Custom_Table_Query_Methods {
 		[ $value, $placeholder ] = self::prepare_value_for_query( $column, $value );
 
 		$database   = Config::get_db();
-		$task_array = static::fetch_first_where( $database::prepare( "WHERE %i = {$placeholder}", ...array_filter( [ $column, ...self::ensure_array( $value ) ], static fn( $v ) => null !== $v ) ), ARRAY_A );
+		$data_array = static::fetch_first_where( $database::prepare( "WHERE %i = {$placeholder}", ...array_filter( [ $column, ...self::ensure_array( $value ) ], static fn( $v ) => null !== $v ) ), ARRAY_A );
 
-		if ( empty( $task_array[ static::uid_column() ] ) ) {
+		if ( empty( $data_array[ static::uid_column() ] ) ) {
 			return null;
 		}
 
-		return static::transform_from_array( self::amend_value_types( $task_array ) );
+		return static::transform_from_array( self::amend_value_types( $data_array ) );
 	}
 
 	/**
