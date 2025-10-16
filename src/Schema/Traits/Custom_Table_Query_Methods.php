@@ -708,19 +708,28 @@ trait Custom_Table_Query_Methods {
 	 *
 	 * @since 3.0.0
 	 * @since 3.1.4 Enabled unfolding the value if is an array.
+	 * @since 3.1.4 Added the $operator parameter.
 	 *
 	 * @param string $column The column to get the model by.
 	 * @param mixed  $value  The value to get the model by.
+	 * @param string $operator The operator to use.
 	 *
 	 * @return ?mixed The model, or `null` if no model is found.
 	 *
 	 * @throws InvalidArgumentException If the column does not exist.
+	 * @throws InvalidArgumentException If the operator is invalid.
 	 */
-	public static function get_first_by( string $column, $value ) {
+	public static function get_first_by( string $column, $value, string $operator = '=' ) {
 		[ $value, $placeholder ] = self::prepare_value_for_query( $column, $value );
 
+		$operator = strtoupper( $operator );
+
+		if ( ! in_array( $operator, self::operators(), true ) ) {
+			throw new InvalidArgumentException( "Invalid operator: {$operator}." );
+		}
+
 		$database   = Config::get_db();
-		$data_array = static::fetch_first_where( $database::prepare( "WHERE %i = {$placeholder}", ...array_filter( [ $column, ...self::ensure_array( $value ) ], static fn( $v ) => null !== $v ) ), ARRAY_A );
+		$data_array = static::fetch_first_where( $database::prepare( "WHERE %i {$operator} {$placeholder}", ...array_filter( [ $column, ...self::ensure_array( $value ) ], static fn( $v ) => null !== $v ) ), ARRAY_A );
 
 		if ( empty( $data_array[ static::uid_column() ] ) ) {
 			return null;
