@@ -336,6 +336,7 @@ trait Custom_Table_Query_Methods {
 	 * Updates multiple rows into the table.
 	 *
 	 * @since 3.0.0
+	 * @since 3.1.4 Enabled unfolding the value if is an array.
 	 *
 	 * @param array<mixed> $entries The entries to update.
 	 *
@@ -372,7 +373,7 @@ trait Custom_Table_Query_Methods {
 
 				[ $value, $placeholder ] = self::prepare_value_for_query( $column, $value );
 
-				$set_statement[] = $database::prepare( "%i = {$placeholder}", ...array_filter( [ $column, $value ], static fn( $v ) => null !== $v ) );
+				$set_statement[] = $database::prepare( "%i = {$placeholder}", ...array_filter( [ $column, ...self::ensure_array( $value ) ], static fn( $v ) => null !== $v ) );
 			}
 
 			$set_statement = implode( ', ', $set_statement );
@@ -672,6 +673,7 @@ trait Custom_Table_Query_Methods {
 	 *
 	 * @since 3.0.0
 	 * @since 3.1.1 Added the $order_by parameter.
+	 * @since 3.1.4 Enabled unfolding the value if is an array.
 	 *
 	 * @param string $column   The column to get the models by.
 	 * @param mixed  $value    The value to get the models by.
@@ -690,7 +692,7 @@ trait Custom_Table_Query_Methods {
 
 		$database = Config::get_db();
 		$results  = [];
-		foreach ( static::fetch_all_where( $database::prepare( "WHERE %i {$operator} {$placeholder}", ...array_filter( [ $column, $value ], static fn( $v ) => null !== $v ) ), $limit, ARRAY_A, $order_by ) as $task_array ) {
+		foreach ( static::fetch_all_where( $database::prepare( "WHERE %i {$operator} {$placeholder}", ...array_filter( [ $column, ...self::ensure_array( $value ) ], static fn( $v ) => null !== $v ) ), $limit, ARRAY_A, $order_by ) as $task_array ) {
 			if ( empty( $task_array[ static::uid_column() ] ) ) {
 				continue;
 			}
@@ -705,6 +707,7 @@ trait Custom_Table_Query_Methods {
 	 * Gets the first model by a column.
 	 *
 	 * @since 3.0.0
+	 * @since 3.1.4 Enabled unfolding the value if is an array.
 	 *
 	 * @param string $column The column to get the model by.
 	 * @param mixed  $value  The value to get the model by.
@@ -717,7 +720,7 @@ trait Custom_Table_Query_Methods {
 		[ $value, $placeholder ] = self::prepare_value_for_query( $column, $value );
 
 		$database   = Config::get_db();
-		$task_array = static::fetch_first_where( $database::prepare( "WHERE %i = {$placeholder}", ...array_filter( [ $column, $value ], static fn( $v ) => null !== $v ) ), ARRAY_A );
+		$task_array = static::fetch_first_where( $database::prepare( "WHERE %i = {$placeholder}", ...array_filter( [ $column, ...self::ensure_array( $value ) ], static fn( $v ) => null !== $v ) ), ARRAY_A );
 
 		if ( empty( $task_array[ static::uid_column() ] ) ) {
 			return null;
@@ -917,5 +920,18 @@ trait Custom_Table_Query_Methods {
 			default:
 				throw new InvalidArgumentException( "Unsupported column type: {$type}." );
 		}
+	}
+
+	/**
+	 * Ensures the value is an array.
+	 *
+	 * @since 3.1.4
+	 *
+	 * @param mixed $value The value to ensure is an array.
+	 *
+	 * @return array<mixed> The value as an array.
+	 */
+	private static function ensure_array( $value ): array {
+		return is_array( $value ) ? $value : [ $value ];
 	}
 }
