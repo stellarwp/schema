@@ -945,13 +945,15 @@ trait Custom_Table_Query_Methods {
 	 * @return array<null|string|int|float|bool|DateTimeInterface> The value as an array.
 	 */
 	private static function ensure_array( $value ): array {
-		if ( is_object( $value ) && ! $value instanceof DateTimeInterface ) {
-			throw new InvalidArgumentException( 'Value should not be an object.' );
+		if ( ! is_int( $value ) && ! is_string( $value ) && ! is_float( $value ) && ! is_bool( $value ) && ! $value instanceof DateTimeInterface && ! is_array( $value ) ) {
+			throw new InvalidArgumentException( 'Value should be an integer, string, float, boolean, DateTimeInterface, or array.' );
 		}
 
 		if ( is_array( $value ) && $value ) {
 			foreach ( $value as $v ) {
-				self::ensure_array( $v );
+				if ( ! is_int( $v ) && ! is_string( $v ) && ! is_float( $v ) && ! is_bool( $v ) && ! $v instanceof DateTimeInterface ) {
+					throw new InvalidArgumentException( 'Offset of value should be an integer, string, float, boolean or DateTimeInterface.' );
+				}
 			}
 		}
 
