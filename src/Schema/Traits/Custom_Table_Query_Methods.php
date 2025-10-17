@@ -338,7 +338,7 @@ trait Custom_Table_Query_Methods {
 	 * @since 3.0.0
 	 * @since 3.1.4 Enabled unfolding the value if is an array.
 	 *
-	 * @param array<mixed> $entries The entries to update.
+	 * @param array<array<string, null|int|string|float|bool|DateTimeInterface|string[]|int[]|float[]|DateTimeInterface[]>> $entries The entries to update.
 	 *
 	 * @return bool Whether the update was successful.
 	 */
@@ -675,11 +675,11 @@ trait Custom_Table_Query_Methods {
 	 * @since 3.1.1 Added the $order_by parameter.
 	 * @since 3.1.4 Enabled unfolding the value if is an array.
 	 *
-	 * @param string $column   The column to get the models by.
-	 * @param mixed  $value    The value to get the models by.
-	 * @param string $operator The operator to use.
-	 * @param int    $limit    The limit of models to return.
-	 * @param string $order_by The order by clause to use.
+	 * @param string                                                                                  $column   The column to get the models by.
+	 * @param null|int|string|float|bool|DateTimeInterface|string[]|int[]|float[]|DateTimeInterface[] $value    The value to get the models by.
+	 * @param string                                                                                  $operator The operator to use.
+	 * @param int                                                                                     $limit    The limit of models to return.
+	 * @param string                                                                                  $order_by The order by clause to use.
 	 *
 	 * @return mixed[] The models, or an empty array if no models are found.
 	 *
@@ -710,9 +710,9 @@ trait Custom_Table_Query_Methods {
 	 * @since 3.1.4 Enabled unfolding the value if is an array.
 	 * @since 3.1.4 Added the $operator parameter.
 	 *
-	 * @param string $column The column to get the model by.
-	 * @param mixed  $value  The value to get the model by.
-	 * @param string $operator The operator to use.
+	 * @param string                                                                                  $column   The column to get the model by.
+	 * @param null|int|string|float|bool|DateTimeInterface|string[]|int[]|float[]|DateTimeInterface[] $value    The value to get the model by.
+	 * @param string                                                                                  $operator The operator to use.
 	 *
 	 * @return ?mixed The model, or `null` if no model is found.
 	 *
@@ -940,11 +940,21 @@ trait Custom_Table_Query_Methods {
 	 *
 	 * @since 3.1.4
 	 *
-	 * @param mixed $value The value to ensure is an array.
+	 * @param null|string|int|float|bool|DateTimeInterface|string[]|int[]|float[]|DateTimeInterface[] $value The value to ensure is an array.
 	 *
-	 * @return array<mixed> The value as an array.
+	 * @return array<null|string|int|float|bool|DateTimeInterface> The value as an array.
 	 */
 	private static function ensure_array( $value ): array {
+		if ( is_object( $value ) && ! $value instanceof DateTimeInterface ) {
+			throw new InvalidArgumentException( 'Value should not be an object.' );
+		}
+
+		if ( is_array( $value ) && $value ) {
+			foreach ( $value as $v ) {
+				self::ensure_array( $v );
+			}
+		}
+
 		return is_array( $value ) ? $value : [ $value ];
 	}
 }
