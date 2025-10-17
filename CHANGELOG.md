@@ -8,13 +8,13 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [3.1.3] 2025-10-08
 
-* Fix - Amend the `get_current_schema` method to cache the schema of each implementation.
+* Fix - `get_current_schema` method will npw cache the schema of each implementation correctly.
 
 [3.1.3]: https://github.com/stellarwp/schema/releases/tag/3.1.3
 
 ## [3.1.2] 2025-10-02
 
-* Fix - Amend the `update_many` method to properly check if the transaction was successful.
+* Fix - `update_many` method will now properly check if the transaction was successful.
 
 [3.1.2]: https://github.com/stellarwp/schema/releases/tag/3.1.2
 
