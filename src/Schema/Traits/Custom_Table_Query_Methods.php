@@ -336,8 +336,9 @@ trait Custom_Table_Query_Methods {
 	 * Updates multiple rows into the table.
 	 *
 	 * @since 3.0.0
+	 * @since 3.1.4 Enabled unfolding the value if is an array.
 	 *
-	 * @param array<mixed> $entries The entries to update.
+	 * @param array<array<string, null|int|string|float|bool|DateTimeInterface|string[]|int[]|float[]|DateTimeInterface[]>> $entries The entries to update.
 	 *
 	 * @return bool Whether the update was successful.
 	 */
@@ -372,7 +373,7 @@ trait Custom_Table_Query_Methods {
 
 				[ $value, $placeholder ] = self::prepare_value_for_query( $column, $value );
 
-				$set_statement[] = $database::prepare( "%i = {$placeholder}", ...array_filter( [ $column, $value ], static fn( $v ) => null !== $v ) );
+				$set_statement[] = $database::prepare( "%i = {$placeholder}", ...array_filter( [ $column, ...self::ensure_array( $value ) ], static fn( $v ) => null !== $v ) );
 			}
 
 			$set_statement = implode( ', ', $set_statement );
@@ -672,12 +673,13 @@ trait Custom_Table_Query_Methods {
 	 *
 	 * @since 3.0.0
 	 * @since 3.1.1 Added the $order_by parameter.
+	 * @since 3.1.4 Enabled unfolding the value if is an array.
 	 *
-	 * @param string $column   The column to get the models by.
-	 * @param mixed  $value    The value to get the models by.
-	 * @param string $operator The operator to use.
-	 * @param int    $limit    The limit of models to return.
-	 * @param string $order_by The order by clause to use.
+	 * @param string                                                                                  $column   The column to get the models by.
+	 * @param null|int|string|float|bool|DateTimeInterface|string[]|int[]|float[]|DateTimeInterface[] $value    The value to get the models by.
+	 * @param string                                                                                  $operator The operator to use.
+	 * @param int                                                                                     $limit    The limit of models to return.
+	 * @param string                                                                                  $order_by The order by clause to use.
 	 *
 	 * @return mixed[] The models, or an empty array if no models are found.
 	 *
@@ -690,12 +692,12 @@ trait Custom_Table_Query_Methods {
 
 		$database = Config::get_db();
 		$results  = [];
-		foreach ( static::fetch_all_where( $database::prepare( "WHERE %i {$operator} {$placeholder}", ...array_filter( [ $column, $value ], static fn( $v ) => null !== $v ) ), $limit, ARRAY_A, $order_by ) as $task_array ) {
-			if ( empty( $task_array[ static::uid_column() ] ) ) {
+		foreach ( static::fetch_all_where( $database::prepare( "WHERE %i {$operator} {$placeholder}", ...array_filter( [ $column, ...self::ensure_array( $value ) ], static fn( $v ) => null !== $v ) ), $limit, ARRAY_A, $order_by ) as $data_array ) {
+			if ( empty( $data_array[ static::uid_column() ] ) ) {
 				continue;
 			}
 
-			$results[] = static::transform_from_array( self::amend_value_types( $task_array ) );
+			$results[] = static::transform_from_array( self::amend_value_types( $data_array ) );
 		}
 
 		return $results;
@@ -705,25 +707,35 @@ trait Custom_Table_Query_Methods {
 	 * Gets the first model by a column.
 	 *
 	 * @since 3.0.0
+	 * @since 3.1.4 Enabled unfolding the value if is an array.
+	 * @since 3.1.4 Added the $operator parameter.
 	 *
-	 * @param string $column The column to get the model by.
-	 * @param mixed  $value  The value to get the model by.
+	 * @param string                                                                                  $column   The column to get the model by.
+	 * @param null|int|string|float|bool|DateTimeInterface|string[]|int[]|float[]|DateTimeInterface[] $value    The value to get the model by.
+	 * @param string                                                                                  $operator The operator to use.
 	 *
 	 * @return ?mixed The model, or `null` if no model is found.
 	 *
 	 * @throws InvalidArgumentException If the column does not exist.
+	 * @throws InvalidArgumentException If the operator is invalid.
 	 */
-	public static function get_first_by( string $column, $value ) {
+	public static function get_first_by( string $column, $value, string $operator = '=' ) {
 		[ $value, $placeholder ] = self::prepare_value_for_query( $column, $value );
 
-		$database   = Config::get_db();
-		$task_array = static::fetch_first_where( $database::prepare( "WHERE %i = {$placeholder}", ...array_filter( [ $column, $value ], static fn( $v ) => null !== $v ) ), ARRAY_A );
+		$operator = strtoupper( $operator );
 
-		if ( empty( $task_array[ static::uid_column() ] ) ) {
+		if ( ! in_array( $operator, self::operators(), true ) ) {
+			throw new InvalidArgumentException( "Invalid operator: {$operator}." );
+		}
+
+		$database   = Config::get_db();
+		$data_array = static::fetch_first_where( $database::prepare( "WHERE %i {$operator} {$placeholder}", ...array_filter( [ $column, ...self::ensure_array( $value ) ], static fn( $v ) => null !== $v ) ), ARRAY_A );
+
+		if ( empty( $data_array[ static::uid_column() ] ) ) {
 			return null;
 		}
 
-		return static::transform_from_array( self::amend_value_types( $task_array ) );
+		return static::transform_from_array( self::amend_value_types( $data_array ) );
 	}
 
 	/**
@@ -731,8 +743,8 @@ trait Custom_Table_Query_Methods {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $column   The column to prepare the value for.
-	 * @param mixed  $value    The value to prepare.
+	 * @param string                                                                                           $column The column to prepare the value for.
+	 * @param null|string|int|float|bool|DateTimeInterface|array<null|string|int|float|bool|DateTimeInterface> $value  The value to prepare.
 	 *
 	 * @return array{0: mixed, 1: string} The prepared value and placeholder.
 	 *
@@ -789,6 +801,10 @@ trait Custom_Table_Query_Methods {
 				break;
 			default:
 				throw new InvalidArgumentException( "Unsupported column type: $column_type." );
+		}
+
+		if ( is_array( $value ) && ! $value ) {
+			return [ null, '(NULL)' ];
 		}
 
 		// @phpstan-ignore-next-line
@@ -917,5 +933,30 @@ trait Custom_Table_Query_Methods {
 			default:
 				throw new InvalidArgumentException( "Unsupported column type: {$type}." );
 		}
+	}
+
+	/**
+	 * Ensures the value is an array.
+	 *
+	 * @since 3.1.4
+	 *
+	 * @param null|string|int|float|bool|DateTimeInterface|string[]|int[]|float[]|DateTimeInterface[] $value The value to ensure is an array.
+	 *
+	 * @return array<null|string|int|float|bool|DateTimeInterface> The value as an array.
+	 */
+	private static function ensure_array( $value ): array {
+		if ( null !== $value && ! is_int( $value ) && ! is_string( $value ) && ! is_float( $value ) && ! is_bool( $value ) && ! $value instanceof DateTimeInterface && ! is_array( $value ) ) {
+			throw new InvalidArgumentException( 'Value should be an integer, string, float, boolean, DateTimeInterface, or array.' );
+		}
+
+		if ( is_array( $value ) && $value ) {
+			foreach ( $value as $k => $v ) {
+				if ( null !== $v && ! is_int( $v ) && ! is_string( $v ) && ! is_float( $v ) && ! is_bool( $v ) && ! $v instanceof DateTimeInterface ) {
+					throw new InvalidArgumentException( 'Value with offset ' . $k . ' should be an integer, string, float, boolean or DateTimeInterface.' );
+				}
+			}
+		}
+
+		return is_array( $value ) ? $value : [ $value ];
 	}
 }
