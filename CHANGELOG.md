@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file. This projec
 
 ## [3.1.4] 2025-10-16
 
-* Fix - Amend the `get_*` query methods to properly handle array values.
+* Fix - Handle array values correctly in the `get_*` query methods.
 
 ## [3.1.3] 2025-10-08
 
