@@ -743,8 +743,8 @@ trait Custom_Table_Query_Methods {
 	 *
 	 * @since 3.0.0
 	 *
-	 * @param string $column   The column to prepare the value for.
-	 * @param mixed  $value    The value to prepare.
+	 * @param string                                                                                           $column The column to prepare the value for.
+	 * @param null|string|int|float|bool|DateTimeInterface|array<null|string|int|float|bool|DateTimeInterface> $value  The value to prepare.
 	 *
 	 * @return array{0: mixed, 1: string} The prepared value and placeholder.
 	 *
@@ -803,7 +803,7 @@ trait Custom_Table_Query_Methods {
 				throw new InvalidArgumentException( "Unsupported column type: $column_type." );
 		}
 
-		if ( is_array( $value ) && empty( $value ) ) {
+		if ( is_array( $value ) && ! $value ) {
 			return [ null, '(NULL)' ];
 		}
 
