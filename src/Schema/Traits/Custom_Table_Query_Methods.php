@@ -803,6 +803,10 @@ trait Custom_Table_Query_Methods {
 				throw new InvalidArgumentException( "Unsupported column type: $column_type." );
 		}
 
+		if ( is_array( $value ) && empty( $value ) ) {
+			return [ null, '(NULL)' ];
+		}
+
 		// @phpstan-ignore-next-line
 		return [ $value, is_array( $value ) ? '(' . implode( ',', array_fill( 0, count( $value ), $placeholder ) ) . ')' : $placeholder ];
 	}
