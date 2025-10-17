@@ -120,6 +120,43 @@ class Custom_Table_Query_MethodsTest extends SchemaTestCase {
 	/**
 	 * @test
 	 */
+	public function should_handle_empty_array() {
+		$table = $this->get_query_test_table();
+		Register::table( $table );
+
+		// Insert test data
+		$table::insert( [
+			'name' => 'Test 1',
+			'slug' => 'test-1',
+			'status' => 1,
+		] );
+
+		$id1 = DB::last_insert_id();
+
+		$table::insert( [
+			'name' => 'Test 2',
+			'slug' => 'test-2',
+			'status' => 1,
+		] );
+
+		$id2 = DB::last_insert_id();
+
+		$table::insert( [
+			'name' => 'Test 3',
+			'slug' => 'test-3',
+			'status' => 0,
+		] );
+
+		$id3 = DB::last_insert_id();
+
+		$results = $table::get_all_by( 'status', [], 'IN' );
+
+		$this->assertEmpty( $results );
+	}
+
+	/**
+	 * @test
+	 */
 	public function should_get_first_by_with_array_values() {
 		$table = $this->get_query_test_table();
 		Register::table( $table );
