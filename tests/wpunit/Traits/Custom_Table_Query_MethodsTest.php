@@ -237,6 +237,275 @@ class Custom_Table_Query_MethodsTest extends SchemaTestCase {
 	}
 
 	/**
+	 * @test
+	 */
+	public function should_paginate_with_simple_where_clause() {
+		$table = $this->get_query_test_table();
+		Register::table( $table );
+
+		// Insert test data
+		$table::insert( [ 'name' => 'Item 1', 'slug' => 'item-1', 'status' => 1 ] );
+		$table::insert( [ 'name' => 'Item 2', 'slug' => 'item-2', 'status' => 1 ] );
+		$table::insert( [ 'name' => 'Item 3', 'slug' => 'item-3', 'status' => 0 ] );
+		$table::insert( [ 'name' => 'Item 4', 'slug' => 'item-4', 'status' => 1 ] );
+
+		// Query with simple where clause
+		$results = $table::paginate(
+			[
+				[
+					'column'   => 'status',
+					'value'    => 1,
+					'operator' => '=',
+				],
+			],
+			10,
+			1
+		);
+
+		$this->assertCount( 3, $results );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_paginate_with_sub_where_clauses_using_or() {
+		$table = $this->get_query_test_table();
+		Register::table( $table );
+
+		// Insert test data
+		$table::insert( [ 'name' => 'Alpha', 'slug' => 'alpha', 'status' => 1 ] );
+		$table::insert( [ 'name' => 'Beta', 'slug' => 'beta', 'status' => 0 ] );
+		$table::insert( [ 'name' => 'Gamma', 'slug' => 'gamma', 'status' => 1 ] );
+		$table::insert( [ 'name' => 'Delta', 'slug' => 'delta', 'status' => 0 ] );
+
+		// Query: WHERE (slug = 'alpha' OR slug = 'beta')
+		$results = $table::paginate(
+			[
+				[
+					'query_operator' => 'OR',
+					[
+						'column'   => 'slug',
+						'value'    => 'alpha',
+						'operator' => '=',
+					],
+					[
+						'column'   => 'slug',
+						'value'    => 'beta',
+						'operator' => '=',
+					],
+				],
+			],
+			10,
+			1
+		);
+
+		$this->assertCount( 2, $results );
+		$slugs = array_column( $results, 'slug' );
+		$this->assertContains( 'alpha', $slugs );
+		$this->assertContains( 'beta', $slugs );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_paginate_with_nested_sub_where_clauses() {
+		$table = $this->get_query_test_table();
+		Register::table( $table );
+
+		// Insert test data
+		$table::insert( [ 'name' => 'Active Alpha', 'slug' => 'alpha', 'status' => 1 ] );
+		$table::insert( [ 'name' => 'Inactive Alpha', 'slug' => 'alpha-inactive', 'status' => 0 ] );
+		$table::insert( [ 'name' => 'Active Beta', 'slug' => 'beta', 'status' => 1 ] );
+		$table::insert( [ 'name' => 'Inactive Beta', 'slug' => 'beta-inactive', 'status' => 0 ] );
+		$table::insert( [ 'name' => 'Active Gamma', 'slug' => 'gamma', 'status' => 1 ] );
+
+		// Query: WHERE (slug = 'alpha' OR slug = 'beta') AND status = 1
+		$results = $table::paginate(
+			[
+				[
+					'query_operator' => 'OR',
+					[
+						'column'   => 'slug',
+						'value'    => 'alpha',
+						'operator' => '=',
+					],
+					[
+						'column'   => 'slug',
+						'value'    => 'beta',
+						'operator' => '=',
+					],
+				],
+				[
+					'column'   => 'status',
+					'value'    => 1,
+					'operator' => '=',
+				],
+			],
+			10,
+			1
+		);
+
+		$this->assertCount( 2, $results );
+		$slugs = array_column( $results, 'slug' );
+		$this->assertContains( 'alpha', $slugs );
+		$this->assertContains( 'beta', $slugs );
+
+		// Verify all results have status = 1
+		foreach ( $results as $result ) {
+			$this->assertEquals( 1, $result['status'] );
+		}
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_paginate_with_multiple_sub_where_groups() {
+		$table = $this->get_query_test_table();
+		Register::table( $table );
+
+		// Insert test data
+		$table::insert( [ 'name' => 'A', 'slug' => 'a', 'status' => 1 ] );
+		$table::insert( [ 'name' => 'B', 'slug' => 'b', 'status' => 0 ] );
+		$table::insert( [ 'name' => 'C', 'slug' => 'c', 'status' => 1 ] );
+		$table::insert( [ 'name' => 'D', 'slug' => 'd', 'status' => 0 ] );
+
+		// Query with OR at the top level: WHERE (slug = 'a') OR (slug = 'b')
+		$results = $table::paginate(
+			[
+				'query_operator' => 'OR',
+				[
+					'column'   => 'slug',
+					'value'    => 'a',
+					'operator' => '=',
+				],
+				[
+					'column'   => 'slug',
+					'value'    => 'b',
+					'operator' => '=',
+				],
+			],
+			10,
+			1
+		);
+
+		$this->assertCount( 2, $results );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_count_total_items_with_sub_where_clauses() {
+		$table = $this->get_query_test_table();
+		Register::table( $table );
+
+		// Insert test data
+		$table::insert( [ 'name' => 'X', 'slug' => 'x', 'status' => 1 ] );
+		$table::insert( [ 'name' => 'Y', 'slug' => 'y', 'status' => 0 ] );
+		$table::insert( [ 'name' => 'Z', 'slug' => 'z', 'status' => 1 ] );
+
+		// Count with sub-where: WHERE (slug = 'x' OR slug = 'y')
+		$total = $table::get_total_items(
+			[
+				[
+					'query_operator' => 'OR',
+					[
+						'column'   => 'slug',
+						'value'    => 'x',
+						'operator' => '=',
+					],
+					[
+						'column'   => 'slug',
+						'value'    => 'y',
+						'operator' => '=',
+					],
+				],
+			]
+		);
+
+		$this->assertEquals( 2, $total );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_handle_sub_where_with_different_operators() {
+		$table = $this->get_query_test_table();
+		Register::table( $table );
+
+		// Insert test data
+		$table::insert( [ 'name' => 'First', 'slug' => 'first', 'status' => 1 ] );
+		$table::insert( [ 'name' => 'Second', 'slug' => 'second', 'status' => 2 ] );
+		$table::insert( [ 'name' => 'Third', 'slug' => 'third', 'status' => 3 ] );
+		$table::insert( [ 'name' => 'Fourth', 'slug' => 'fourth', 'status' => 4 ] );
+
+		// Query: WHERE (status > 1 AND status < 4)
+		$results = $table::paginate(
+			[
+				[
+					'query_operator' => 'AND',
+					[
+						'column'   => 'status',
+						'value'    => 1,
+						'operator' => '>',
+					],
+					[
+						'column'   => 'status',
+						'value'    => 4,
+						'operator' => '<',
+					],
+				],
+			],
+			10,
+			1
+		);
+
+		$this->assertCount( 2, $results );
+		$statuses = array_column( $results, 'status' );
+		$this->assertContains( 2, $statuses );
+		$this->assertContains( 3, $statuses );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_use_stellarwp_schema_hook_prefix() {
+		$table = $this->get_query_test_table();
+		Register::table( $table );
+
+		$table::insert( [ 'name' => 'Hook Test', 'slug' => 'hook-test', 'status' => 1 ] );
+
+		$pre_results_fired = false;
+		$post_results_fired = false;
+		$results_filter_fired = false;
+		$where_filter_fired = false;
+
+		add_action( 'stellarwp_schema_custom_table_query_pre_results', function() use ( &$pre_results_fired ) {
+			$pre_results_fired = true;
+		} );
+
+		add_action( 'stellarwp_schema_custom_table_query_post_results', function() use ( &$post_results_fired ) {
+			$post_results_fired = true;
+		} );
+
+		add_filter( 'stellarwp_schema_custom_table_query_results', function( $results ) use ( &$results_filter_fired ) {
+			$results_filter_fired = true;
+			return $results;
+		} );
+
+		add_filter( 'stellarwp_schema_custom_table_query_where', function( $where ) use ( &$where_filter_fired ) {
+			$where_filter_fired = true;
+			return $where;
+		} );
+
+		$table::paginate( [], 10, 1 );
+
+		$this->assertTrue( $pre_results_fired, 'stellarwp_schema_custom_table_query_pre_results action should fire' );
+		$this->assertTrue( $post_results_fired, 'stellarwp_schema_custom_table_query_post_results action should fire' );
+		$this->assertTrue( $results_filter_fired, 'stellarwp_schema_custom_table_query_results filter should fire' );
+		$this->assertTrue( $where_filter_fired, 'stellarwp_schema_custom_table_query_where filter should fire' );
+	}
+
+	/**
 	 * Get a test table for query method testing.
 	 */
 	private function get_query_test_table() {
