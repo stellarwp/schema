@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file. This projec
 ## [3.2.0] Unreleased
 
 * Feature - Add support for nested sub-WHERE clauses in `paginate()` and `get_total_items()` methods. This allows building complex queries like `WHERE (col1 = 'a' OR col2 = 'b') AND col3 = 'c'`.
+* Feature - Add new `stellarwp_schema_custom_table_paginate_query` filter to allow modification of the paginate query before execution.
 * Tweak - Rename hooks from `tec_common_*` prefix to `stellarwp_schema_*` prefix for consistency with the StellarWP namespace.
 
 ### Breaking Changes

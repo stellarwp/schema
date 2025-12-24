@@ -560,6 +560,14 @@ add_filter( 'stellarwp_schema_custom_table_query_where', function( $where, $args
 	// Add custom WHERE conditions.
 	return $where;
 }, 10, 3 );
+
+// Filter the paginate query before execution (v3.2.0+).
+add_filter( 'stellarwp_schema_custom_table_paginate_query', function( $query ) {
+	// Modify the SQL query string before execution.
+	// Useful for debugging, logging, or query modifications.
+	error_log( "Paginate query: {$query}" );
+	return $query;
+} );
 ```
 
 > **Note (v3.2.0):** The hook names were changed from `tec_common_*` prefix to `stellarwp_schema_*` prefix. If you're upgrading from an earlier version, update your hook callbacks accordingly.
