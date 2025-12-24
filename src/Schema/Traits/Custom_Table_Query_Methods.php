@@ -472,13 +472,43 @@ trait Custom_Table_Query_Methods {
 
 		$database = Config::get_db();
 
-		$results = $database::get_results(
+		/**
+		 * Filters the query used to paginate the results.
+		 *
+		 * @since 3.2.0
+		 *
+		 * @param string              $query                     The query to use.
+		 * @param array<string,mixed> $args                      The query arguments.
+		 * @param int                 $per_page                  The number of items to display per page.
+		 * @param int                 $page                      The current page number.
+		 * @param array<string>       $columns                   The columns to select.
+		 * @param string              $join_table                The table to join.
+		 * @param string              $join_condition            The condition to join on.
+		 * @param array<string>       $selectable_joined_columns The columns from the joined table to select.
+		 * @param int                 $offset                    The offset to use.
+		 * @param string              $where                     The WHERE clause to use.
+		 */
+		$query = apply_filters(
+			'stellarwp_schema_custom_table_paginate_query',
 			$database::prepare(
 				"SELECT {$formatted_columns}{$secondary_columns} FROM %i a {$join} {$where} ORDER BY a.{$orderby} {$order} LIMIT %d, %d",
 				static::table_name( true ),
 				$offset,
 				$per_page
 			),
+			$args,
+			$per_page,
+			$page,
+			$columns,
+			$join_table,
+			$join_condition,
+			$selectable_joined_columns,
+			$offset,
+			$where,
+		);
+
+		$results = $database::get_results(
+			$query,
 			ARRAY_A
 		);
 
