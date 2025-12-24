@@ -584,7 +584,7 @@ trait Custom_Table_Query_Methods {
 		$columns = static::get_columns()->get_names();
 
 		$sub_wheres = self::build_sub_wheres_from_args(
-			array_filter( $args,static fn( $arg ) => is_array( $arg ) ),
+			array_filter( $args, 'is_array' ),
 			$columns,
 			$joined_prefix
 		);
