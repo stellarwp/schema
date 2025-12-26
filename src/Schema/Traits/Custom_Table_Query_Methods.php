@@ -324,12 +324,26 @@ trait Custom_Table_Query_Methods {
 		$database = Config::get_db();
 		$where    = static::build_where_from_args( $args );
 
-		return (int) $database::get_var(
+		/**
+		 * Filters the query used to get the total number of items in the table.
+		 *
+		 * @since 3.2.0
+		 *
+		 * @param string              $query The query to use.
+		 * @param array<string,mixed> $args  The query arguments.
+		 * @param string              $where The WHERE clause to use.
+		 */
+		$query = apply_filters(
+			'stellarwp_schema_custom_table_total_items_query',
 			$database::prepare(
 				"SELECT COUNT(*) FROM %i a {$where}",
 				static::table_name( true )
-			)
+			),
+			$args,
+			$where,
 		);
+
+		return (int) $database::get_var( $query );
 	}
 
 	/**
@@ -635,6 +649,8 @@ trait Custom_Table_Query_Methods {
 						'queries'  => self::build_sub_wheres_from_args( $arg, $columns, $joined_prefix ),
 						'operator' => ! empty( $arg['query_operator'] ) && in_array( strtoupper( $arg['query_operator'] ), [ 'AND', 'OR' ], true ) ? strtoupper( $arg['query_operator'] ) : 'AND',
 					];
+				} else {
+					_doing_it_wrong( __METHOD__, 'A sub where clause must contain a column.', '3.2.0' );
 				}
 				continue;
 			}

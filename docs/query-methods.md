@@ -568,6 +568,14 @@ add_filter( 'stellarwp_schema_custom_table_paginate_query', function( $query ) {
 	error_log( "Paginate query: {$query}" );
 	return $query;
 } );
+
+// Filter the total items count query before execution (v3.2.0+).
+add_filter( 'stellarwp_schema_custom_table_total_items_query', function( $query ) {
+	// Modify the SQL count query string before execution.
+	// Useful for debugging, logging, or query modifications.
+	error_log( "Total items query: {$query}" );
+	return $query;
+} );
 ```
 
 > **Note (v3.2.0):** The hook names were changed from `tec_common_*` prefix to `stellarwp_schema_*` prefix. If you're upgrading from an earlier version, update your hook callbacks accordingly.
