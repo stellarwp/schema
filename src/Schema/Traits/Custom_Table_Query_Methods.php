@@ -629,7 +629,8 @@ trait Custom_Table_Query_Methods {
 			}
 
 			if ( empty( $arg['column'] ) ) {
-				if ( ! empty( $arg[0]['column'] ) ) {
+				$check_for_sub_query = array_filter( array_values( $arg ), static fn( $value ) => ! empty( $value['column'] ) );
+				if ( ! empty( $check_for_sub_query ) ) {
 					$sub_wheres[] = [
 						'queries'  => self::build_sub_wheres_from_args( $arg, $columns, $joined_prefix ),
 						'operator' => ! empty( $arg['query_operator'] ) && in_array( strtoupper( $arg['query_operator'] ), [ 'AND', 'OR' ], true ) ? strtoupper( $arg['query_operator'] ) : 'AND',
