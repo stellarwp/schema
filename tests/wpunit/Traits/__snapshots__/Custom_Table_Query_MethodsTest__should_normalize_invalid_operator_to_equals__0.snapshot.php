@@ -1,0 +1,1 @@
+SELECT a.* FROM `wp_query_test` a  WHERE a.slug = 'test-1' ORDER BY a.id ASC LIMIT 0, 10

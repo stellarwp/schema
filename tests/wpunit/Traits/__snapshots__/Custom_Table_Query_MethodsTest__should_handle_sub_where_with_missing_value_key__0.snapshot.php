@@ -1,0 +1,1 @@
+SELECT a.* FROM `wp_query_test` a  WHERE a.name != '' ORDER BY a.id ASC LIMIT 0, 10

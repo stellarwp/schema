@@ -1,0 +1,1 @@
+SELECT a.* FROM `wp_query_test` a  WHERE (((a.status >= 2 AND a.status <= 4) OR a.slug = 'item-1') AND a.status != 3) ORDER BY a.id ASC LIMIT 0, 10

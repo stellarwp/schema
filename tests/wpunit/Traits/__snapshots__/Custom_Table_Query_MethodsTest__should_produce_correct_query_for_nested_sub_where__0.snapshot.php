@@ -1,0 +1,1 @@
+SELECT a.* FROM `wp_query_test` a  WHERE (a.slug = 'a' OR a.slug = 'b') AND a.status = 1 ORDER BY a.id ASC LIMIT 0, 10
