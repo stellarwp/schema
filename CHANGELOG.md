@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file. This project adhere to the [Semantic Versioning](http://semver.org/) standard.
 
-## [3.2.0] Unreleased
+## [3.2.0] 2026-01-05
 
 * Feature - Add support for nested sub-WHERE clauses in `paginate()` and `get_total_items()` methods. This allows building complex queries like `WHERE (col1 = 'a' OR col2 = 'b') AND col3 = 'c'`.
 * Feature - Add new `stellarwp_schema_custom_table_paginate_query` filter to allow modification of the paginate query before execution.
