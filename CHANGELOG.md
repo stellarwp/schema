@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. This project adhere to the [Semantic Versioning](http://semver.org/) standard.
 
+## [3.2.0] 2026-01-05
+
+* Feature - Add support for nested sub-WHERE clauses in `paginate()` and `get_total_items()` methods. This allows building complex queries like `WHERE (col1 = 'a' OR col2 = 'b') AND col3 = 'c'`.
+* Feature - Add new `stellarwp_schema_custom_table_paginate_query` filter to allow modification of the paginate query before execution.
+* Feature - Add new `stellarwp_schema_custom_table_total_items_query` filter to allow modification of the total items count query before execution.
+* Tweak - Rename hooks from `tec_common_*` prefix to `stellarwp_schema_*` prefix for consistency with the StellarWP namespace.
+
+### Breaking Changes
+
+The following hooks have been renamed:
+- `tec_common_custom_table_query_pre_results` → `stellarwp_schema_custom_table_query_pre_results`
+- `tec_common_custom_table_query_post_results` → `stellarwp_schema_custom_table_query_post_results`
+- `tec_common_custom_table_query_results` → `stellarwp_schema_custom_table_query_results`
+- `tec_common_custom_table_query_where` → `stellarwp_schema_custom_table_query_where`
+
+[3.2.0]: https://github.com/stellarwp/schema/releases/tag/3.2.0
+
 ## [3.1.4] 2025-10-16
 
 * Fix - Handle array values correctly in the `get_*` query methods.

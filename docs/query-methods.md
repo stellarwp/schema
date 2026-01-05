@@ -271,7 +271,7 @@ $args = [
 	'orderby' => 'created_at',  // Column to sort by.
 	'order' => 'DESC',  // ASC or DESC.
 	'offset' => 0,  // Starting offset.
-	'query_operator' => 'AND',  // AND or OR.
+	'query_operator' => 'AND',  // AND or OR for top-level conditions.
 
 	// Column filters.
 	[
@@ -283,6 +283,21 @@ $args = [
 		'column' => 'price_cents',
 		'value' => 1000,
 		'operator' => '<',
+	],
+
+	// Sub-WHERE clauses (v3.2.0+) - group conditions with their own operator.
+	[
+		'query_operator' => 'OR',  // Operator for this group.
+		[
+			'column' => 'type',
+			'value' => 'classic',
+			'operator' => '=',
+		],
+		[
+			'column' => 'type',
+			'value' => 'premium',
+			'operator' => '=',
+		],
 	],
 ];
 ```
@@ -310,6 +325,33 @@ $results = Sandwiches::paginate(
 			'column' => 'type',
 			'value' => 'classic',
 			'operator' => '=',
+		],
+		[
+			'column' => 'price_cents',
+			'value' => 1500,
+			'operator' => '<',
+		],
+	],
+	20,
+	1
+);
+
+// Sub-WHERE clauses (v3.2.0+).
+// Query: WHERE (type = 'classic' OR type = 'premium') AND price_cents < 1500
+$results = Sandwiches::paginate(
+	[
+		[
+			'query_operator' => 'OR',
+			[
+				'column' => 'type',
+				'value' => 'classic',
+				'operator' => '=',
+			],
+			[
+				'column' => 'type',
+				'value' => 'premium',
+				'operator' => '=',
+			],
 		],
 		[
 			'column' => 'price_cents',
@@ -498,27 +540,45 @@ Query methods provide hooks for customization:
 
 ```php
 // Before query execution.
-add_action( 'tec_common_custom_table_query_pre_results', function( $args, $class ) {
+add_action( 'stellarwp_schema_custom_table_query_pre_results', function( $args, $class ) {
 	// Modify args, log, etc.
 }, 10, 2 );
 
 // After query execution.
-add_action( 'tec_common_custom_table_query_post_results', function( $results, $args, $class ) {
+add_action( 'stellarwp_schema_custom_table_query_post_results', function( $results, $args, $class ) {
 	// Log, analyze, etc.
 }, 10, 3 );
 
 // Filter results.
-add_filter( 'tec_common_custom_table_query_results', function( $results, $args, $class ) {
+add_filter( 'stellarwp_schema_custom_table_query_results', function( $results, $args, $class ) {
 	// Modify results.
 	return $results;
 }, 10, 3 );
 
 // Filter WHERE clause.
-add_filter( 'tec_common_custom_table_query_where', function( $where, $args, $class ) {
+add_filter( 'stellarwp_schema_custom_table_query_where', function( $where, $args, $class ) {
 	// Add custom WHERE conditions.
 	return $where;
 }, 10, 3 );
+
+// Filter the paginate query before execution (v3.2.0+).
+add_filter( 'stellarwp_schema_custom_table_paginate_query', function( $query ) {
+	// Modify the SQL query string before execution.
+	// Useful for debugging, logging, or query modifications.
+	error_log( "Paginate query: {$query}" );
+	return $query;
+} );
+
+// Filter the total items count query before execution (v3.2.0+).
+add_filter( 'stellarwp_schema_custom_table_total_items_query', function( $query ) {
+	// Modify the SQL count query string before execution.
+	// Useful for debugging, logging, or query modifications.
+	error_log( "Total items query: {$query}" );
+	return $query;
+} );
 ```
+
+> **Note (v3.2.0):** The hook names were changed from `tec_common_*` prefix to `stellarwp_schema_*` prefix. If you're upgrading from an earlier version, update your hook callbacks accordingly.
 
 ## Performance Tips
 

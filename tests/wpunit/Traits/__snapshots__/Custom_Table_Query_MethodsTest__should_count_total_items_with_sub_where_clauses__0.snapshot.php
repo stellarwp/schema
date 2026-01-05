@@ -1,0 +1,1 @@
+SELECT COUNT(*) FROM `wp_query_test` a WHERE (a.slug = 'x' OR a.slug = 'y')

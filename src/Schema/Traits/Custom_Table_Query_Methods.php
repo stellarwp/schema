@@ -324,12 +324,26 @@ trait Custom_Table_Query_Methods {
 		$database = Config::get_db();
 		$where    = static::build_where_from_args( $args );
 
-		return (int) $database::get_var(
+		/**
+		 * Filters the query used to get the total number of items in the table.
+		 *
+		 * @since 3.2.0
+		 *
+		 * @param string              $query The query to use.
+		 * @param array<string,mixed> $args  The query arguments.
+		 * @param string              $where The WHERE clause to use.
+		 */
+		$query = apply_filters(
+			'stellarwp_schema_custom_table_total_items_query',
 			$database::prepare(
 				"SELECT COUNT(*) FROM %i a {$where}",
 				static::table_name( true )
-			)
+			),
+			$args,
+			$where,
 		);
+
+		return (int) $database::get_var( $query );
 	}
 
 	/**
@@ -468,17 +482,47 @@ trait Custom_Table_Query_Methods {
 		 * @param array<string,mixed> $args  The query arguments.
 		 * @param class-string        $class The class name.
 		 */
-		do_action( 'tec_common_custom_table_query_pre_results', $args, static::class );
+		do_action( 'stellarwp_schema_custom_table_query_pre_results', $args, static::class );
 
 		$database = Config::get_db();
 
-		$results = $database::get_results(
+		/**
+		 * Filters the query used to paginate the results.
+		 *
+		 * @since 3.2.0
+		 *
+		 * @param string              $query                     The query to use.
+		 * @param array<string,mixed> $args                      The query arguments.
+		 * @param int                 $per_page                  The number of items to display per page.
+		 * @param int                 $page                      The current page number.
+		 * @param array<string>       $columns                   The columns to select.
+		 * @param string              $join_table                The table to join.
+		 * @param string              $join_condition            The condition to join on.
+		 * @param array<string>       $selectable_joined_columns The columns from the joined table to select.
+		 * @param int                 $offset                    The offset to use.
+		 * @param string              $where                     The WHERE clause to use.
+		 */
+		$query = apply_filters(
+			'stellarwp_schema_custom_table_paginate_query',
 			$database::prepare(
 				"SELECT {$formatted_columns}{$secondary_columns} FROM %i a {$join} {$where} ORDER BY a.{$orderby} {$order} LIMIT %d, %d",
 				static::table_name( true ),
 				$offset,
 				$per_page
 			),
+			$args,
+			$per_page,
+			$page,
+			$columns,
+			$join_table,
+			$join_condition,
+			$selectable_joined_columns,
+			$offset,
+			$where,
+		);
+
+		$results = $database::get_results(
+			$query,
 			ARRAY_A
 		);
 
@@ -498,7 +542,7 @@ trait Custom_Table_Query_Methods {
 		 * @param array<string,mixed> $args  The query arguments.
 		 * @param class-string        $class The class name.
 		 */
-		do_action( 'tec_common_custom_table_query_post_results', $results, $args, static::class );
+		do_action( 'stellarwp_schema_custom_table_query_post_results', $results, $args, static::class );
 
 		/**
 		 * Filters the results of the query.
@@ -509,13 +553,14 @@ trait Custom_Table_Query_Methods {
 		 * @param array<string,mixed> $args  The query arguments.
 		 * @param class-string        $class The class name.
 		 */
-		return apply_filters( 'tec_common_custom_table_query_results', $results, $args, static::class );
+		return apply_filters( 'stellarwp_schema_custom_table_query_results', $results, $args, static::class );
 	}
 
 	/**
 	 * Builds a WHERE clause from the provided arguments.
 	 *
 	 * @since 3.0.0
+	 * @since 3.2.0 Now sub where clauses are supported.
 	 *
 	 * @param array<string,mixed> $args   The query arguments.
 	 *
@@ -552,12 +597,61 @@ trait Custom_Table_Query_Methods {
 
 		$columns = static::get_columns()->get_names();
 
+		$sub_wheres = self::build_sub_wheres_from_args(
+			array_filter( $args, 'is_array' ),
+			$columns,
+			$joined_prefix
+		);
+
+		$where = array_merge( $where, $sub_wheres );
+
+		/**
+		 * Filters the WHERE clause.
+		 *
+		 * @since 3.0.0
+		 *
+		 * @param array<string>       $where The WHERE clause parts.
+		 * @param array<string,mixed> $args  The query arguments.
+		 * @param class-string        $class The class name.
+		 */
+		$where = apply_filters( 'stellarwp_schema_custom_table_query_where', array_filter( $where ), $args, static::class );
+
+		if ( empty( $where ) ) {
+			return '';
+		}
+
+		return 'WHERE ' . implode( " {$query_operator} ", $where );
+	}
+
+	/**
+	 * Builds the sub WHERE clauses from the provided arguments.
+	 *
+	 * @since 3.2.0
+	 *
+	 * @param array<string,mixed> $args          The query arguments.
+	 * @param array<string>       $columns       The columns to select.
+	 * @param string              $joined_prefix The prefix to use for the joined columns.
+	 *
+	 * @return array<string> The sub WHERE clauses.
+	 */
+	private static function build_sub_wheres_from_args( array $args = [], array $columns = [], string $joined_prefix = '' ): array {
+		$sub_wheres = [];
+
 		foreach ( $args as $arg ) {
 			if ( ! is_array( $arg ) ) {
 				continue;
 			}
 
 			if ( empty( $arg['column'] ) ) {
+				$check_for_sub_query = array_filter( array_values( $arg ), static fn( $value ) => ! empty( $value['column'] ) );
+				if ( ! empty( $check_for_sub_query ) ) {
+					$sub_wheres[] = [
+						'queries'  => self::build_sub_wheres_from_args( $arg, $columns, $joined_prefix ),
+						'operator' => ! empty( $arg['query_operator'] ) && in_array( strtoupper( $arg['query_operator'] ), [ 'AND', 'OR' ], true ) ? strtoupper( $arg['query_operator'] ) : 'AND',
+					];
+				} else {
+					_doing_it_wrong( __METHOD__, 'A sub where clause must contain a column.', '3.2.0' );
+				}
 				continue;
 			}
 
@@ -589,34 +683,38 @@ trait Custom_Table_Query_Methods {
 			$query    = "{$joined_prefix}{$column} {$operator} {$placeholder}";
 
 			if ( is_array( $value ) ) {
-				$where[] = $database::prepare( $query, ...$value );
+				$sub_wheres[] = $database::prepare( $query, ...$value );
 				continue;
 			}
 
 			if ( 'NULL' === $placeholder ) {
-				$where[] = $query;
+				$sub_wheres[] = $query;
 				continue;
 			}
 
-			$where[] = $database::prepare( $query, $value );
+			$sub_wheres[] = $database::prepare( $query, $value );
 		}
 
-		/**
-		 * Filters the WHERE clause.
-		 *
-		 * @since 3.0.0
-		 *
-		 * @param array<string>       $where The WHERE clause parts.
-		 * @param array<string,mixed> $args  The query arguments.
-		 * @param class-string        $class The class name.
-		 */
-		$where = apply_filters( 'tec_common_custom_table_query_where', array_filter( $where ), $args, static::class );
+		return array_filter(
+			array_map(
+				static function ( $sub_where ) {
+					if ( ! is_array( $sub_where ) ) {
+						return $sub_where;
+					}
 
-		if ( empty( $where ) ) {
-			return '';
-		}
+					if ( empty( $sub_where['queries'] ) ) {
+						return '';
+					}
 
-		return 'WHERE ' . implode( " {$query_operator} ", $where );
+					if ( ! isset( $sub_where['operator'] ) || ! in_array( strtoupper( $sub_where['operator'] ), [ 'AND', 'OR' ], true ) ) {
+						$sub_where['operator'] = 'AND';
+					}
+
+					return '(' . implode( " {$sub_where['operator']} ", $sub_where['queries'] ) . ')';
+				},
+				$sub_wheres
+			)
+		);
 	}
 
 	/**
