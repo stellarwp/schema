@@ -493,10 +493,12 @@ class Custom_Table_Query_MethodsTest extends SchemaTestCase {
 		$table::insert( [ 'name' => 'Test 1', 'slug' => 'test-1', 'status' => 1 ] );
 		$table::insert( [ 'name' => 'Test 2', 'slug' => 'test-2', 'status' => 0 ] );
 
+		add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
+
 		$doing_it_wrong_called = false;
-		uopz_set_return( '_doing_it_wrong', function() use ( &$doing_it_wrong_called ) {
+		add_action( 'doing_it_wrong_run', function() use ( &$doing_it_wrong_called ) {
 			$doing_it_wrong_called = true;
-		}, true );
+		} );
 
 		// Malformed: missing 'column' key.
 		$results = $table::paginate(
@@ -509,8 +511,6 @@ class Custom_Table_Query_MethodsTest extends SchemaTestCase {
 			10,
 			1
 		);
-
-		uopz_unset_return( '_doing_it_wrong' );
 
 		$this->assertTrue( $doing_it_wrong_called, '_doing_it_wrong should be called' );
 
@@ -534,9 +534,11 @@ class Custom_Table_Query_MethodsTest extends SchemaTestCase {
 
 		$doing_it_wrong_called = false;
 
-		uopz_set_return( '_doing_it_wrong', function () use ( &$doing_it_wrong_called ) {
+		add_filter( 'doing_it_wrong_trigger_error', '__return_false' );
+
+		add_action( 'doing_it_wrong_run', function () use ( &$doing_it_wrong_called ) {
 			$doing_it_wrong_called = true;
-		}, true );
+		} );
 
 		// Missing 'value' key - should default to checking column is not empty.
 		$results = $table::paginate(
@@ -548,8 +550,6 @@ class Custom_Table_Query_MethodsTest extends SchemaTestCase {
 			10,
 			1
 		);
-
-		uopz_unset_return( '_doing_it_wrong' );
 
 		$this->assertFalse( $doing_it_wrong_called, '_doing_it_wrong should not be called' );
 
