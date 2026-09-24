@@ -195,7 +195,7 @@ trait Custom_Table_Query_Methods {
 			$is_int        = $column_object && PHP_Types::INT === $column_object->get_php_type();
 
 			$column_ids = $is_int ?
-				array_filter( array_map( fn( $id ) => filter_var( $id, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 1 ] ] ), $ids ) ) :
+				array_filter( array_map( fn( $id ) => filter_var( is_string( $id ) && ctype_digit( $id ) ? ltrim( $id, '0' ) : $id, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 1 ] ] ), $ids ) ) :
 				array_filter( array_map( 'strval', $ids ), fn( $id ) => '' !== $id );
 
 			if ( empty( $column_ids ) ) {

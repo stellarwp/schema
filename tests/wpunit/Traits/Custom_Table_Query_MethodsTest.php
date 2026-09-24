@@ -1036,9 +1036,11 @@ class Custom_Table_Query_MethodsTest extends SchemaTestCase {
 		$table = $this->get_query_test_table();
 		Register::table( $table );
 
-		$ids = $this->insert_delete_fixtures( $table, 3 );
+		$ids = $this->insert_delete_fixtures( $table, 4 );
 
 		$this->assertSame( 2, $table::delete_many( [ $ids[0], (string) $ids[1] ] ) );
+		$this->assertSame( 1, $table::delete_many( [ '000' . $ids[3] ] ) );
+		$this->assertNull( $table::get_by_id( $ids[3] ) );
 		$this->assertNull( $table::get_by_id( $ids[0] ) );
 		$this->assertNull( $table::get_by_id( $ids[1] ) );
 		$this->assertNotNull( $table::get_by_id( $ids[2] ) );
