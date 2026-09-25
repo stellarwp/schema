@@ -1038,7 +1038,7 @@ class Custom_Table_Query_MethodsTest extends SchemaTestCase {
 
 		$ids = $this->insert_delete_fixtures( $table, 4 );
 
-		$this->assertSame( 2, $table::delete_many( [ $ids[0], (string) $ids[1] ] ) );
+		$this->assertSame( 2, $table::delete_many( [ $ids[0], (string) $ids[1], $ids[0] ] ) );
 		$this->assertSame( 1, $table::delete_many( [ '000' . $ids[3] ] ) );
 		$this->assertNull( $table::get_by_id( $ids[3] ) );
 		$this->assertNull( $table::get_by_id( $ids[0] ) );
@@ -1057,7 +1057,7 @@ class Custom_Table_Query_MethodsTest extends SchemaTestCase {
 
 		$ids = $this->insert_delete_fixtures( $table, 2 );
 
-		$this->assertFalse( $table::delete_many( [ -$ids[0], 0, '-' . $ids[1], '0' ] ) );
+		$this->assertSame( 0, $table::delete_many( [ -$ids[0], 0, '-' . $ids[1], '0' ] ) );
 		$this->assertFalse( $table::delete( -$ids[0] ) );
 		$this->assertFalse( $table::delete( 0 ) );
 		$this->assertEquals( 2, $table::get_total_items() );

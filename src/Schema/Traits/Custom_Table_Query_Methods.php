@@ -177,7 +177,7 @@ trait Custom_Table_Query_Methods {
 	 * Deletes multiple rows from the table.
 	 *
 	 * @since 3.0.0
-	 * @since TBD IDs are passed to the query as placeholders, and non-positive IDs are ignored for integer columns.
+	 * @since TBD IDs are passed to the query as placeholders, non-numeric IDs are ignored for integer columns, and duplicates are removed.
 	 *
 	 * @param array<int|string> $ids        The IDs of the rows to delete.
 	 * @param string            $column     The column to use for the delete query.
@@ -194,9 +194,11 @@ trait Custom_Table_Query_Methods {
 			$column_object = $columns->get( $column_name );
 			$is_int        = $column_object && PHP_Types::INT === $column_object->get_php_type();
 
-			$column_ids = $is_int ?
-				array_filter( array_map( fn( $id ) => filter_var( is_string( $id ) && ctype_digit( $id ) ? ltrim( $id, '0' ) : $id, FILTER_VALIDATE_INT, [ 'options' => [ 'min_range' => 1 ] ] ), $ids ) ) :
-				array_filter( array_map( 'strval', $ids ), fn( $id ) => '' !== $id );
+			$column_ids = array_unique(
+				$is_int ?
+					array_map( 'intval', array_filter( $ids, 'is_numeric' ) ) :
+					array_filter( array_map( 'strval', $ids ), fn( $id ) => '' !== $id )
+			);
 
 			if ( empty( $column_ids ) ) {
 				return false;
