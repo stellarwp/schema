@@ -177,6 +177,7 @@ trait Custom_Table_Query_Methods {
 	 * Deletes multiple rows from the table.
 	 *
 	 * @since 3.0.0
+	 * @since TBD IDs are passed to the query as placeholders, non-numeric IDs are ignored for integer columns, and duplicates are removed.
 	 *
 	 * @param array<int|string> $ids        The IDs of the rows to delete.
 	 * @param string            $column     The column to use for the delete query.
@@ -185,38 +186,40 @@ trait Custom_Table_Query_Methods {
 	 * @return bool|int The number of rows affected, or `false` on failure.
 	 */
 	public static function delete_many( array $ids, string $column = '', string $more_where = '' ) {
-		$ids = array_filter(
-			array_map(
-				fn( $id ) => is_numeric( $id ) ? (int) $id : "'{$id}'",
-				$ids
-			)
-		);
+		$columns = static::get_columns();
+		$wheres  = [];
+		$values  = [];
 
-		if ( empty( $ids ) ) {
-			return false;
+		foreach ( $column ? [ $column ] : static::primary_columns() as $column_name ) {
+			$column_object = $columns->get( $column_name );
+			$is_int        = $column_object && PHP_Types::INT === $column_object->get_php_type();
+
+			$column_ids = array_unique(
+				$is_int ?
+					array_map( 'intval', array_filter( $ids, 'is_numeric' ) ) :
+					array_filter( array_map( 'strval', $ids ), fn( $id ) => '' !== $id )
+			);
+
+			if ( empty( $column_ids ) ) {
+				return false;
+			}
+
+			$wheres[] = '%i IN (' . implode( ', ', array_fill( 0, count( $column_ids ), $is_int ? '%d' : '%s' ) ) . ')';
+			array_push( $values, $column_name, ...array_values( $column_ids ) );
 		}
 
-		$database     = Config::get_db();
-		$prepared_ids = implode( ', ', $ids );
-		$column       = $column ?
-			"{$column} IN ({$prepared_ids})" :
-			implode(
-				' AND ',
-				array_map(
-					function ( $c ) use ( $prepared_ids ) {
-						return "{$c} IN ({$prepared_ids})";
-					},
-				static::primary_columns()
-				)
-			);
+		$database = Config::get_db();
+		$where    = implode( ' AND ', $wheres );
 
 		return $database::query(
 			$database::prepare(
-				"DELETE FROM %i WHERE {$column} {$more_where}",
+				"DELETE FROM %i WHERE {$where} {$more_where}",
 				static::table_name( true ),
+				...$values
 			)
 		);
 	}
+
 	/**
 	 * Prepares the statements and values for the insert and update queries.
 	 *

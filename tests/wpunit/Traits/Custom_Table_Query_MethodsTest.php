@@ -1029,6 +1029,82 @@ class Custom_Table_Query_MethodsTest extends SchemaTestCase {
 	/**
 	 * Get a test table for query method testing.
 	 */
+	/**
+	 * @test
+	 */
+	public function should_delete_many_by_int_and_numeric_string_ids() {
+		$table = $this->get_query_test_table();
+		Register::table( $table );
+
+		$ids = $this->insert_delete_fixtures( $table, 4 );
+
+		$this->assertSame( 2, $table::delete_many( [ $ids[0], (string) $ids[1], $ids[0] ] ) );
+		$this->assertSame( 1, $table::delete_many( [ '000' . $ids[3] ] ) );
+		$this->assertNull( $table::get_by_id( $ids[3] ) );
+		$this->assertNull( $table::get_by_id( $ids[0] ) );
+		$this->assertNull( $table::get_by_id( $ids[1] ) );
+		$this->assertNotNull( $table::get_by_id( $ids[2] ) );
+		$this->assertTrue( $table::delete( $ids[2] ) );
+		$this->assertNull( $table::get_by_id( $ids[2] ) );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_not_delete_anything_for_non_positive_ids() {
+		$table = $this->get_query_test_table();
+		Register::table( $table );
+
+		$ids = $this->insert_delete_fixtures( $table, 2 );
+
+		$this->assertSame( 0, $table::delete_many( [ -$ids[0], 0, '-' . $ids[1], '0' ] ) );
+		$this->assertFalse( $table::delete( -$ids[0] ) );
+		$this->assertFalse( $table::delete( 0 ) );
+		$this->assertEquals( 2, $table::get_total_items() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_not_interpolate_string_ids_into_the_query() {
+		$table = $this->get_query_test_table();
+		Register::table( $table );
+
+		$this->insert_delete_fixtures( $table, 2 );
+
+		$this->assertFalse( $table::delete_many( [ '1 OR 1=1', "1) OR (1=1" ] ) );
+		$this->assertSame( 0, $table::delete_many( [ "x' OR '1'='1" ], 'slug' ) );
+		$this->assertEquals( 2, $table::get_total_items() );
+	}
+
+	/**
+	 * @test
+	 */
+	public function should_delete_many_by_custom_column_with_quoted_values() {
+		$table = $this->get_query_test_table();
+		Register::table( $table );
+
+		$this->insert_delete_fixtures( $table, 2 );
+		$table::insert( [ 'name' => 'Quoted', 'slug' => "it's-quoted", 'status' => 1 ] );
+
+		$this->assertSame( 1, $table::delete_many( [ "it's-quoted" ], 'slug' ) );
+		$this->assertNull( $table::get_first_by( 'slug', "it's-quoted" ) );
+		$this->assertSame( 1, $table::delete_many( [ 'test-delete-0' ], 'slug' ) );
+		$this->assertEquals( 1, $table::get_total_items() );
+		$this->assertNotNull( $table::get_first_by( 'slug', 'test-delete-1' ) );
+	}
+
+	private function insert_delete_fixtures( $table, int $count ): array {
+		$ids = [];
+
+		for ( $i = 0; $i < $count; $i++ ) {
+			$table::insert( [ 'name' => "Test {$i}", 'slug' => "test-delete-{$i}", 'status' => 1 ] );
+			$ids[] = DB::last_insert_id();
+		}
+
+		return $ids;
+	}
+
 	private function get_query_test_table() {
 		return new class extends Table {
 			const SCHEMA_VERSION = '1.0.0';
